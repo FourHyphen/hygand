@@ -126,5 +126,40 @@ namespace TestMyFileLauncher
             // 検索しないディレクトリ：先頭に "-" を付与
             stream.WriteLine($@"-{Common.GetFilePathOfDependentEnvironment(notScanDirPath)}");
         }
+
+        [TestMethod]
+        public void SearchIndex()
+        {
+            string testWorkDirPath = @"TestData\IntegrationTestFileIndex\SearchIndex";
+            string indexPath = $@"{testWorkDirPath}\Index.info";
+
+            // 準備：前回の残りがあるなら削除
+            DeleteFileIfExists(indexPath);
+
+            // 準備：インデックス読み込み
+            InitTestSearchIndex(indexPath);
+            MyFileLauncher.FileIndex fileIndex = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+
+            // 検索
+            Assert.IsTrue(fileIndex.Search("should_find_2").Count() == 2);
+            Assert.IsTrue(fileIndex.Search("should_find_1").Count() == 1);
+            Assert.IsTrue(fileIndex.Search("should_find_0").Count() == 0);
+
+            // 後始末
+            DeleteFileIfExists(indexPath);
+        }
+
+        private void InitTestSearchIndex(string indexPath)
+        {
+            string dirPath = System.IO.Path.GetDirectoryName(indexPath);
+
+            // インデックスファイル作成開始
+            using var stream = new System.IO.StreamWriter(indexPath);
+
+            // 同一ファイルパスが複数存在しない前提のインデックスであることに注意
+            stream.WriteLine(Common.GetFilePathOfDependentEnvironment($@"{dirPath}/should_find_2/file"));
+            stream.WriteLine(Common.GetFilePathOfDependentEnvironment($@"{dirPath}/should_find_2"));
+            stream.WriteLine(Common.GetFilePathOfDependentEnvironment($@"{dirPath}/should_find_1"));
+        }
     }
 }

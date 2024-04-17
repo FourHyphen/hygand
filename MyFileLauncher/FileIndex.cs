@@ -10,6 +10,8 @@ namespace MyFileLauncher
 
         private string IndexFilePath { get; }
 
+        private HashSet<string>? Indexes { get; set; } = new HashSet<string>();
+
         public static FileIndex CreateInstance()
         {
             string indexFilePath = System.IO.Path.GetFullPath(IndexFileName);
@@ -24,6 +26,10 @@ namespace MyFileLauncher
         private FileIndex(string indexFilePath)
         {
             IndexFilePath = indexFilePath;
+            if (Exists())
+            {
+                Indexes = ReadIndexFile();
+            }
         }
 
         /// <summary>
@@ -35,6 +41,16 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// インデックスファイルを読む
+        /// </summary>
+        private HashSet<string> ReadIndexFile()
+        {
+            // 空行を除いた行毎にリスト化
+            string[] contents = System.IO.File.ReadAllText(IndexFilePath).Replace("\r", "").Split("\n");
+            return contents.Where(s => s != "").ToHashSet();
+        }
+
+        /// <summary>
         /// インデックスファイルを作成する
         /// </summary>
         public void CreateIndexFile(ScanInfo scanInfo)
@@ -42,6 +58,9 @@ namespace MyFileLauncher
             HashSet<string> all = GetFilePathes(scanInfo.ScanDirectories);
             HashSet<string> files = ExcludeNotScanDirectoriesFromFileList(all, scanInfo.NotScanDirectories);
             CreateIndexFile(files);
+
+            // 内部的にもインデックスを保持する
+            Indexes = files;
         }
 
         /// <summary>
@@ -85,6 +104,21 @@ namespace MyFileLauncher
         {
             string contents = string.Join("\r\n", list) + "\r\n";
             System.IO.File.WriteAllText(IndexFilePath, contents);
+        }
+
+        /// <summary>
+        /// インデックスを部分一致検索する
+        /// </summary>
+        internal HashSet<string> Search(string word)
+        {
+            if (Indexes.Count == 0)
+            {
+                return new HashSet<string>();
+            }
+
+            // 検証に使えるよう結果を直接 return しない
+            var result = Indexes.Where(s => s.Contains(word)).ToHashSet();
+            return result;
         }
     }
 }
