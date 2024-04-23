@@ -20,9 +20,30 @@ namespace MyFileLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private HotKey _hotKey;
+
         public MainWindow()
         {
             InitializeComponent();
+            InitMainWindow();
+        }
+
+        private void InitMainWindow()
+        {
+            SetHotKey();
+        }
+
+        private void SetHotKey()
+        {
+            // TODO: AppHotKey クラスにラップする
+            //_hotKey = new HotKey(this);
+            //_hotKey.Register(ModifierKeys.Shift, Key.CapsLock, (_, __) => { MessageBox.Show("HotKey"); });
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _hotKey.Dispose();
+            base.OnClosed(e);
         }
     }
 }
