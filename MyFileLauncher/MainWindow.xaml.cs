@@ -15,12 +15,9 @@ using System.Windows.Shapes;
 
 namespace MyFileLauncher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private HotKey _hotKey;
+        private AppHotKey _appHotKey;
 
         public MainWindow()
         {
@@ -35,14 +32,25 @@ namespace MyFileLauncher
 
         private void SetHotKey()
         {
-            // TODO: AppHotKey クラスにラップする
-            //_hotKey = new HotKey(this);
-            //_hotKey.Register(ModifierKeys.Shift, Key.CapsLock, (_, __) => { MessageBox.Show("HotKey"); });
+            _appHotKey = AppHotKey.CreateInstance(this);
+            _appHotKey.RegisterTogglingDisplayOnOff((_, __) => { ToggleDisplayOnOff(); });
+        }
+
+        private void ToggleDisplayOnOff()
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                Hide();
+            }
+            else
+            {
+                Show();
+            }
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            _hotKey.Dispose();
+            _appHotKey.Dispose();
             base.OnClosed(e);
         }
     }
