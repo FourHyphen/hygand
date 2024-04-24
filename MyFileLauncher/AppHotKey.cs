@@ -10,6 +10,7 @@ namespace MyFileLauncher
 {
     internal class AppHotKey : IDisposable
     {
+        private const string IniFileName = "HotKey.ini";
         private HotKey _hotKey;
 
         internal static AppHotKey CreateInstance(Window window)
@@ -24,7 +25,14 @@ namespace MyFileLauncher
 
         internal void RegisterTogglingDisplayOnOff(EventHandler handler)
         {
-            _hotKey.Register(ModifierKeys.Shift, Key.CapsLock, handler);
+            (ModifierKeys, Key) keys = GetHotKeyTogglingDisplayOnOff();
+            _hotKey.Register(keys.Item1, keys.Item2, handler);
+        }
+
+        private (ModifierKeys, Key) GetHotKeyTogglingDisplayOnOff()
+        {
+            AppIniFile ini = new AppIniFile(IniFileName);
+            return ini.TogglingDisplayOnOff();
         }
 
         public void Dispose()
