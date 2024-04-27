@@ -22,18 +22,14 @@ namespace MyFileLauncher
         public MainWindow()
         {
             InitializeComponent();
-            InitMainWindow();
+
+            _appHotKey = new AppHotKey(this);
+            SetHotKey(_appHotKey);
         }
 
-        private void InitMainWindow()
+        private void SetHotKey(AppHotKey appHotKey)
         {
-            SetHotKey();
-        }
-
-        private void SetHotKey()
-        {
-            _appHotKey = AppHotKey.CreateInstance(this);
-            _appHotKey.RegisterTogglingDisplayOnOff((_, __) => { ToggleDisplayOnOff(); });
+            appHotKey.RegisterTogglingDisplayOnOff((_, __) => { ToggleDisplayOnOff(); });
         }
 
         private void ToggleDisplayOnOff()
