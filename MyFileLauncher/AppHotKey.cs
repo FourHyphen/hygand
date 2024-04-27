@@ -23,10 +23,10 @@ namespace MyFileLauncher
             _hotKey = new HotKey(window);
         }
 
-        internal void RegisterTogglingDisplayOnOff(EventHandler handler)
+        internal bool RegisterTogglingDisplayOnOff(EventHandler handler)
         {
             (ModifierKeys, Key) keys = GetHotKeyTogglingDisplayOnOff();
-            _hotKey.Register(keys.Item1, keys.Item2, handler);
+            return _hotKey.Register(keys.Item1, keys.Item2, handler);
         }
 
         private (ModifierKeys, Key) GetHotKeyTogglingDisplayOnOff()
