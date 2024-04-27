@@ -10,7 +10,7 @@ namespace MyFileLauncher
 
         private string IndexFilePath { get; }
 
-        private HashSet<string>? Indexes { get; set; } = new HashSet<string>();
+        private HashSet<string> Indexes { get; set; } = new HashSet<string>();
 
         public static FileIndex CreateInstance()
         {
@@ -94,7 +94,7 @@ namespace MyFileLauncher
         /// </summary>
         private bool DoStrStartWith(string str, IReadOnlyCollection<string> list)
         {
-            return list.Where(s => str.StartsWith(s)).Count() >= 1;
+            return list.Where(s => str.StartsWith(s)).Any();
         }
 
         /// <summary>

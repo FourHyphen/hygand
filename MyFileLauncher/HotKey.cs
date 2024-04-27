@@ -86,7 +86,7 @@ namespace MyFileLauncher
             _registeredHotKeys.RemoveAll(item => Unregister(item));
 
             // 登録済み HotKey リストが空なら登録解除に全て成功
-            return _registeredHotKeys.Count() == 0;
+            return _registeredHotKeys.Count == 0;
         }
 
         private bool Unregister(HotKeyItem item)

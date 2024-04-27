@@ -77,7 +77,7 @@ namespace TestMyFileLauncher
             CleanupTestCreateIndexFile(scanInfoPath, indexPath, notScanDirPath);
 
             // 準備：テストディレクトリ設定と Scan.info ファイル作成
-            InitTestCreateIndexFile(scanInfoPath, indexPath, notScanDirPath);
+            InitTestCreateIndexFile(scanInfoPath, notScanDirPath);
 
             // インデックスファイル作成
             MyFileLauncher.ScanInfo si = MyFileLauncher.ScanInfo.CreateInstance(scanInfoPath);
@@ -110,7 +110,7 @@ namespace TestMyFileLauncher
             Assert.IsFalse(System.IO.Directory.Exists(dirPath));
         }
 
-        private void InitTestCreateIndexFile(string scanInfoPath, string indexPath, string notScanDirPath)
+        private void InitTestCreateIndexFile(string scanInfoPath, string notScanDirPath)
         {
             // 検索しないディレクトリを作成
             System.IO.Directory.CreateDirectory(notScanDirPath);
@@ -141,9 +141,9 @@ namespace TestMyFileLauncher
             MyFileLauncher.FileIndex fileIndex = MyFileLauncher.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            Assert.IsTrue(fileIndex.Search("should_find_2").Count() == 2);
-            Assert.IsTrue(fileIndex.Search("should_find_1").Count() == 1);
-            Assert.IsTrue(fileIndex.Search("should_find_0").Count() == 0);
+            Assert.IsTrue(fileIndex.Search("should_find_2").Count == 2);
+            Assert.IsTrue(fileIndex.Search("should_find_1").Count == 1);
+            Assert.IsTrue(fileIndex.Search("should_find_0").Count == 0);
 
             // 後始末
             DeleteFileIfExists(indexPath);
@@ -151,7 +151,7 @@ namespace TestMyFileLauncher
 
         private void InitTestSearchIndex(string indexPath)
         {
-            string dirPath = System.IO.Path.GetDirectoryName(indexPath);
+            string dirPath = System.IO.Path.GetDirectoryName(indexPath)!;
 
             // インデックスファイル作成開始
             using var stream = new System.IO.StreamWriter(indexPath);

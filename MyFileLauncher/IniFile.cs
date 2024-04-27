@@ -9,7 +9,7 @@ namespace MyFileLauncher
     {
         private readonly string _iniPath;
 
-        [DllImport("KERNEL32.DLL")]
+        [DllImport("KERNEL32.DLL", CharSet = CharSet.Unicode)]
         public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
 
         internal IniFile(string iniPath)
@@ -19,7 +19,7 @@ namespace MyFileLauncher
 
         internal string GetValue(string section, string key)
         {
-            StringBuilder buffer = new StringBuilder(256);
+            StringBuilder buffer = new(256);
             if (System.IO.File.Exists(_iniPath))
             {
                 GetPrivateProfileString(section, key, "", buffer, (uint)buffer.Capacity, _iniPath);
