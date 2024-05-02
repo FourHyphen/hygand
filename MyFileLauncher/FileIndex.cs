@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Windows.Xps;
+using static System.Net.WebRequestMethods;
 
 namespace MyFileLauncher
 {
@@ -55,8 +61,7 @@ namespace MyFileLauncher
         /// </summary>
         public void CreateIndexFile(ScanInfo scanInfo)
         {
-            HashSet<string> all = GetFilePathes(scanInfo.ScanDirectories);
-            HashSet<string> files = ExcludeNotScanDirectoriesFromFileList(all, scanInfo.NotScanDirectories);
+            HashSet<string> files = GetFilePathes(scanInfo);
             CreateIndexFile(files);
 
             // 内部的にもインデックスを保持する
@@ -66,35 +71,125 @@ namespace MyFileLauncher
         /// <summary>
         /// 検索ディレクトリ内のサブディレクトリを含む全ファイル＆ディレクトリのフルパスを返す
         /// </summary>
-        private HashSet<string> GetFilePathes(IReadOnlyCollection<string> searchDirs)
+        private HashSet<string> GetFilePathes(ScanInfo scanInfo)
         {
-            IEnumerable<string> pathes = searchDirs.SelectMany(dirPath => GetAllFilesIn(dirPath));
-            return pathes.ToHashSet();
+            HashSet<string> pathes = new HashSet<string>();
+            foreach (string searchDir in scanInfo.ScanDirectories)
+            {
+                pathes.UnionWith(GetAllFilesIn(searchDir, scanInfo.NotScanDirectories));
+            }
+
+            return pathes;
         }
 
         /// <summary>
         /// ディレクトリ内のサブディレクトリを含む全てのファイル＆ディレクトリ一覧を取得する
         /// </summary>
-        private string[] GetAllFilesIn(string dirPath)
+        private HashSet<string> GetAllFilesIn(string dirPath, IReadOnlyCollection<string> notScanDirectories)
         {
-            return System.IO.Directory.GetFileSystemEntries(dirPath, "*", System.IO.SearchOption.AllDirectories);
+            try
+            {
+                var files = GetAllFilesInCore(dirPath, notScanDirectories);
+                return files;
+            }
+            catch
+            {
+                return new HashSet<string>();
+            }
+        }
+
+        private HashSet<string> GetAllFilesInCore(string dirPath, IReadOnlyCollection<string> notScanDirectories)
+        {
+            HashSet<string> files = new HashSet<string>();
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(dirPath);
+
+            // ディレクトリのサブディレクトリを全探索
+            foreach (DirectoryInfo dir in di.EnumerateDirectories())
+            {
+                // 探索するサブディレクトリであれば再帰的に潜る
+                if (IsScanDirectory(dir, notScanDirectories))
+                {
+                    files.UnionWith(GetAllFilesInCore(dir.FullName, notScanDirectories));
+                }
+                else
+                {
+                    Debug.WriteLine($@"not scan: {dir.FullName}");
+                }
+            }
+
+            // 現階層に探索するサブディレクトリがなければファイルリスト取得
+            files.UnionWith(System.IO.Directory.GetFileSystemEntries(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly));
+
+            // 検索しないディレクトリを結果に含めないよう除外
+            HashSet<string> removings = GetRemovingFiles(files, notScanDirectories);
+            files.ExceptWith(removings);
+
+            return files;
         }
 
         /// <summary>
-        /// ファイルリストから検索しないディレクトリのファイルを除外したリストを返す
+        /// スキャンするディレクトリかどうかを返す
         /// </summary>
-        private HashSet<string> ExcludeNotScanDirectoriesFromFileList(IReadOnlyCollection<string> fileList, IReadOnlyCollection<string> notScanDirs)
+        private bool IsScanDirectory(DirectoryInfo di, IReadOnlyCollection<string> notScanDirectories)
         {
-            // 検索しないディレクトリのファイルではないものを一覧化する
-            return fileList.Where(path => !DoStrStartWith(path, notScanDirs)).ToHashSet();
+            // 隠しディレクトリは除外
+            if (((di.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden))
+            {
+                return false;
+            }
+
+            // 検索しないディレクトリ一覧の条件に合う場合は除外
+            string dirPath = di.FullName;
+            foreach (string notScanDirectory in notScanDirectories)
+            {
+                if (dirPath.Contains(notScanDirectory))
+                {
+                    return false;
+                }
+            }
+
+            // アクセス不可ディレクトリは除外
+            try
+            {
+                // 権限を見る
+                // ダメなパス例: @"C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\Binn\Xtp"
+                System.IO.FileInfo fi = new System.IO.FileInfo(dirPath);
+                var fileSecurity = System.IO.FileSystemAclExtensions.GetAccessControl(fi);
+                //AuthorizationRuleCollection rules = fileSecurity.GetAccessRules(true, true, typeof(NTAccount));
+                //foreach (var rule in rules)
+                //{
+                //    FileSystemAccessRule fsar = (FileSystemAccessRule)rule;
+                //    Debug.WriteLine($@"fsar.AccessControlType: {fsar.AccessControlType}");
+                //    Debug.WriteLine($@"    (fsar.IdentityReference as NTAccount).Value: {(fsar.IdentityReference as NTAccount)?.Value}");
+                //    Debug.WriteLine($@"    fsar.FileSystemRights: {fsar.FileSystemRights}");
+                //    Debug.WriteLine($@"    fsar.IsInherited: {fsar.IsInherited}");
+                //}
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        /// <summary>
-        /// 文字列がリスト内の文字列のいずれか 1 つ以上と前方一致するかを返す
-        /// </summary>
-        private bool DoStrStartWith(string str, IReadOnlyCollection<string> list)
+        private HashSet<string> GetRemovingFiles(HashSet<string> scanResults, IReadOnlyCollection<string> notScanDirectories)
         {
-            return list.Where(s => str.StartsWith(s)).Any();
+            HashSet<string> removings = new HashSet<string>();
+            foreach (string file in scanResults)
+            {
+                foreach (string notScan in notScanDirectories)
+                {
+                    if (file.Contains(notScan))
+                    {
+                        removings.Add(file);
+                        Debug.WriteLine($@"remove: {file}");
+                    }
+                }
+            }
+
+            return removings;
         }
 
         /// <summary>
