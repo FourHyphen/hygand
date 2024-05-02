@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,16 @@ namespace MyFileLauncher
     {
         private AppHotKey _appHotKey;
 
+        private FileIndex _fileIndex;
+
         public MainWindow()
         {
             InitializeComponent();
 
             _appHotKey = new AppHotKey(this);
             SetHotKey(_appHotKey);
+
+            InitFileIndex();
         }
 
         private void SetHotKey(AppHotKey appHotKey)
@@ -42,6 +47,33 @@ namespace MyFileLauncher
             {
                 Show();
             }
+        }
+
+        private void InitFileIndex()
+        {
+            // インデックス読んでメモリに展開
+            _fileIndex = FileIndex.CreateInstance();
+            if (_fileIndex.Exists())
+            {
+                return;
+            }
+
+            // インデックスが存在しないなら作成して良いかを確認
+            if (DoUserWantToCreateIndex())
+            {
+                ScanInfo si = ScanInfo.CreateInstance();
+                _fileIndex.CreateIndexFile(si);
+            }
+
+            // TODO: テキストボックスの変化をキャッチ
+            // TODO: テキストボックス内の文字列でインデックスを検索
+            // TODO: 検索結果を表示
+        }
+
+        private bool DoUserWantToCreateIndex()
+        {
+            MessageBoxResult mbr = MessageBox.Show("インデックスを作成しますか？", "Index.info does not exist.", MessageBoxButton.YesNo);
+            return (mbr == MessageBoxResult.Yes);
         }
 
         protected override void OnClosed(EventArgs e)
