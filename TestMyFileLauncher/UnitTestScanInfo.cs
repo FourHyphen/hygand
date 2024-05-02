@@ -48,6 +48,21 @@
             Assert.AreEqual(expected: 2, actual: si.NotScanDirectories.Count);
         }
 
+        /// <summary>
+        /// 設定ファイルのコメント行を取得しない
+        /// </summary>
+        [TestMethod]
+        public void DoNotGetCommentLineFromScanInfoFile()
+        {
+            MyFileLauncher.ScanInfo si = CreateScanInfo();
+
+            // 先頭が "/*" なら取得しない
+            foreach (string str in si.ScanDirectories)
+            {
+                Assert.IsFalse(str[0..2] == "/*");
+            }
+        }
+
         private MyFileLauncher.ScanInfo CreateScanInfo()
         {
             // 設定ファイルフォーマットが変わった場合は他テストに影響出る前提、このテストでは共通の設定ファイルを使用する

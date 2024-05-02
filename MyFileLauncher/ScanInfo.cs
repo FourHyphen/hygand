@@ -38,8 +38,15 @@ namespace MyFileLauncher
         {
             // 先頭が "-" ではないディレクトリパスを検索ディレクトリとする
             // 空行は対象外
-            return contents.Where(s => s != "" && s[0] != '-')
-                           .ToHashSet();
+            HashSet<string> scans = contents.Where(s => s != "" && s[0] != '-')
+                                            .ToHashSet();
+
+            // コメント行をはじく
+            HashSet<string> comments = contents.Where(s => s.Length >= 2 && s[0..2] == "/*")
+                                               .ToHashSet();
+            scans.ExceptWith(comments);
+
+            return scans;
         }
 
         /// <summary>
