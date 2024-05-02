@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyFileLauncher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="300" Width="400">
     <Grid>
+        <DockPanel>
+            <Menu x:Name="Menu"
+                  DockPanel.Dock="Top">
+                <MenuItem Header="ファイル(_F)">
+                </MenuItem>
+            </Menu>
 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBox x:Name="SearchText"
+                     TextChanged="EventSearchTextChanged"/>
+                </Grid>
+
+                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5" />
+
+                <Grid Grid.Row="1">
+                </Grid>
+            </Grid>
+        </DockPanel>
     </Grid>
 </Window>
