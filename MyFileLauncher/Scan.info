@@ -1,28 +1,40 @@
-﻿C:\
+﻿/* 記載方法
+/* スキャンするディレクトリは C:\ のように記載
+/* スキャンしないディレクトリは先頭に - を記載
+C:\
 
--C:\Program Files
--C:\Windows
+/* 除外: Android 系
+-\app\build\intermediates\
 
+/* 除外: c++ 系
+-\lib\gcc\
+-\include\boost\
+
+/* 除外: Publicユーザー
 -C:\Users\Public\
 
+/* 除外: R 系
+-\mingw_64\
+-\Documents\R\
+
+/* 除外: Visual Studio パッケージ
 -\packages\
-
--\bin\Debug
--\bin\x64\Debug
--\obj\Debug
--\obj\x64\Debug
-
 -\.nuget\
+
+/* 除外: Visual Studio テスト
 -\MSTest.
 -\TestResults\
 -\Microsoft.CodeAnalysis.
 
--\lib\gcc\
--\include\boost\
-
--\mingw_64\
--\Documents\R\
-
--\app\build\intermediates\
-
+/* 除外: VSCode 拡張機能
 -\.vscode\extensions\
+
+/* 除外: システム系ディレクトリ
+-C:\Program Files
+-C:\Windows
+
+/* 除外: ビルド結果
+-\bin\Debug
+-\bin\x64\Debug
+-\obj\Debug
+-\obj\x64\Debug
