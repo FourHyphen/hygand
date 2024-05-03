@@ -27,7 +27,9 @@
 
                 <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5" />
 
-                <Canvas x:Name="FileListArea"/>
+                <Grid Grid.Row="1">
+                    <Canvas x:Name="FileListArea"/>
+                </Grid>
             </Grid>
         </DockPanel>
     </Grid>
