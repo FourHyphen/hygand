@@ -22,14 +22,18 @@ namespace MyFileLauncher
 
         private FileIndex _fileIndex;
 
+        private FileListDisplay _fileListDisplay;
+
         public MainWindow()
         {
+            // TODO: 起動時に SearchTextBox にフォーカスセット
             InitializeComponent();
 
             _appHotKey = new AppHotKey(this);
             SetHotKey(_appHotKey);
 
             InitFileIndex();
+            _fileListDisplay = new FileListDisplay(this);
         }
 
         private void SetHotKey(AppHotKey appHotKey)
@@ -64,16 +68,25 @@ namespace MyFileLauncher
                 ScanInfo si = ScanInfo.CreateInstance();
                 _fileIndex.CreateIndexFile(si);
             }
-
-            // TODO: テキストボックスの変化をキャッチ
-            // TODO: テキストボックス内の文字列でインデックスを検索
-            // TODO: 検索結果を表示
         }
 
+        /// <summary>
+        /// インデックス作成するかをユーザーに確認する
+        /// </summary>
         private bool DoUserWantToCreateIndex()
         {
             MessageBoxResult mbr = MessageBox.Show("インデックスを作成しますか？", "Index.info does not exist.", MessageBoxButton.YesNo);
             return (mbr == MessageBoxResult.Yes);
+        }
+
+        /// <summary>
+        /// テキストボックス内の文字列でインデックスを検索して結果を表示
+        /// </summary>
+        private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            // TODO: 検索後にテキストボックスが潰れるのを直す
+            HashSet<string> result = _fileIndex.Search(SearchText.Text);
+            _fileListDisplay.Update(result);
         }
 
         protected override void OnClosed(EventArgs e)
