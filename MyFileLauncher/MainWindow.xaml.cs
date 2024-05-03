@@ -26,7 +26,6 @@ namespace MyFileLauncher
 
         public MainWindow()
         {
-            // TODO: 起動時に SearchTextBox にフォーカスセット
             InitializeComponent();
 
             _appHotKey = new AppHotKey(this);
@@ -34,6 +33,9 @@ namespace MyFileLauncher
 
             InitFileIndex();
             _fileListDisplay = new FileListDisplay(this);
+
+            // 起動後すぐに検索を始められるよう SearchTextBox にフォーカスセット
+            SearchText.Focus();
         }
 
         private void SetHotKey(AppHotKey appHotKey)
