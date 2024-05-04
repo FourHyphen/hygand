@@ -12,6 +12,8 @@ namespace MyFileLauncher
     {
         private const int DisplayingNum = 20;
 
+        private MainWindow _mainWindow;
+
         // internal では画面に反映されなかったため public
         public HashSet<string> FileList { get; private set; } = new HashSet<string>();
 
@@ -26,6 +28,7 @@ namespace MyFileLauncher
             DataContext = this;
 
             mainWindow.FileListArea.Children.Add(this);
+            _mainWindow = mainWindow;
         }
 
         internal void Update(HashSet<string> files)
@@ -87,6 +90,9 @@ namespace MyFileLauncher
             if (focused != null)
             {
                 OpenFile((string)focused!.Content);
+
+                // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
+                _mainWindow.Hide();
             }
         }
 
