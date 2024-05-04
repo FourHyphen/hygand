@@ -14,12 +14,14 @@ namespace MyFileLauncher
 
         private MainWindow _mainWindow;
 
+        private History _history;
+
         // internal では画面に反映されなかったため public
         public HashSet<string> FileList { get; private set; } = new HashSet<string>();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        internal FileListDisplay(MainWindow mainWindow)
+        internal FileListDisplay(MainWindow mainWindow, History history)
         {
             // DisplayFileList の初期化に必要
             InitializeComponent();
@@ -29,6 +31,10 @@ namespace MyFileLauncher
 
             mainWindow.FileListArea.Children.Add(this);
             _mainWindow = mainWindow;
+
+            // ファイルリストの初期値に履歴をセット
+            _history = history;
+            Update(_history.Files.ToHashSet());
         }
 
         internal void Update(HashSet<string> files)
@@ -89,7 +95,11 @@ namespace MyFileLauncher
             ListViewItem? focused = GetListViewItemFocused();
             if (focused != null)
             {
-                OpenFile((string)focused!.Content);
+                string filePath = (string)focused!.Content;
+                OpenFile(filePath);
+
+                // 履歴に追加
+                _history.Add(filePath);
 
                 // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
                 _mainWindow.Hide();

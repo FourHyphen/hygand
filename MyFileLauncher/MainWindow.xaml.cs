@@ -32,7 +32,10 @@ namespace MyFileLauncher
             SetHotKey(_appHotKey);
 
             InitFileIndex();
-            _fileListDisplay = new FileListDisplay(this);
+
+            // ファイルリストの初期値に履歴をセット
+            History history = History.CreateInstance();
+            _fileListDisplay = new FileListDisplay(this, history);
 
             // 起動後すぐに検索を始められるよう SearchTextBox にフォーカスセット
             SearchText.Focus();
