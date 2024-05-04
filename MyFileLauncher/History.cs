@@ -13,7 +13,7 @@ namespace MyFileLauncher
 
         private readonly string _historyFilePath;
 
-        private string[] _files;
+        private string[] _files = new string[0];
 
         internal string[] Files
         {
@@ -39,7 +39,12 @@ namespace MyFileLauncher
         private History(string historyFilePath)
         {
             _historyFilePath = historyFilePath;
-            _files = System.IO.File.ReadAllLines(historyFilePath);
+
+            // 初回実行時など、履歴は存在しないこともあるため有無確認
+            if (System.IO.File.Exists(historyFilePath))
+            {
+                _files = System.IO.File.ReadAllLines(historyFilePath);
+            }
         }
 
         internal void Add(string filePath)
