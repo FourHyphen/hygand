@@ -49,17 +49,44 @@ namespace MyFileLauncher
 
         internal void Add(string filePath)
         {
+            if (_files.Contains(filePath))
+            {
+                // すでに履歴に存在するので追加ではなく先頭(最新)に移動する
+                MoveFirst(filePath);
+            }
+            else
+            {
+                // 履歴に追加
+                AddCore(filePath);
+            }
+
+            // 履歴をファイルに保持
+            CreateFile(_files);
+        }
+
+        /// <summary>
+        /// 履歴のファイルを先頭に移動する
+        /// </summary>
+        private void MoveFirst(string filePath)
+        {
+            // いったん削除してから先頭に追加することで先頭への移動とする
+            var tmp = _files.Where(s => s != filePath);
+            _files = tmp.Prepend(filePath).ToArray();
+        }
+
+        /// <summary>
+        /// 履歴にファイルを追加する
+        /// </summary>
+        private void AddCore(string filePath)
+        {
             // 履歴なので先頭(再新)に追加
-            _files = _files.Prepend(filePath).ToArray<string>();
+            _files = _files.Prepend(filePath).ToArray();
 
             // 履歴保持数を上回るなら末尾を削除
             if (_files.Count() >= MaxHistoryNum)
             {
                 _files = _files[0..MaxHistoryNum];
             }
-
-            // 履歴をファイルに保持
-            CreateFile(_files);
         }
 
         /// <summary>

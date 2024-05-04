@@ -101,6 +101,31 @@ namespace TestMyFileLauncher
             System.IO.File.Delete(historyPath);
         }
 
+        /// <summary>
+        /// すでに履歴に存在するファイルを追加する場合、代わりに履歴の先頭に移動する
+        /// </summary>
+        [TestMethod]
+        public void HistoryFileMoveFirstAndNotAppendIfFileAlreadyExists()
+        {
+            string historyPath = @"TestData\UnitTestHistory\HistoryFileMoveFirstAndNotAppendIfFileAlreadyExists.info";
+            MyFileLauncher.History history = PrepareTestHistory(historyPath, 10);
+
+            // 準備: 事前条件の確認
+            Assert.IsFalse(history.Files[0] == @"C:\5");
+            Assert.IsTrue(history.Files.Contains(@"C:\5"));
+            Assert.AreEqual(expected: 10, actual: history.Files.Count());
+
+            // すでに履歴に存在するものを追加
+            history.Add(@"C:\5");
+
+            // 確認: 先頭にあることとすでに存在するので追加ではないこと
+            Assert.IsTrue(history.Files[0] == @"C:\5");
+            Assert.AreEqual(expected: 10, actual: history.Files.Count());
+
+            // 後始末
+            System.IO.File.Delete(historyPath);
+        }
+
         private History PrepareTestHistory(string historyPath, int historyNum)
         {
             // もし前回の結果が残っていれば削除
