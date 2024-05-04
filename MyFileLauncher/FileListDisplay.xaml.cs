@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MyFileLauncher
 {
@@ -52,6 +54,83 @@ namespace MyFileLauncher
         {
             var e = new PropertyChangedEventArgs(propertyName);
             PropertyChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// キーダウンイベント
+        /// </summary>
+        private void KeyDowned(object sender, KeyEventArgs e)
+        {
+            // 単押しの場合                  → キー情報は e.Key に入る
+            // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
+            KeyDowned(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+        }
+
+        /// <summary>
+        /// キーダウン時の処理
+        /// </summary>
+        private void KeyDowned(Key key, Key systemKey, ModifierKeys modifier)
+        {
+            AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(key, systemKey, modifier);
+            if (keyEventType == AppKeys.KeyEventType.EnterKey)
+            {
+                DoKeyEventFileOpen();
+            }
+        }
+
+        /// <summary>
+        /// キーイベントによるファイルオープンを実行
+        /// </summary>
+        private void DoKeyEventFileOpen()
+        {
+            ListViewItem? focused = GetListViewItemFocused();
+            if (focused != null)
+            {
+                OpenFile((string)focused!.Content);
+            }
+        }
+
+        /// <summary>
+        /// フォーカスが当てられている ListViewItem を返す、何も当たっていなければ null を返す
+        /// </summary>
+        private ListViewItem? GetListViewItemFocused()
+        {
+            // 参考: https://threeshark3.com/binding-listbox-focus/
+            for (int i = 0; i < DisplayFileList.Items.Count; i++)
+            {
+                var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
+                if (obj is ListViewItem target)
+                {
+                    if (target.IsFocused)
+                    {
+                        return target;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 登録されたプログラムでファイルを開く
+        /// </summary>
+        private void OpenFile(string filePath)
+        {
+            Type? type = Type.GetTypeFromProgID("Shell.Application");
+            if (type == null)
+            {
+                return;
+            }
+
+            // 参照に Microsoft Shell Controls And Automation を追加することで Shell32 を参照できる
+            Shell32.Shell? shell = (Shell32.Shell?)Activator.CreateInstance(type!);
+            if (shell == null)
+            {
+                return;
+            }
+
+            shell!.Open(filePath);
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell!);
         }
     }
 }
