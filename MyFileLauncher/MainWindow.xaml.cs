@@ -89,7 +89,6 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            // TODO: 検索後にテキストボックスが潰れるのを直す
             HashSet<string> result = _fileIndex.Search(SearchText.Text);
             _fileListDisplay.Update(result);
         }
