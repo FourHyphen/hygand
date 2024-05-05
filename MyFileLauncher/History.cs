@@ -97,5 +97,20 @@ namespace MyFileLauncher
             string contents = string.Join("\r\n", array) + "\r\n";
             System.IO.File.WriteAllText(_historyFilePath, contents);
         }
+
+        /// <summary>
+        /// インデックスを部分一致検索する
+        /// </summary>
+        internal HashSet<string> Search(string word)
+        {
+            if (_files.Count() == 0)
+            {
+                return new HashSet<string>();
+            }
+
+            // 検証に使えるよう結果を直接 return しない
+            var result = _files.Where(s => s.Contains(word)).ToHashSet();
+            return result;
+        }
     }
 }
