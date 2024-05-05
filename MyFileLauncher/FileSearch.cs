@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MyFileLauncher
 {
-    internal class FileSearch
+    internal static class FileSearch
     {
-        internal string[] Search(History history, FileIndex index, string text)
+        internal static string[] Search(History history, FileIndex index, string text)
         {
             HashSet<string> historySearched = history.Search(text);
             HashSet<string> indexSearched = index.Search(text);

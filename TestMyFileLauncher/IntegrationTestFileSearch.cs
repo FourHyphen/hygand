@@ -41,8 +41,7 @@ namespace TestMyFileLauncher
             MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            MyFileLauncher.FileSearch fs = new MyFileLauncher.FileSearch();
-            string[] result = fs.Search(history, fi, "1");
+            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
 
             // 確認
             Assert.IsTrue(result.Contains(@"C:\1"));
@@ -66,8 +65,7 @@ namespace TestMyFileLauncher
             MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            MyFileLauncher.FileSearch fs = new MyFileLauncher.FileSearch();
-            string[] result = fs.Search(history, fi, "1");
+            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
 
             // 確認
             Assert.IsTrue(result.Contains(@"C:\1"));
@@ -91,8 +89,7 @@ namespace TestMyFileLauncher
             MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            MyFileLauncher.FileSearch fs = new MyFileLauncher.FileSearch();
-            string[] result = fs.Search(history, fi, "1");
+            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
 
             // 確認: 検索結果が履歴先頭のこと
             Assert.AreEqual(expected: @"C:\1", actual: result[0]);
