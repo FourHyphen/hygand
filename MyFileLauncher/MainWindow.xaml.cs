@@ -20,6 +20,8 @@ namespace MyFileLauncher
     {
         private AppHotKey _appHotKey;
 
+        private History _history;
+
         private FileIndex _fileIndex;
 
         private FileListDisplay _fileListDisplay;
@@ -34,8 +36,8 @@ namespace MyFileLauncher
             InitFileIndex();
 
             // ファイルリストの初期値に履歴をセット
-            History history = History.CreateInstance();
-            _fileListDisplay = new FileListDisplay(this, history);
+            _history = History.CreateInstance();
+            _fileListDisplay = new FileListDisplay(this, _history);
 
             // 起動後すぐに検索を始められるよう SearchTextBox にフォーカスセット
             SearchText.Focus();
@@ -89,7 +91,15 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            HashSet<string> result = _fileIndex.Search(SearchText.Text);
+            SearchAndUpdateFileList(SearchText.Text);
+        }
+
+        /// <summary>
+        /// 検索した結果でファイルリストを更新する
+        /// </summary>
+        private void SearchAndUpdateFileList(string word)
+        {
+            string[] result = MyFileLauncher.FileSearch.Search(_history, _fileIndex, word);
             _fileListDisplay.Update(result);
         }
 

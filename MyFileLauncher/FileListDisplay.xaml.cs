@@ -17,7 +17,7 @@ namespace MyFileLauncher
         private History _history;
 
         // internal では画面に反映されなかったため public
-        public HashSet<string> FileList { get; private set; } = new HashSet<string>();
+        public string[] FileList { get; private set; } = new string[0];
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -34,10 +34,10 @@ namespace MyFileLauncher
 
             // ファイルリストの初期値に履歴をセット
             _history = history;
-            Update(_history.Files.ToHashSet());
+            Update(_history.Files);
         }
 
-        internal void Update(HashSet<string> files)
+        internal void Update(string[] files)
         {
             // 全件表示は時間がかかり過ぎるため一部を表示する
             FileList = Slice(files, DisplayingNum);
@@ -48,15 +48,14 @@ namespace MyFileLauncher
         /// Slice(list.Count >= 20, 20) -> return list.ToArray()[0..20]
         /// Slice(list.Count <  20, 20) -> return list.ToArray()
         /// </summary>
-        private HashSet<string> Slice(HashSet<string> list, int end)
+        private string[] Slice(string[] array, int end)
         {
-            if (list.Count < end)
+            if (array.Count() < end)
             {
-                return list;
+                return array;
             }
 
-            string[] sliced = list.ToArray();
-            return sliced[0..end].ToHashSet();
+            return array[0..end].ToArray();
         }
 
         private void NotifyPropertyChanged(string propertyName)
