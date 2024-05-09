@@ -1,0 +1,58 @@
+﻿<Window x:Class="MyFileLauncher.KeyCodeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyFileLauncher"
+        mc:Ignorable="d"
+        PreviewKeyDown="KeyCodeWindowKeyDown"
+        Title="keyCodeWindow" Height="180" Width="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <!--Modifier Key-->
+        <Grid Grid.Row="0">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Modifier Key: "/>
+                    <Label x:Name="ModifierKeyLabel"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!--Key-->
+        <Grid Grid.Row="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Key: "/>
+                    <Label x:Name="KeyLabel"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!--System Key-->
+        <Grid Grid.Row="2">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="SystemKey: "/>
+                    <Label x:Name="SystemKeyLabel"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!--IME Key-->
+        <Grid Grid.Row="3">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IME Key: "/>
+                    <Label x:Name="ImeKeyLabel"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

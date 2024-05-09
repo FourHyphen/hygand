@@ -26,6 +26,8 @@ namespace MyFileLauncher
 
         private FileListDisplay _fileListDisplay;
 
+        private KeyCodeWindow? _keyCodeWindow;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,11 +55,32 @@ namespace MyFileLauncher
             if (Visibility == Visibility.Visible)
             {
                 Hide();
+
+                // キー確認ウィンドウが表示されていれば閉じる
+                DestroyKeyCodeWindow();
             }
             else
             {
                 Show();
             }
+        }
+
+        /// <summary>
+        /// キー確認ウィンドウを破棄する
+        /// </summary>
+        private void DestroyKeyCodeWindow()
+        {
+            if (_keyCodeWindow == null)
+            {
+                return;
+            }
+
+            if (_keyCodeWindow.ShowActivated)
+            {
+                _keyCodeWindow.Close();
+            }
+
+            _keyCodeWindow = null;
         }
 
         private void InitFileIndex()
@@ -103,8 +126,21 @@ namespace MyFileLauncher
             _fileListDisplay.Update(result);
         }
 
+        private void ToolKeyCheckClick(object sender, RoutedEventArgs e)
+        {
+            ShowKeyCodeWindow();
+        }
+
+        private void ShowKeyCodeWindow()
+        {
+            // 複合代入: null なら右辺を実行
+            _keyCodeWindow ??= new KeyCodeWindow();
+            _keyCodeWindow.Show();
+        }
+
         protected override void OnClosed(EventArgs e)
         {
+            DestroyKeyCodeWindow();
             _appHotKey.Dispose();
             base.OnClosed(e);
         }

@@ -12,6 +12,9 @@
                   DockPanel.Dock="Top">
                 <MenuItem Header="ファイル(_F)">
                 </MenuItem>
+                <MenuItem Header="ツール(_T)">
+                    <MenuItem Header="キー確認画面表示(_K)" Click="ToolKeyCheckClick"/>
+                </MenuItem>
             </Menu>
 
             <Grid>
