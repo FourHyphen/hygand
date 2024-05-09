@@ -80,7 +80,7 @@ namespace MyFileLauncher
         private void KeyDowned(Key key, Key systemKey, ModifierKeys modifier)
         {
             AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(key, systemKey, modifier);
-            if (keyEventType == AppKeys.KeyEventType.EnterKey)
+            if (keyEventType == AppKeys.KeyEventType.FileOpen)
             {
                 DoKeyEventFileOpen();
             }

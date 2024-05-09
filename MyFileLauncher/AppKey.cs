@@ -9,8 +9,8 @@ namespace MyFileLauncher
         /// </summary>
         internal enum KeyEventType
         {
-            EnterKey,
-            Else
+            FileOpen,
+            None
         }
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace MyFileLauncher
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
             KeyEventType keyEventType = ToKeyEventTypeConbination(systemKey, modifier);
-            if (keyEventType != KeyEventType.Else)
+            if (keyEventType != KeyEventType.None)
             {
                 return keyEventType;
             }
@@ -62,17 +62,20 @@ namespace MyFileLauncher
                 // nothing
             }
 
-            return KeyEventType.Else;
+            return KeyEventType.None;
         }
 
+        /// <summary>
+        /// 単体キー入力内容をアプリケーションイベント内容に変換する
+        /// </summary>
         private static KeyEventType ToKeyEventTypeOneKey(Key key)
         {
             if (key == Key.Enter)
             {
-                return KeyEventType.EnterKey;
+                return KeyEventType.FileOpen;
             }
 
-            return KeyEventType.Else;
+            return KeyEventType.None;
         }
     }
 }
