@@ -10,6 +10,7 @@ namespace MyFileLauncher
         internal enum KeyEventType
         {
             FocusOnFileList,
+            FocusOnSearchTextBox,
             FileOpen,
             BackDirectory,
             IntoDirectory,
@@ -76,6 +77,10 @@ namespace MyFileLauncher
             if (key == Key.Down)
             {
                 return KeyEventType.FocusOnFileList;
+            }
+            else if (key == Key.Up)
+            {
+                return KeyEventType.FocusOnSearchTextBox;
             }
             else if (key == Key.Enter)
             {

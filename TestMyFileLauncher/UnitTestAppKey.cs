@@ -67,6 +67,21 @@ namespace TestMyFileLauncher
         }
 
         /// <summary>
+        /// 所定のキー入力をフォーカスを検索テキストボックスに移動するイベントに変換する
+        /// </summary>
+        [TestMethod]
+        public void ToKeyEventTypeFocusOnSearchTextBoxFromInputKey()
+        {
+            // 変換
+            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Up,
+                                                                                            systemKey: Key.None,
+                                                                                            modifier: ModifierKeys.None);
+
+            // 確認
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.FocusOnSearchTextBox, actual: ket);
+        }
+
+        /// <summary>
         /// 所定外のキー入力は None イベントとなる
         /// </summary>
         [TestMethod]

@@ -74,15 +74,6 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// ファイルリストが表示されているかを返す
-        /// </summary>
-        internal bool Displaying()
-        {
-            // ファイルリストに 1 件以上あれば画面に表示されているとみなす
-            return FileList?.Count() > 0;
-        }
-
-        /// <summary>
         /// キーダウンイベント
         /// </summary>
         private void KeyDowned(object sender, KeyEventArgs e)
@@ -109,6 +100,10 @@ namespace MyFileLauncher
             else if (keyEventType == AppKeys.KeyEventType.IntoDirectory)
             {
                 DoKeyEventIntoDirectory();
+            }
+            else if (keyEventType == AppKeys.KeyEventType.FocusOnSearchTextBox)
+            {
+                DoKeyEventFocusOnSearchTextBox();
             }
         }
 
@@ -139,6 +134,20 @@ namespace MyFileLauncher
         /// </summary>
         private string? GetListViewItemStringFocused()
         {
+            ListViewItem? focused = GetListViewItemFocused();
+            if (focused == null)
+            {
+                return null;
+            }
+
+            return (string)focused.Content;
+        }
+
+        /// <summary>
+        /// フォーカスが当てられている ListViewItem を返す、何も当たっていなければ null を返す
+        /// </summary>
+        private ListViewItem? GetListViewItemFocused()
+        {
             // 参考: https://threeshark3.com/binding-listbox-focus/
             for (int i = 0; i < DisplayFileList.Items.Count; i++)
             {
@@ -147,7 +156,7 @@ namespace MyFileLauncher
                 {
                     if (target.IsFocused)
                     {
-                        return (string)target.Content;
+                        return target;
                     }
                 }
             }
@@ -249,6 +258,45 @@ namespace MyFileLauncher
 
             // 更新
             UpdateOfDirectoryInfo(focusedFilePath);
+        }
+
+        /// <summary>
+        /// キーイベントによるフォーカスを検索テキストボックスに移動する処理を実行
+        /// </summary>
+        private void DoKeyEventFocusOnSearchTextBox()
+        {
+            // フォーカスされている場所がファイルリストの先頭(一番上)でなければ移動しない
+            ListViewItem? focused = GetListViewItemFocused();
+            if (focused == null)
+            {
+                return;
+            }
+
+            string? focusedStr = GetListViewItemStringFocused();
+            if (focusedStr != FileList[0])
+            {
+                return;
+            }
+
+            // フォーカス移動
+            _mainWindow.SearchText.Focus();
+        }
+
+        /// <summary>
+        /// ファイルリストの先頭にフォーカスを当てる
+        /// </summary>
+        internal void SetFocusDisplayFileListFirst()
+        {
+            if (FileList.Count() == 0)
+            {
+                return;
+            }
+
+            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
+            if (obj is ListViewItem target)
+            {
+                target.Focus();
+            }
         }
     }
 }

@@ -114,18 +114,13 @@ namespace MyFileLauncher
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            EventSearchTextKeyDowned(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-        }
-
-        /// <summary>
-        /// テキストボックス内のキー押下時処理
-        /// </summary>
-        private void EventSearchTextKeyDowned(Key key, Key systemKey, ModifierKeys modifierKey)
-        {
-            AppKeys.KeyEventType ket = AppKeys.ToKeyEventType(key, systemKey, modifierKey);
+            AppKeys.KeyEventType ket = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
             if (ket == AppKeys.KeyEventType.FocusOnFileList)
             {
                 MoveFocusOnFileList();
+
+                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
+                e.Handled = true;
             }
         }
 
@@ -134,12 +129,8 @@ namespace MyFileLauncher
         /// </summary>
         private void MoveFocusOnFileList()
         {
-            // インデックスに存在しないなどでファイルリストが表示されていない場合にファイルリストにフォーカスを移動しようとすると
-            // ツールバーに移動したためその対策
-            if (_fileListDisplay.Displaying())
-            {
-                _fileListDisplay.DisplayFileList.Focus();
-            }
+            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
+            _fileListDisplay.SetFocusDisplayFileListFirst();
         }
 
         /// <summary>
