@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
 
 namespace MyFileLauncher
 {
@@ -35,13 +33,23 @@ namespace MyFileLauncher
 
             // ファイルリストの初期値に履歴をセット
             _history = history;
-            Update(_history.Files);
+            UpdatePart(_history.Files);
         }
 
-        internal void Update(string[] files)
+        /// <summary>
+        /// ファイルリスト表示を更新する(全件表示は時間がかかり過ぎるため一部を表示する)
+        /// </summary>
+        internal void UpdatePart(string[] files)
         {
-            // 全件表示は時間がかかり過ぎるため一部を表示する
-            FileList = Slice(files, DisplayingNum);
+            Update(Slice(files, DisplayingNum));
+        }
+
+        /// <summary>
+        /// ファイルリスト表示を更新する
+        /// </summary>
+        private void Update(string[] files)
+        {
+            FileList = files;
             NotifyPropertyChanged(nameof(FileList));
         }
 
@@ -96,24 +104,27 @@ namespace MyFileLauncher
         /// </summary>
         private void DoKeyEventFileOpen()
         {
-            ListViewItem? focused = GetListViewItemFocused();
-            if (focused != null)
+            // フォーカスの当たっているファイルパスを取得
+            string? focusedFilePath = GetListViewItemStringFocused();
+            if (focusedFilePath == null)
             {
-                string filePath = (string)focused!.Content;
-                OpenFile(filePath);
-
-                // 履歴に追加
-                _history.Add(filePath);
-
-                // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
-                _mainWindow.Hide();
+                return;
             }
+
+            // ファイルを開く
+            OpenFile(focusedFilePath);
+
+            // 履歴に追加
+            _history.Add(focusedFilePath);
+
+            // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
+            _mainWindow.Hide();
         }
 
         /// <summary>
-        /// フォーカスが当てられている ListViewItem を返す、何も当たっていなければ null を返す
+        /// フォーカスが当てられている ListViewItem の Content を返す、何も当たっていなければ null を返す
         /// </summary>
-        private ListViewItem? GetListViewItemFocused()
+        private string? GetListViewItemStringFocused()
         {
             // 参考: https://threeshark3.com/binding-listbox-focus/
             for (int i = 0; i < DisplayFileList.Items.Count; i++)
@@ -123,7 +134,7 @@ namespace MyFileLauncher
                 {
                     if (target.IsFocused)
                     {
-                        return target;
+                        return (string)target.Content;
                     }
                 }
             }
@@ -158,27 +169,32 @@ namespace MyFileLauncher
         /// </summary>
         private void DoKeyEventBackDirectory()
         {
-            ListViewItem? focused = GetListViewItemFocused();
-            if (focused == null)
+            // フォーカスされているファイルパスを取得
+            string? focusedFilePath = GetListViewItemStringFocused();
+            if (focusedFilePath == null)
             {
                 return;
             }
 
-            // ディレクトリパス取得
-            string dirPath = GetBackDirectoryPath((string)focused!.Content, _mainWindow.SearchText.Text);
+            // 戻り先ディレクトリパス取得
+            string? dirPath = GetBackDirectoryPath(focusedFilePath, _mainWindow.SearchText.Text);
+            if (dirPath == null)
+            {
+                return;
+            }
 
             // テキストボックスにディレクトリセット
-            _mainWindow.SearchText.Text = dirPath;
+            _mainWindow.SearchText.Text = dirPath!;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            string[] files = System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
-            UpdateAll(files);
+            string[] files = System.IO.Directory.GetFiles(dirPath!, "*", System.IO.SearchOption.TopDirectoryOnly);
+            Update(files);
         }
 
         /// <summary>
         /// 1 階層戻る先のディレクトリパスを返す
         /// </summary>
-        private string GetBackDirectoryPath(string focusedFilePath, string searchText)
+        private string? GetBackDirectoryPath(string focusedFilePath, string searchText)
         {
             // 今のテキストボックスがディレクトリのパスであればこれの 1 階層上を返す
             if (System.IO.Directory.Exists(searchText))
@@ -188,15 +204,6 @@ namespace MyFileLauncher
 
             // 選択されているファイルのディレクトリパスを返す
             return System.IO.Path.GetDirectoryName(focusedFilePath)!;
-        }
-
-        /// <summary>
-        /// ファイルリスト全件を表示する
-        /// </summary>
-        private void UpdateAll(string[] filePathes)
-        {
-            FileList = filePathes;
-            NotifyPropertyChanged(nameof(FileList));
         }
     }
 }

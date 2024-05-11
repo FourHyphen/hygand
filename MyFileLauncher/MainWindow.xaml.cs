@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MyFileLauncher
 {
@@ -45,11 +33,17 @@ namespace MyFileLauncher
             SearchText.Focus();
         }
 
+        /// <summary>
+        /// アプリケーションに使用するホットキーを設定
+        /// </summary>
         private void SetHotKey(AppHotKey appHotKey)
         {
             appHotKey.RegisterTogglingDisplayOnOff((_, __) => { ToggleDisplayOnOff(); });
         }
 
+        /// <summary>
+        /// 画面の表示非表示を切り替える
+        /// </summary>
         private void ToggleDisplayOnOff()
         {
             if (Visibility == Visibility.Visible)
@@ -83,6 +77,9 @@ namespace MyFileLauncher
             _keyCodeWindow = null;
         }
 
+        /// <summary>
+        /// FileIndex インスタンスを初期化する
+        /// </summary>
         private void InitFileIndex()
         {
             // インデックス読んでメモリに展開
@@ -123,14 +120,20 @@ namespace MyFileLauncher
         private void SearchAndUpdateFileList(string word)
         {
             string[] result = MyFileLauncher.FileSearch.Search(_history, _fileIndex, word);
-            _fileListDisplay.Update(result);
+            _fileListDisplay.UpdatePart(result);
         }
 
+        /// <summary>
+        /// キー確認ウィンドウ表示選択時イベント
+        /// </summary>
         private void ToolKeyCheckClick(object sender, RoutedEventArgs e)
         {
             ShowKeyCodeWindow();
         }
 
+        /// <summary>
+        /// キー確認ウィンドウを表示
+        /// </summary>
         private void ShowKeyCodeWindow()
         {
             // 複合代入: null なら右辺を実行
@@ -138,6 +141,9 @@ namespace MyFileLauncher
             _keyCodeWindow.Show();
         }
 
+        /// <summary>
+        /// 画面クローズ時イベント
+        /// </summary>
         protected override void OnClosed(EventArgs e)
         {
             DestroyKeyCodeWindow();
