@@ -97,6 +97,10 @@ namespace MyFileLauncher
             {
                 DoKeyEventBackDirectory();
             }
+            else if (keyEventType == AppKeys.KeyEventType.IntoDirectory)
+            {
+                DoKeyEventIntoDirectory();
+            }
         }
 
         /// <summary>
@@ -183,11 +187,21 @@ namespace MyFileLauncher
                 return;
             }
 
+            // 更新
+            UpdateOfDirectoryInfo(dirPath);
+        }
+
+        /// <summary>
+        /// ディレクトリの情報で画面を更新
+        /// </summary>
+        private void UpdateOfDirectoryInfo(string dirPath)
+        {
             // テキストボックスにディレクトリセット
-            _mainWindow.SearchText.Text = dirPath!;
+            _mainWindow.SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            string[] files = System.IO.Directory.GetFiles(dirPath!, "*", System.IO.SearchOption.TopDirectoryOnly);
+            string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+            string[] files = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
             Update(files);
         }
 
@@ -204,6 +218,28 @@ namespace MyFileLauncher
 
             // 選択されているファイルのディレクトリパスを返す
             return System.IO.Path.GetDirectoryName(focusedFilePath)!;
+        }
+
+        /// <summary>
+        /// キーイベントによるディレクトリに入る処理を実行
+        /// </summary>
+        private void DoKeyEventIntoDirectory()
+        {
+            // フォーカスされているファイルパスを取得
+            string? focusedFilePath = GetListViewItemStringFocused();
+            if (focusedFilePath == null)
+            {
+                return;
+            }
+
+            // フォーカスされているパスがディレクトリでない場合は入れないのでここで終了
+            if (!System.IO.Directory.Exists(focusedFilePath))
+            {
+                return;
+            }
+
+            // 更新
+            UpdateOfDirectoryInfo(focusedFilePath);
         }
     }
 }

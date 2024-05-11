@@ -37,6 +37,21 @@ namespace TestMyFileLauncher
         }
 
         /// <summary>
+        /// 所定のキー入力をディレクトリに入るイベントに変換する
+        /// </summary>
+        [TestMethod]
+        public void ToKeyEventTypeIntoDirectoryFromInputKey()
+        {
+            // 変換
+            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Right,
+                                                                                            systemKey: Key.None,
+                                                                                            modifier: ModifierKeys.None);
+
+            // 確認
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.IntoDirectory, actual: ket);
+        }
+
+        /// <summary>
         /// 所定外のキー入力は None イベントとなる
         /// </summary>
         [TestMethod]

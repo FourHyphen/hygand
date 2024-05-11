@@ -11,6 +11,7 @@ namespace MyFileLauncher
         {
             FileOpen,
             BackDirectory,
+            IntoDirectory,
             None
         }
 
@@ -78,6 +79,10 @@ namespace MyFileLauncher
             else if (key == Key.Left)
             {
                 return KeyEventType.BackDirectory;
+            }
+            else if (key == Key.Right)
+            {
+                return KeyEventType.IntoDirectory;
             }
 
             return KeyEventType.None;
