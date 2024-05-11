@@ -22,6 +22,21 @@ namespace TestMyFileLauncher
         }
 
         /// <summary>
+        /// 所定のキー入力をディレクトリを 1 つ戻るイベントに変換する
+        /// </summary>
+        [TestMethod]
+        public void ToKeyEventTypeBackDirectoryFromInputKey()
+        {
+            // 変換
+            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Left,
+                                                                                            systemKey: Key.None,
+                                                                                            modifier: ModifierKeys.None);
+
+            // 確認
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.BackDirectory, actual: ket);
+        }
+
+        /// <summary>
         /// 所定外のキー入力は None イベントとなる
         /// </summary>
         [TestMethod]

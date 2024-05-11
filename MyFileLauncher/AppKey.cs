@@ -10,6 +10,7 @@ namespace MyFileLauncher
         internal enum KeyEventType
         {
             FileOpen,
+            BackDirectory,
             None
         }
 
@@ -73,6 +74,10 @@ namespace MyFileLauncher
             if (key == Key.Enter)
             {
                 return KeyEventType.FileOpen;
+            }
+            else if (key == Key.Left)
+            {
+                return KeyEventType.BackDirectory;
             }
 
             return KeyEventType.None;

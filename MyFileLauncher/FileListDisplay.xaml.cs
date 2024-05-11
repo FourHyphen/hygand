@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace MyFileLauncher
 {
@@ -84,6 +85,10 @@ namespace MyFileLauncher
             {
                 DoKeyEventFileOpen();
             }
+            else if (keyEventType == AppKeys.KeyEventType.BackDirectory)
+            {
+                DoKeyEventBackDirectory();
+            }
         }
 
         /// <summary>
@@ -146,6 +151,52 @@ namespace MyFileLauncher
 
             shell!.Open(filePath);
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell!);
+        }
+
+        /// <summary>
+        /// キーイベントによるディレクトリ階層を 1 つ戻る処理を実行
+        /// </summary>
+        private void DoKeyEventBackDirectory()
+        {
+            ListViewItem? focused = GetListViewItemFocused();
+            if (focused == null)
+            {
+                return;
+            }
+
+            // ディレクトリパス取得
+            string dirPath = GetBackDirectoryPath((string)focused!.Content, _mainWindow.SearchText.Text);
+
+            // テキストボックスにディレクトリセット
+            _mainWindow.SearchText.Text = dirPath;
+
+            // 検索結果には当該ディレクトリ内のファイルをセット
+            string[] files = System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+            UpdateAll(files);
+        }
+
+        /// <summary>
+        /// 1 階層戻る先のディレクトリパスを返す
+        /// </summary>
+        private string GetBackDirectoryPath(string focusedFilePath, string searchText)
+        {
+            // 今のテキストボックスがディレクトリのパスであればこれの 1 階層上を返す
+            if (System.IO.Directory.Exists(searchText))
+            {
+                return System.IO.Path.GetDirectoryName(searchText)!;
+            }
+
+            // 選択されているファイルのディレクトリパスを返す
+            return System.IO.Path.GetDirectoryName(focusedFilePath)!;
+        }
+
+        /// <summary>
+        /// ファイルリスト全件を表示する
+        /// </summary>
+        private void UpdateAll(string[] filePathes)
+        {
+            FileList = filePathes;
+            NotifyPropertyChanged(nameof(FileList));
         }
     }
 }
