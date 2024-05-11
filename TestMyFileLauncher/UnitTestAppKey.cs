@@ -52,6 +52,21 @@ namespace TestMyFileLauncher
         }
 
         /// <summary>
+        /// 所定のキー入力をフォーカスをファイルリストに移動するイベントに変換する
+        /// </summary>
+        [TestMethod]
+        public void ToKeyEventTypeFocusOnFileListFromInputKey()
+        {
+            // 変換
+            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Down,
+                                                                                            systemKey: Key.None,
+                                                                                            modifier: ModifierKeys.None);
+
+            // 確認
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.FocusOnFileList, actual: ket);
+        }
+
+        /// <summary>
         /// 所定外のキー入力は None イベントとなる
         /// </summary>
         [TestMethod]

@@ -74,6 +74,15 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// ファイルリストが表示されているかを返す
+        /// </summary>
+        internal bool Displaying()
+        {
+            // ファイルリストに 1 件以上あれば画面に表示されているとみなす
+            return FileList?.Count() > 0;
+        }
+
+        /// <summary>
         /// キーダウンイベント
         /// </summary>
         private void KeyDowned(object sender, KeyEventArgs e)

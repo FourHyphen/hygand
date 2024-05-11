@@ -25,6 +25,7 @@
 
                 <Grid Grid.Row="0">
                     <TextBox x:Name="SearchText"
+                     PreviewKeyDown="EventSearchTextKeyDowned"
                      TextChanged="EventSearchTextChanged"/>
                 </Grid>
 

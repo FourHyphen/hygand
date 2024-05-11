@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MyFileLauncher
 {
@@ -107,7 +108,42 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// テキストボックス内の文字列でインデックスを検索して結果を表示
+        /// イベント: テキストボックス内のキー押下時
+        /// </summary>
+        private void EventSearchTextKeyDowned(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // 単押しの場合                  → キー情報は e.Key に入る
+            // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
+            EventSearchTextKeyDowned(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+        }
+
+        /// <summary>
+        /// テキストボックス内のキー押下時処理
+        /// </summary>
+        private void EventSearchTextKeyDowned(Key key, Key systemKey, ModifierKeys modifierKey)
+        {
+            AppKeys.KeyEventType ket = AppKeys.ToKeyEventType(key, systemKey, modifierKey);
+            if (ket == AppKeys.KeyEventType.FocusOnFileList)
+            {
+                MoveFocusOnFileList();
+            }
+        }
+
+        /// <summary>
+        /// フォーカスをファイルリストに移動する
+        /// </summary>
+        private void MoveFocusOnFileList()
+        {
+            // インデックスに存在しないなどでファイルリストが表示されていない場合にファイルリストにフォーカスを移動しようとすると
+            // ツールバーに移動したためその対策
+            if (_fileListDisplay.Displaying())
+            {
+                _fileListDisplay.DisplayFileList.Focus();
+            }
+        }
+
+        /// <summary>
+        /// イベント: テキストボックス内の文字列でインデックスを検索して結果を表示
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
