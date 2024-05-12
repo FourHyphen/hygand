@@ -11,6 +11,8 @@ namespace MyFileLauncher
     {
         private const int DisplayingNum = 20;
 
+        private const int DefaultDisplayFileListHeight = 200;
+
         private MainWindow _mainWindow;
 
         private History _history;
@@ -50,7 +52,24 @@ namespace MyFileLauncher
         private void Update(string[] files)
         {
             FileList = files;
+
+            // スクロールバー表示のため DisplayFileList の高さ設定
+            SetMaxHeightOfDisplayFileList();
+
             NotifyPropertyChanged(nameof(FileList));
+        }
+
+        /// <summary>
+        /// DisplayFileList の最大高を設定
+        /// </summary>
+        private void SetMaxHeightOfDisplayFileList()
+        {
+            // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合に対応して初期値設定
+            DisplayFileList.MaxHeight = DefaultDisplayFileListHeight;
+            if (_mainWindow.FileListArea.ActualHeight != double.NaN && _mainWindow.FileListArea.ActualHeight > 0.0)
+            {
+                DisplayFileList.MaxHeight = (double)_mainWindow.FileListArea.ActualHeight;
+            }
         }
 
         /// <summary>
