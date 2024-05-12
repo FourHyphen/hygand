@@ -16,11 +16,5 @@
                 <EventSetter Event="KeyDown" Handler="KeyDowned"/>
             </Style>
         </ListView.Resources>
-
-        <!--<ListView.View>
-            <GridView>
-                <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
-            </GridView>
-        </ListView.View>-->
     </ListView>
 </UserControl>
