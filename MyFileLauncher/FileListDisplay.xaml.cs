@@ -11,7 +11,9 @@ namespace MyFileLauncher
     {
         private const int DisplayingNum = 20;
 
-        private const int DefaultDisplayFileListHeight = 200;
+        private const int BufferDisplayFileListWidth = 20;
+
+        private const int DefaultDisplayFileListScrollViewerHeight = 200;
 
         private MainWindow _mainWindow;
 
@@ -33,6 +35,9 @@ namespace MyFileLauncher
             mainWindow.FileListArea.Children.Add(this);
             _mainWindow = mainWindow;
 
+            // スクロールバー表示のための ScrollViewer 横幅設定
+            DisplayFileListScrollViewer.MaxWidth = _mainWindow.Width - BufferDisplayFileListWidth;
+
             // ファイルリストの初期値に履歴をセット
             _history = history;
             UpdatePart(_history.Files);
@@ -53,22 +58,25 @@ namespace MyFileLauncher
         {
             FileList = files;
 
-            // スクロールバー表示のため DisplayFileList の高さ設定
-            SetMaxHeightOfDisplayFileList();
+            // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
+            DisplayFileListScrollViewer.ScrollToRightEnd();
+
+            // スクロールバー表示のための ScrollViewer 高さ設定
+            SetMaxHeightOfDisplayFileListScrollViewer();
 
             NotifyPropertyChanged(nameof(FileList));
         }
 
         /// <summary>
-        /// DisplayFileList の最大高を設定
+        /// DisplayFileListScrollViewer の最大高を設定
         /// </summary>
-        private void SetMaxHeightOfDisplayFileList()
+        private void SetMaxHeightOfDisplayFileListScrollViewer()
         {
             // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合に対応して初期値設定
-            DisplayFileList.MaxHeight = DefaultDisplayFileListHeight;
+            DisplayFileListScrollViewer.MaxHeight = DefaultDisplayFileListScrollViewerHeight;
             if (_mainWindow.FileListArea.ActualHeight != double.NaN && _mainWindow.FileListArea.ActualHeight > 0.0)
             {
-                DisplayFileList.MaxHeight = (double)_mainWindow.FileListArea.ActualHeight;
+                DisplayFileListScrollViewer.MaxHeight = (double)_mainWindow.FileListArea.ActualHeight;
             }
         }
 

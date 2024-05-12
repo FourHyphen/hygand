@@ -7,14 +7,19 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:FileListDisplay}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <ListView x:Name="DisplayFileList"
+    <ScrollViewer x:Name="DisplayFileListScrollViewer"
+        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+        ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+        <ListView x:Name="DisplayFileList"
               ItemsSource="{Binding Path=FileList}"
-              ScrollViewer.HorizontalScrollBarVisibility="Auto"
-              ScrollViewer.VerticalScrollBarVisibility="Auto">
-        <ListView.Resources>
-            <Style TargetType="{x:Type ListViewItem}">
-                <EventSetter Event="KeyDown" Handler="KeyDowned"/>
-            </Style>
-        </ListView.Resources>
-    </ListView>
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="KeyDown" Handler="KeyDowned"/>
+                </Style>
+            </ListView.Resources>
+        </ListView>
+    </ScrollViewer>
 </UserControl>
