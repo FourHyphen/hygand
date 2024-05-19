@@ -11,9 +11,9 @@ namespace MyFileLauncher
     {
         private const int DisplayingNum = 20;
 
-        private string[] _fileList = new string[0];
-
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private string[] _fileList = new string[0];
 
         // internal では画面に反映されなかったため public
         public string[] FileList
@@ -29,6 +29,9 @@ namespace MyFileLauncher
             }
         }
 
+        /// <summary>
+        /// プロパティ更新を通知
+        /// </summary>
         private void NotifyPropertyChanged(string propertyName)
         {
             var e = new PropertyChangedEventArgs(propertyName);
@@ -80,6 +83,8 @@ namespace MyFileLauncher
         internal void Update(string dirPath)
         {
             string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+
+            // ディレクトリの中身は全て表示されないとユーザーが混乱するので全て表示する
             FileList = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
         }
     }
