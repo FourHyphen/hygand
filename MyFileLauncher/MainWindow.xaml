@@ -38,7 +38,7 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         <ListView x:Name="DisplayFileList"
-                                  ItemsSource="{Binding Path=FileList}"
+                                  ItemsSource="{Binding Path=FileListDisplaying.FileList}"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                   ScrollViewer.VerticalScrollBarVisibility="Disabled">
                             <ListView.Resources>

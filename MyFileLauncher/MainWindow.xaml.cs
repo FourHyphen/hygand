@@ -7,18 +7,14 @@ using System.Windows.Input;
 
 namespace MyFileLauncher
 {
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        private const int DisplayingNum = 20;
-
         private const int BufferDisplayFileListWidth = 20;
 
         private const int DefaultDisplayFileListScrollViewerHeight = 200;
 
         // internal では画面に反映されなかったため public
-        public string[] FileList { get; private set; } = new string[0];
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public FileListDisplaying FileListDisplaying { get; } = new FileListDisplaying();
 
         private AppHotKey _appHotKey;
 
@@ -35,17 +31,16 @@ namespace MyFileLauncher
             // データバインドに必要
             DataContext = this;
 
+            // ホットキー設定
             _appHotKey = new AppHotKey(this);
             SetHotKey(_appHotKey);
 
+            // インデックス設定
             InitFileIndex();
 
-            // ファイルリストの初期値に履歴をセット
+            // ファイルリスト初期化
             _history = History.CreateInstance();
-            UpdatePart(_history.Files);
-
-            // スクロールバー表示のための ScrollViewer 横幅設定
-            DisplayFileListScrollViewer.MaxWidth = this.Width - BufferDisplayFileListWidth;
+            InitDisplayFileList(_history);
 
             // 起動後すぐに検索を始められるよう SearchTextBox にフォーカスセット
             SearchText.Focus();
@@ -125,60 +120,26 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// ファイルリスト表示を更新する(全件表示は時間がかかり過ぎるため一部を表示する)
+        /// DisplayFileList 初期設定
         /// </summary>
-        private void UpdatePart(string[] files)
+        private void InitDisplayFileList(History history)
         {
-            Update(Slice(files, DisplayingNum));
-        }
+            // ファイルリストの初期値に履歴をセット
+            FileListDisplaying.Update(history);
 
-        /// <summary>
-        /// Slice(list.Count >= 20, 20) -> return list.ToArray()[0..20]
-        /// Slice(list.Count <  20, 20) -> return list.ToArray()
-        /// </summary>
-        private string[] Slice(string[] array, int end)
-        {
-            if (array.Count() < end)
-            {
-                return array;
-            }
-
-            return array[0..end].ToArray();
-        }
-
-        /// <summary>
-        /// ファイルリスト表示を更新する
-        /// </summary>
-        private void Update(string[] files)
-        {
-            FileList = files;
-
-            // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
-            DisplayFileListScrollViewer.ScrollToRightEnd();
+            // スクロールバー表示のための ScrollViewer 横幅設定
+            DisplayFileListScrollViewer.MaxWidth = this.Width - BufferDisplayFileListWidth;
 
             // スクロールバー表示のための ScrollViewer 高さ設定
-            SetMaxHeightOfDisplayFileListScrollViewer();
-
-            NotifyPropertyChanged(nameof(FileList));
-        }
-
-        /// <summary>
-        /// DisplayFileListScrollViewer の最大高を設定
-        /// </summary>
-        private void SetMaxHeightOfDisplayFileListScrollViewer()
-        {
-            // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合に対応して初期値設定
-            DisplayFileListScrollViewer.MaxHeight = DefaultDisplayFileListScrollViewerHeight;
+            // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合は初期値設定
             if (FileListArea.ActualHeight != double.NaN && FileListArea.ActualHeight > 0.0)
             {
                 DisplayFileListScrollViewer.MaxHeight = (double)FileListArea.ActualHeight;
             }
-        }
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            var e = new PropertyChangedEventArgs(propertyName);
-            PropertyChanged?.Invoke(this, e);
+            else
+            {
+                DisplayFileListScrollViewer.MaxHeight = DefaultDisplayFileListScrollViewerHeight;
+            }
         }
 
         /// <summary>
@@ -204,7 +165,7 @@ namespace MyFileLauncher
         private void MoveFocusOnFileList()
         {
             // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
-            if (FileList.Count() == 0)
+            if (FileListDisplaying.FileList.Count() == 0)
             {
                 return;
             }
@@ -221,16 +182,7 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchAndUpdateFileList(SearchText.Text);
-        }
-
-        /// <summary>
-        /// 検索した結果でファイルリストを更新する
-        /// </summary>
-        private void SearchAndUpdateFileList(string word)
-        {
-            string[] result = MyFileLauncher.FileSearch.Search(_history, _fileIndex, word);
-            UpdatePart(result);
+            FileListDisplaying.Update(_history, _fileIndex, SearchText.Text);
         }
 
         /// <summary>
@@ -393,9 +345,10 @@ namespace MyFileLauncher
             SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
-            string[] files = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
-            Update(files);
+            FileListDisplaying.Update(dirPath);
+
+            // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
+            DisplayFileListScrollViewer.ScrollToRightEnd();
         }
 
         /// <summary>
@@ -433,7 +386,7 @@ namespace MyFileLauncher
             }
 
             string? focusedStr = GetListViewItemStringFocused();
-            if (focusedStr != FileList[0])
+            if (focusedStr != FileListDisplaying.FileList[0])
             {
                 return;
             }
