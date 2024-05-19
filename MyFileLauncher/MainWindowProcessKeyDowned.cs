@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -41,6 +44,10 @@ namespace MyFileLauncher
             else if (keyEventType == AppKeys.KeyEventType.FocusOnSearchTextBox)
             {
                 DoKeyEventFocusOnSearchTextBox();
+            }
+            else if (keyEventType == AppKeys.KeyEventType.ShowPrograms)
+            {
+                DoKeyEventShowPrograms();
             }
         }
 
@@ -218,6 +225,33 @@ namespace MyFileLauncher
 
             // フォーカス移動
             _mainWindow.SearchText.Focus();
+        }
+
+        private void DoKeyEventShowPrograms()
+        {
+            // フォーカスされているファイルパスを取得
+            string? focusedFilePath = GetListViewItemStringFocused();
+            if (focusedFilePath == null)
+            {
+                return;
+            }
+
+            FileContextMenuWindow window = new FileContextMenuWindow(focusedFilePath);
+            window.Owner = _mainWindow;
+            window.Show();
+
+            _mainWindow.IsEnabled = false;    // FileContextMenuWindow に最初からキーボードフォーカスを当てるための無効化
+            window.SetFocusFileMenuList();
+            window.Closed += FileContextMenuWindowClosed;
+        }
+
+        private void FileContextMenuWindowClosed(object? sender, EventArgs e)
+        {
+            _mainWindow.IsEnabled = true;    // 無効化からの復帰
+
+            // ウィンドウ閉じただけだとフォーカスは宙ぶらりんになったので明示的に指定
+            _mainWindow.SearchText.Focus();
+            System.Windows.Input.Keyboard.Focus(_mainWindow.SearchText);
         }
     }
 }

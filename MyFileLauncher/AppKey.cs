@@ -14,6 +14,7 @@ namespace MyFileLauncher
             FileOpen,
             BackDirectory,
             IntoDirectory,
+            ShowPrograms,
             None
         }
 
@@ -56,7 +57,7 @@ namespace MyFileLauncher
             {
                 if (key == Key.F10)
                 {
-                    // nothing;
+                    return KeyEventType.ShowPrograms;
                 }
             }
 
