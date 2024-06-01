@@ -256,6 +256,19 @@ namespace MyFileLauncher
             // ウィンドウ閉じただけだとフォーカスは宙ぶらりんになったので明示的に指定
             _mainWindow.SearchText.Focus();
             System.Windows.Input.Keyboard.Focus(_mainWindow.SearchText);
+
+            // コンテキストを実行した場合、用は済んだので履歴に追加してメイン画面を非表示化
+            if (!(sender is FileContextMenuWindow))
+            {
+                return;
+            }
+
+            FileContextMenuWindow fcmw = (FileContextMenuWindow)sender;
+            if (fcmw.DidExecuteContext)
+            {
+                _history.Add(fcmw.FilePath);
+                _mainWindow.Hide();
+            }
         }
     }
 }

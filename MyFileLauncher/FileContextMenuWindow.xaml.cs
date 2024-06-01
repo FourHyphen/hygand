@@ -11,6 +11,13 @@ namespace MyFileLauncher
 {
     public partial class FileContextMenuWindow : Window
     {
+        /// <summary>
+        /// コンテキストを実行したか(ウィンドウ閉じただけなら false)
+        /// </summary>
+        public bool DidExecuteContext = false;
+
+        public string FilePath { get; private set; } = String.Empty;
+
         // Shell32.FolderItemVerb の Name をバインドしても表示されなかったため、表示用のリスト
         public List<string> FileContextNames { get; private set; } = new List<string>();
 
@@ -21,6 +28,7 @@ namespace MyFileLauncher
             InitializeComponent();
             DataContext = this;
 
+            FilePath = filePath;
             InitFileContextMenu(filePath);
         }
 
@@ -99,6 +107,9 @@ namespace MyFileLauncher
         {
             Shell32.FolderItemVerb verb = _fileContextMenu.Where(fe => fe.Name == verbName).First();
             verb.DoIt();
+
+            // コンテキストを実行した
+            DidExecuteContext = true;
 
             Close();
         }
