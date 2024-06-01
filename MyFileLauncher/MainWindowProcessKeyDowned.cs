@@ -227,6 +227,9 @@ namespace MyFileLauncher
             _mainWindow.SearchText.Focus();
         }
 
+        /// <summary>
+        /// キーイベントによるプログラム一覧表示を実行
+        /// </summary>
         private void DoKeyEventShowPrograms()
         {
             // フォーカスされているファイルパスを取得
@@ -236,12 +239,13 @@ namespace MyFileLauncher
                 return;
             }
 
+            // コンテキストメニュー一覧ウィンドウを表示
             FileContextMenuWindow window = new FileContextMenuWindow(focusedFilePath);
             window.Owner = _mainWindow;
             window.Show();
 
+            // コンテキストメニュー一覧ウィンドウが閉じるまでメイン画面を無効化
             _mainWindow.IsEnabled = false;    // FileContextMenuWindow に最初からキーボードフォーカスを当てるための無効化
-            window.SetFocusFileMenuList();
             window.Closed += FileContextMenuWindowClosed;
         }
 

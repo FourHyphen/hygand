@@ -1,41 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MyFileLauncher
 {
     public partial class FileContextMenuWindow : Window
     {
-        public List<string> FileExecuteNames { get; private set; } = new List<string>();
+        // Shell32.FolderItemVerb の Name をバインドしても表示されなかったため、表示用のリスト
+        public List<string> FileContextNames { get; private set; } = new List<string>();
 
-        private List<Shell32.FolderItemVerb> _fileExecutes = new List<Shell32.FolderItemVerb>();
+        private List<Shell32.FolderItemVerb> _fileContextMenu = new List<Shell32.FolderItemVerb>();
 
         public FileContextMenuWindow(string filePath)
         {
             InitializeComponent();
             DataContext = this;
 
-            InitMenu(filePath);
+            InitFileContextMenu(filePath);
         }
 
         /// <summary>
-        /// 
+        /// ファイルコンテキストメニューの初期
         /// </summary>
         /// <remarks>COM Object の解放を GC に任せるため、実行後必ず GC を呼び出すこと</remarks>
         // COM Object の解放を GC に任せるが、勝手にインライン展開されると生存区間がコード上の表現とズレる可能性があるのでその防止
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void InitMenu(string filePath)
+        private void InitFileContextMenu(string filePath)
         {
             // "プログラムから開く" の画面を出してもあまり役に立たなかった
             //  -> コンテキストメニューを取得して表示する
@@ -59,15 +54,26 @@ namespace MyFileLauncher
             // ファイルのコンテキストメニューリストを取得
             Shell32.FolderItemVerbs verbs = folderItem.Verbs();
 
-            // Shell32.FolderItemVerb が "開く" とか
+            // Shell32.FolderItemVerb が "開く" とかに相当
             foreach (Shell32.FolderItemVerb verb in verbs)
             {
-                FileExecuteNames.Add(verb.Name);
-                _fileExecutes.Add(verb);
+                FileContextNames.Add(verb.Name);
+                _fileContextMenu.Add(verb);
             }
         }
 
-        public void SetFocusFileMenuList()
+        /// <summary>
+        /// ウィンドウロード時イベント
+        /// </summary>
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            SetFocusFileMenuListFirst();
+        }
+
+        /// <summary>
+        /// ファイルのコンテキストメニュー一覧の先頭にフォーカスを当てる
+        /// </summary>
+        private void SetFocusFileMenuListFirst()
         {
             var obj = FileMenuList.ItemContainerGenerator.ContainerFromIndex(0);
             if (obj is ListViewItem target)
@@ -77,28 +83,34 @@ namespace MyFileLauncher
             }
         }
 
+        /// <summary>
+        /// マウスイベント: 左クリック時
+        /// </summary>
         private void MouseLeftButtonDownClicked(object sender, MouseButtonEventArgs e)
         {
             ListViewItem selected = (ListViewItem)sender;
-            Execute((string)selected.Content);
+            ExecuteContextAndCloseWindow((string)selected.Content);
         }
 
-        private void Execute(string verbName)
+        /// <summary>
+        /// コンテキストを実行してウィンドウを閉じる
+        /// </summary>
+        private void ExecuteContextAndCloseWindow(string verbName)
         {
-            Execute(_fileExecutes.Where(fe => fe.Name == verbName).First());
-        }
-
-        private void Execute(Shell32.FolderItemVerb verb)
-        {
+            Shell32.FolderItemVerb verb = _fileContextMenu.Where(fe => fe.Name == verbName).First();
             verb.DoIt();
+
             Close();
         }
 
-        private void FileMenuItemKeyDowned(object sender, KeyEventArgs e)
+        /// <summary>
+        /// ファイルコンテキストメニューイベント: キー押下時
+        /// </summary>
+        private void FileContextMenuItemKeyDowned(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                Execute((string)FileMenuList.SelectedItem);
+                ExecuteContextAndCloseWindow((string)FileMenuList.SelectedItem);
             }
         }
 

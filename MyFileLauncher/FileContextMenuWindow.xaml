@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyFileLauncher"
         mc:Ignorable="d"
+        Loaded="WindowLoaded"
         Title="FileContextMenuWindow" Height="450" Width="800">
     <Grid>
         <ListView x:Name="FileMenuList"
-                  ItemsSource="{Binding Path=FileExecuteNames}">
+                  ItemsSource="{Binding Path=FileContextNames}">
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="MouseLeftButtonDownClicked"/>
-                    <EventSetter Event="KeyDown" Handler="FileMenuItemKeyDowned"/>
+                    <EventSetter Event="KeyDown" Handler="FileContextMenuItemKeyDowned"/>
                 </Style>
             </ListView.Resources>
 
