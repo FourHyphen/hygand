@@ -249,25 +249,51 @@ namespace MyFileLauncher
             window.Closed += FileContextMenuWindowClosed;
         }
 
+        /// <summary>
+        /// コンテキストメニュー一覧ウィンドウクローズ時のイベント
+        /// </summary>
         private void FileContextMenuWindowClosed(object? sender, EventArgs e)
         {
-            _mainWindow.IsEnabled = true;    // 無効化からの復帰
+            // 無効化からの復帰
+            _mainWindow.IsEnabled = true;
 
-            // ウィンドウ閉じただけだとフォーカスは宙ぶらりんになったので明示的に指定
-            _mainWindow.SearchText.Focus();
-            System.Windows.Input.Keyboard.Focus(_mainWindow.SearchText);
-
-            // コンテキストを実行した場合、用は済んだので履歴に追加してメイン画面を非表示化
             if (!(sender is FileContextMenuWindow))
             {
+                // 操作したファイルパス不明のため検索テキストボックスにフォーカス移動
+                // ここは基本的に通らない想定
+                _mainWindow.SearchText.Focus();
+                System.Windows.Input.Keyboard.Focus(_mainWindow.SearchText);
                 return;
             }
 
+            // ウィンドウ閉じただけだとフォーカスは宙ぶらりんになったので明示的に指定
             FileContextMenuWindow fcmw = (FileContextMenuWindow)sender;
+            SetFocusListViewItem(fcmw.FilePath);
+
+            // コンテキストを実行した場合、用は済んだので履歴に追加してメイン画面を非表示化
             if (fcmw.DidExecuteContext)
             {
                 _history.Add(fcmw.FilePath);
                 _mainWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// ListView の特定の Item にフォーカスを当てる
+        /// </summary>
+        private void SetFocusListViewItem(string filePath)
+        {
+            for (int i = 0; i < _mainWindow.DisplayFileList.Items.Count; i++)
+            {
+                var obj = _mainWindow.DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
+                if (obj is ListViewItem target)
+                {
+                    if ((string)target.Content == filePath)
+                    {
+                        target.Focus();
+                        return;
+                    }
+                }
             }
         }
     }
