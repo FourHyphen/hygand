@@ -135,7 +135,7 @@ namespace MyFileLauncher
         /// </summary>
         private void DoKeyEventBackDirectory()
         {
-            // フォーカスされているファイルパスを取得
+            // 今フォーカスされているファイルパスを取得
             string? focusedFilePath = GetListViewItemStringFocused();
             if (focusedFilePath == null)
             {
@@ -149,8 +149,14 @@ namespace MyFileLauncher
                 return;
             }
 
+            // 戻り先でフォーカスを当てるための、今表示されているディレクトリパス取得
+            string willFocusDirPath = GetNowDisplayingDirPath(focusedFilePath);
+
             // 更新
             UpdateOfDirectoryInfo(dirPath);
+
+            // 移動元にフォーカスを当て、移動前の状態に戻す
+            SetFocusListViewItem(willFocusDirPath);
         }
 
         /// <summary>
@@ -166,6 +172,15 @@ namespace MyFileLauncher
 
             // 選択されているファイルのディレクトリパスを返す
             return System.IO.Path.GetDirectoryName(focusedFilePath)!;
+        }
+
+        /// <summary>
+        /// 今表示しているディレクトリのパスを返す
+        /// </summary>
+        private string GetNowDisplayingDirPath(string focusedFilePath)
+        {
+            // 今フォーカスが当たっているファイルパスの 1 階層上が、今表示しているディレクトリのパス
+            return System.IO.Path.GetDirectoryName(focusedFilePath);
         }
 
         /// <summary>
@@ -283,6 +298,9 @@ namespace MyFileLauncher
         /// </summary>
         private void SetFocusListViewItem(string filePath)
         {
+            // ListView 更新直後だと ListView の Item が空になったため、ListView に Item がセットされるようにする
+            _mainWindow.UpdateLayout();
+
             for (int i = 0; i < _mainWindow.DisplayFileList.Items.Count; i++)
             {
                 var obj = _mainWindow.DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
