@@ -17,11 +17,9 @@ namespace MyFileLauncher
         public FileListDisplaying FileListDisplaying { get; } = new FileListDisplaying();
 
         private AppHotKey _appHotKey;
-
+        private short _keyCodeTogglingDisplayOnOff;
         private History _history;
-
         private FileIndex _fileIndex;
-
         private KeyCodeWindow? _keyCodeWindow;
 
         public MainWindow()
@@ -32,7 +30,7 @@ namespace MyFileLauncher
             DataContext = this;
 
             // ホットキー設定
-            _appHotKey = new AppHotKey(this);
+            _appHotKey = new AppHotKey();
             SetHotKey(_appHotKey);
 
             // インデックス設定
@@ -51,14 +49,21 @@ namespace MyFileLauncher
         /// </summary>
         private void SetHotKey(AppHotKey appHotKey)
         {
-            appHotKey.RegisterTogglingDisplayOnOff((_, __) => { ToggleDisplayOnOff(); });
+            _keyCodeTogglingDisplayOnOff = appHotKey.GetKeyCodeTogglingDisplayOnOff();
+            appHotKey.RegisterTogglingDisplayOnOff(ToggleDisplayOnOff);
         }
 
         /// <summary>
         /// 画面の表示非表示を切り替える
         /// </summary>
-        private void ToggleDisplayOnOff()
+        private void ToggleDisplayOnOff(object? sender, ToggleDisplayOnOff.OriginalKeyEventArg e)
         {
+            short keyCode = (short)e.KeyCode;
+            if (keyCode != _keyCodeTogglingDisplayOnOff)
+            {
+                return;
+            }
+
             if (Visibility == Visibility.Visible)
             {
                 Hide();
@@ -223,7 +228,8 @@ namespace MyFileLauncher
         protected override void OnClosed(EventArgs e)
         {
             DestroyKeyCodeWindow();
-            _appHotKey.Dispose();
+            _appHotKey?.Dispose();
+
             base.OnClosed(e);
         }
     }

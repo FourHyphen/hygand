@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyFileLauncher"
         mc:Ignorable="d"
-        PreviewKeyDown="KeyCodeWindowKeyDown"
         Title="keyCodeWindow" Height="180" Width="200">
     <Grid>
         <Grid.RowDefinitions>
@@ -13,45 +12,71 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <!--Modifier Key-->
-        <Grid Grid.Row="0">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Modifier Key: "/>
-                    <Label x:Name="ModifierKeyLabel"/>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-
         <!--Key-->
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key0Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key0Str"/>
+            </StackPanel>
+        </Grid>
+
         <Grid Grid.Row="1">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Key: "/>
-                    <Label x:Name="KeyLabel"/>
-                </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key1Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key1Str"/>
             </StackPanel>
         </Grid>
 
-        <!--System Key-->
         <Grid Grid.Row="2">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="SystemKey: "/>
-                    <Label x:Name="SystemKeyLabel"/>
-                </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key2Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key2Str"/>
             </StackPanel>
         </Grid>
 
-        <!--IME Key-->
         <Grid Grid.Row="3">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IME Key: "/>
-                    <Label x:Name="ImeKeyLabel"/>
-                </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key3Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key3Str"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key4Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key4Str"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="5">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key5Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key5Str"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="6">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="vkKeyCode: "/>
+                <Label x:Name="Key6Num"/>
+                <Label Content="str: "/>
+                <Label x:Name="Key6Str"/>
             </StackPanel>
         </Grid>
     </Grid>
