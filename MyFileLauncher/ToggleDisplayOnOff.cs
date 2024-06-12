@@ -7,6 +7,7 @@ namespace MyFileLauncher
     internal class ToggleDisplayOnOff : IDisposable
     {
         // Capslock キーを拾うためグローバルフックをかける
+        #region Win32API
         protected const int WH_KEYBOARD_LL = 0x000D;
         protected const int WM_KEYDOWN = 0x0100;
         protected const int WM_KEYUP = 0x0101;
@@ -46,6 +47,7 @@ namespace MyFileLauncher
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
         private delegate IntPtr KeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        #endregion
 
         public class OriginalKeyEventArg : EventArgs
         {
@@ -57,28 +59,30 @@ namespace MyFileLauncher
             }
         }
 
-        private KeyboardProc _proc;
-        private IntPtr _hookId = IntPtr.Zero;
-
         // デリゲートをフィールドに配置することで GC に回収させない
         public delegate void KeyEventHandler(object sender, OriginalKeyEventArg e);
 
+        private event KeyEventHandler _keyDownEvent;
+        private short _keyDownEventKeyCode;
+        private KeyboardProc _proc;    // フィールドにないとエラーした
+        private IntPtr _hookId = IntPtr.Zero;
+
         /// <summary>
-        /// キーダウン時の処理をここに設定
+        /// キーフックを開始
         /// </summary>
-        public event KeyEventHandler KeyDownEvent;
+        internal ToggleDisplayOnOff(KeyEventHandler keyDownEvent, short keyDownEventKeyCode)
+        {
+            _keyDownEvent += keyDownEvent;
+            _keyDownEventKeyCode = keyDownEventKeyCode;
+            _proc = HookCallBack;
+            Hook();
+        }
 
         /// <summary>
         /// キーボードグローバルフックをかける
         /// </summary>
-        public void Hook()
+        private void Hook()
         {
-            if (_hookId != IntPtr.Zero)
-            {
-                return;
-            }
-
-            _proc = HookCallBack;
             using var curProcess = Process.GetCurrentProcess();
             using ProcessModule curModule = curProcess.MainModule!;
 
@@ -103,11 +107,12 @@ namespace MyFileLauncher
                 var kb = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
                 int vkKeyCode = (int)kb.vkCode;
 
-                KeyDownEvent?.Invoke(this, new OriginalKeyEventArg(vkKeyCode));
-                // TODO: 可変にする
-                if (vkKeyCode == 240)    // 240 = Capslock
+                // 画面表示オンオフを切り替えるイベントのみ処理する
+                if (vkKeyCode == _keyDownEventKeyCode)
                 {
-                    // 従来のキーイベントを破棄する
+                    _keyDownEvent?.Invoke(this, new OriginalKeyEventArg(vkKeyCode));
+
+                    // 従来のキーイベントを破棄する(例: CapsLock キーでの画面表示切り替えの場合、CapsLock キーの本来の機能を呼ばない)
                     return new IntPtr(1);
                 }
             }
@@ -118,12 +123,15 @@ namespace MyFileLauncher
         /// <summary>
         /// フックを解除する
         /// </summary>
-        public void UnHook()
+        private void UnHook()
         {
             UnhookWindowsHookEx(_hookId);
             _hookId = IntPtr.Zero;
         }
 
+        /// <summary>
+        /// キーフックを解除する
+        /// </summary>
         public void Dispose()
         {
             UnHook();
