@@ -269,7 +269,7 @@ namespace MyFileLauncher
         };
 
         /// <summary>
-        /// 
+        /// 現在押されている仮想キーコードの一覧を返す
         /// </summary>
         public static SortedDictionary<short, string> GetInputKeys()
         {

@@ -50,58 +50,78 @@ namespace MyFileLauncher
         /// </summary>
         private void ResetShowingKeyCode()
         {
-            Key0Num.Content = "";
+            Key0Hex.Content = "";
+            Key0Decimal.Content = "";
             Key0Str.Content = "";
-            Key1Num.Content = "";
+
+            Key1Hex.Content = "";
+            Key1Decimal.Content = "";
             Key1Str.Content = "";
-            Key2Num.Content = "";
+
+            Key2Hex.Content = "";
+            Key2Decimal.Content = "";
             Key2Str.Content = "";
-            Key3Num.Content = "";
+
+            Key3Hex.Content = "";
+            Key3Decimal.Content = "";
             Key3Str.Content = "";
-            Key4Num.Content = "";
+
+            Key4Hex.Content = "";
+            Key4Decimal.Content = "";
             Key4Str.Content = "";
-            Key5Num.Content = "";
+
+            Key5Hex.Content = "";
+            Key5Decimal.Content = "";
             Key5Str.Content = "";
-            Key6Num.Content = "";
+
+            Key6Hex.Content = "";
+            Key6Decimal.Content = "";
             Key6Str.Content = "";
         }
 
         /// <summary>
         /// キー入力内容をセット
         /// </summary>
-        private void SetShowingKeyCode(int index, short vkKeyCode, string keyContent)
+        private void SetShowingKeyCode(int index, short keyCodeDecimal, string keyContent)
         {
-            string numContent = "0x" + vkKeyCode.ToString("X2");
+            string keyCodeHex = "0x" + keyCodeDecimal.ToString("X2");
 
             // TODO: 入力キー数に応じて表示数を可変にする
             switch (index)
             {
                 case 0:
-                    Key0Num.Content = numContent;
+                    Key0Hex.Content = keyCodeHex;
+                    Key0Decimal.Content = keyCodeDecimal;
                     Key0Str.Content = keyContent;
                     break;
                 case 1:
-                    Key1Num.Content = numContent;
+                    Key1Hex.Content = keyCodeHex;
+                    Key1Decimal.Content = keyCodeDecimal;
                     Key1Str.Content = keyContent;
                     break;
                 case 2:
-                    Key2Num.Content = numContent;
+                    Key2Hex.Content = keyCodeHex;
+                    Key2Decimal.Content = keyCodeDecimal;
                     Key2Str.Content = keyContent;
                     break;
                 case 3:
-                    Key3Num.Content = numContent;
+                    Key3Hex.Content = keyCodeHex;
+                    Key3Decimal.Content = keyCodeDecimal;
                     Key3Str.Content = keyContent;
                     break;
                 case 4:
-                    Key4Num.Content = numContent;
+                    Key4Hex.Content = keyCodeHex;
+                    Key4Decimal.Content = keyCodeDecimal;
                     Key4Str.Content = keyContent;
                     break;
                 case 5:
-                    Key5Num.Content = numContent;
+                    Key5Hex.Content = keyCodeHex;
+                    Key5Decimal.Content = keyCodeDecimal;
                     Key5Str.Content = keyContent;
                     break;
                 case 6:
-                    Key6Num.Content = numContent;
+                    Key6Hex.Content = keyCodeHex;
+                    Key6Decimal.Content = keyCodeDecimal;
                     Key6Str.Content = keyContent;
                     break;
                 default:

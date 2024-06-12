@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyFileLauncher"
         mc:Ignorable="d"
-        Title="keyCodeWindow" Height="180" Width="200">
+        Title="keyCodeWindow" Height="400" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -20,7 +20,9 @@
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key0Num"/>
+                <Label x:Name="Key0Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key0Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key0Str"/>
             </StackPanel>
@@ -29,7 +31,9 @@
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key1Num"/>
+                <Label x:Name="Key1Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key1Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key1Str"/>
             </StackPanel>
@@ -38,7 +42,9 @@
         <Grid Grid.Row="2">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key2Num"/>
+                <Label x:Name="Key2Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key2Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key2Str"/>
             </StackPanel>
@@ -47,7 +53,9 @@
         <Grid Grid.Row="3">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key3Num"/>
+                <Label x:Name="Key3Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key3Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key3Str"/>
             </StackPanel>
@@ -56,7 +64,9 @@
         <Grid Grid.Row="4">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key4Num"/>
+                <Label x:Name="Key4Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key4Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key4Str"/>
             </StackPanel>
@@ -65,7 +75,9 @@
         <Grid Grid.Row="5">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key5Num"/>
+                <Label x:Name="Key5Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key5Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key5Str"/>
             </StackPanel>
@@ -74,7 +86,9 @@
         <Grid Grid.Row="6">
             <StackPanel Orientation="Horizontal">
                 <Label Content="vkKeyCode: "/>
-                <Label x:Name="Key6Num"/>
+                <Label x:Name="Key6Hex"/>
+                <Label Content="Decimal: "/>
+                <Label x:Name="Key6Decimal"/>
                 <Label Content="str: "/>
                 <Label x:Name="Key6Str"/>
             </StackPanel>
