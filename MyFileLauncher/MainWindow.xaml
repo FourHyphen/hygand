@@ -24,9 +24,22 @@
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
-                    <TextBox x:Name="SearchText"
-                             PreviewKeyDown="EventSearchTextKeyDowned"
-                             TextChanged="EventSearchTextChanged"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="55"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <TextBox x:Name="Mode"
+                                 IsEnabled="False"
+                                 Text="index"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <TextBox x:Name="SearchText"
+                                 PreviewKeyDown="EventSearchTextKeyDowned"
+                                 TextChanged="EventSearchTextChanged"/>
+                    </Grid>
                 </Grid>
 
                 <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5" />

@@ -11,13 +11,13 @@ using System.Windows.Input;
 
 namespace MyFileLauncher
 {
-    internal class MainWindowProcessKeyDowned
+    internal class DisplayFileListKeyDowned
     {
         private MainWindow _mainWindow;
 
         private History _history;
 
-        internal MainWindowProcessKeyDowned(MainWindow mainWindow, History history)
+        internal DisplayFileListKeyDowned(MainWindow mainWindow, History history)
         {
             _mainWindow = mainWindow;
             _history = history;
@@ -26,20 +26,12 @@ namespace MyFileLauncher
         /// <summary>
         /// DisplayFileList 押下キーに応じた処理を実行する
         /// </summary>
-        internal void Execute(Key key, Key systemKey, ModifierKeys modifier)
+        internal void Execute(AppKeys.KeyEventType keyEventType, string mode)
         {
-            AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(key, systemKey, modifier);
+            // インデックスモードでもディレクトリモードでも実行
             if (keyEventType == AppKeys.KeyEventType.FileOpen)
             {
                 DoKeyEventFileOpen();
-            }
-            else if (keyEventType == AppKeys.KeyEventType.BackDirectory)
-            {
-                DoKeyEventBackDirectory();
-            }
-            else if (keyEventType == AppKeys.KeyEventType.IntoDirectory)
-            {
-                DoKeyEventIntoDirectory();
             }
             else if (keyEventType == AppKeys.KeyEventType.FocusOnSearchTextBox)
             {
@@ -48,6 +40,19 @@ namespace MyFileLauncher
             else if (keyEventType == AppKeys.KeyEventType.ShowPrograms)
             {
                 DoKeyEventShowPrograms();
+            }
+
+            // ディレクトリを移動するのはディレクトリモードのみ
+            if (mode == "directory")
+            {
+                if (keyEventType == AppKeys.KeyEventType.BackDirectory)
+                {
+                    DoKeyEventBackDirectory();
+                }
+                else if (keyEventType == AppKeys.KeyEventType.IntoDirectory)
+                {
+                    DoKeyEventIntoDirectory();
+                }
             }
         }
 

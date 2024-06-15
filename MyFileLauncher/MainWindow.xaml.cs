@@ -19,6 +19,7 @@ namespace MyFileLauncher
         private AppHotKey _appHotKey;
         private History _history;
         private FileIndex _fileIndex;
+        private string _searchMode = "index";    // TODO: リファクタ
         private KeyCodeWindow? _keyCodeWindow;
 
         public MainWindow()
@@ -145,13 +146,17 @@ namespace MyFileLauncher
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            AppKeys.KeyEventType ket = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-            if (ket == AppKeys.KeyEventType.FocusOnFileList)
+            AppKeys.KeyEventType key = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            if (key == AppKeys.KeyEventType.FocusOnFileList)
             {
                 MoveFocusOnFileList();
 
                 // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
                 e.Handled = true;
+            }
+            else if (key == AppKeys.KeyEventType.ToggleIndexAndDirectory)
+            {
+                ToggleModeIndexAndDirectory();
             }
         }
 
@@ -174,11 +179,32 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// イベント: テキストボックス内の文字列でインデックスを検索して結果を表示
+        /// インデックスモードとディレクトリモードを切り替える
+        /// </summary>
+        private void ToggleModeIndexAndDirectory()
+        {
+            // TODO: リファクタ
+            if (_searchMode == "index")
+            {
+                _searchMode = "directory";
+            }
+            else
+            {
+                _searchMode = "index";
+            }
+
+            Mode.Text = _searchMode;
+        }
+
+        /// <summary>
+        /// イベント: テキストボックス内の文字列で検索して結果を表示
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            FileListDisplaying.UpdateOfIndex(_history, _fileIndex, SearchText.Text);
+            if (_searchMode == "index")
+            {
+                FileListDisplaying.UpdateOfIndex(_history, _fileIndex, SearchText.Text);
+            }
         }
 
         /// <summary>
@@ -188,11 +214,9 @@ namespace MyFileLauncher
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            Key key = e.Key;
-            Key systemKey = e.SystemKey;
-            ModifierKeys modifier = e.KeyboardDevice.Modifiers;
+            var keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
-            new MainWindowProcessKeyDowned(this, _history).Execute(key, systemKey, modifier);
+            new DisplayFileListKeyDowned(this, _history).Execute(keyEventType, _searchMode);
         }
 
         /// <summary>
