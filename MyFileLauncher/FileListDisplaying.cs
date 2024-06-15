@@ -41,7 +41,7 @@ namespace MyFileLauncher
         /// <summary>
         /// 履歴をセットする
         /// </summary>
-        internal void Update(History history)
+        internal void UpdateOfHistory(History history)
         {
             UpdatePart(history.Files);
         }
@@ -71,7 +71,7 @@ namespace MyFileLauncher
         /// <summary>
         /// テキストボックス内の文字列でインデックスを検索した結果をセットする
         /// </summary>
-        internal void Update(History history, FileIndex fileIndex, string word)
+        internal void UpdateOfIndex(History history, FileIndex fileIndex, string word)
         {
             string[] result = MyFileLauncher.FileSearch.Search(history, fileIndex, word);
             UpdatePart(result);
@@ -80,11 +80,13 @@ namespace MyFileLauncher
         /// <summary>
         /// ディレクトリの中身をセットする
         /// </summary>
-        internal void Update(string dirPath)
+        /// <remarks>アクセス権がないなどの場合は呼び出し元で制御すること</remarks>
+        internal void UpdateOfDirectory(string dirPath)
         {
+            // ディレクトリの中にあるディレクトリの一覧取得
             string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
 
-            // ディレクトリの中身は全て表示されないとユーザーが混乱するので全て表示する
+            // ディレクトリの中にあるファイルの一覧取得
             FileList = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
         }
     }

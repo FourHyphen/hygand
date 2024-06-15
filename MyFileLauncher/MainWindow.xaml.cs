@@ -121,7 +121,7 @@ namespace MyFileLauncher
         private void InitDisplayFileList(History history)
         {
             // ファイルリストの初期値に履歴をセット
-            FileListDisplaying.Update(history);
+            FileListDisplaying.UpdateOfHistory(history);
 
             // スクロールバー表示のための ScrollViewer 横幅設定
             DisplayFileListScrollViewer.MaxWidth = this.Width - BufferDisplayFileListWidth;
@@ -178,7 +178,7 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            FileListDisplaying.Update(_history, _fileIndex, SearchText.Text);
+            FileListDisplaying.UpdateOfIndex(_history, _fileIndex, SearchText.Text);
         }
 
         /// <summary>

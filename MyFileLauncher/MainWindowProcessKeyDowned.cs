@@ -192,7 +192,8 @@ namespace MyFileLauncher
             _mainWindow.SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            _mainWindow.FileListDisplaying.Update(dirPath);
+            // TDOO: アクセス権がなかった場合の System.UnauthorizedAccessException への対応
+            _mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath);
 
             // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
             _mainWindow.DisplayFileListScrollViewer.ScrollToRightEnd();
