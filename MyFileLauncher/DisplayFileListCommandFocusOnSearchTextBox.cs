@@ -31,6 +31,9 @@ namespace MyFileLauncher
 
             // フォーカス移動
             SetFocusTextBox(_mainWindow.SearchText);
+
+            // キーカーソル位置をテキストボックスの末尾文字に移動
+            _mainWindow.SearchText.Select(_mainWindow.SearchText.Text.Length, 0);
         }
     }
 }
