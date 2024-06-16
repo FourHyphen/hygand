@@ -83,20 +83,24 @@ namespace MyFileLauncher
         /// <remarks>アクセス権がないなどの場合は呼び出し元で制御すること</remarks>
         internal void UpdateOfDirectory(string searchText)
         {
+            // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
             if (System.IO.Directory.Exists(searchText))
             {
-                // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
                 FileList = GetFilesAndDirectories(searchText);
+                return;
             }
-            else
-            {
-                // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
-                // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
-                string dirPath = System.IO.Path.GetDirectoryName(searchText)!;
-                string start = System.IO.Path.GetFileName(searchText);
 
-                FileList = GetFilesAndDirectoriesStartsWith(dirPath, start);
+            // ユーザーがドライブのパス入力中などでディレクトリパス取得不可の場合は何もしない
+            string? dirPath = System.IO.Path.GetDirectoryName(searchText);
+            if (dirPath == null || dirPath == String.Empty)
+            {
+                return;
             }
+
+            // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
+            // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
+            string start = System.IO.Path.GetFileName(searchText);
+            FileList = GetFilesAndDirectoriesStartsWith(dirPath!, start);
         }
 
         /// <summary>
