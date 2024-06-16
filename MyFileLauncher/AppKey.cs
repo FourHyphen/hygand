@@ -40,7 +40,6 @@ namespace MyFileLauncher
         /// </summary>
         private static KeyEventType ToKeyEventTypeConbination(Key key, ModifierKeys modifier)
         {
-            // 現在単キーのみだが将来の拡張機能としてインタフェースを実装しておく
             // Ctrl + Shift + 何か
             if (modifier == (ModifierKeys.Control | ModifierKeys.Shift))
             {

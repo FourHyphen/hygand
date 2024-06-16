@@ -161,27 +161,23 @@ namespace MyFileLauncher
                 return;
             }
 
-            if (keyEventType == AppKeys.KeyEventType.FocusOnFileList)
-            {
-                // テキストボックスにフォーカスがある場合に限って FileList にフォーカス移動
-                // (すでに FileList にフォーカスがある場合は改めてフォーカス移動する必要ない))
-                if (!SearchText.IsFocused)
-                {
-                    return;
-                }
-
-                MoveFocusOnFileList();
-
-                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
-                e.Handled = true;
-                return;
-            }
-
             // ファイルリスト内のキー押下時はキー入力内容に見合った処理を実行
             if (IsFocusedDisplayFileList())
             {
                 DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventType, this, _history);
                 command.Execute();
+                return;
+            }
+
+            // テキストボックスにフォーカスがある場合に限って FileList にフォーカス移動
+            // (すでに FileList にフォーカスがある場合は改めてフォーカス移動する必要ない))
+            if (SearchText.IsFocused && keyEventType == AppKeys.KeyEventType.FocusOnFileList)
+            {
+                MoveFocusOnFileList();
+
+                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
+                e.Handled = true;
+                return;
             }
         }
 
