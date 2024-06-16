@@ -224,7 +224,15 @@ namespace MyFileLauncher
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
             var keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
-            new DisplayFileListKeyDowned(this, _history).Execute(keyEventType, _searchMode);
+            if (keyEventType == AppKeys.KeyEventType.FocusOnFileList)
+            {
+                // すでに DisplayFileList にフォーカス当たっているので何もしない
+                return;
+            }
+
+            // イベントに見合った処理を実行
+            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_searchMode, keyEventType, this, _history);
+            command.Execute();
         }
 
         /// <summary>
