@@ -15,7 +15,7 @@ namespace MyFileLauncher
             BackDirectory,
             IntoDirectory,
             ShowPrograms,
-            ToggleIndexAndDirectory,
+            ChangeAppMode,
             None
         }
 
@@ -45,7 +45,7 @@ namespace MyFileLauncher
             if (modifier == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 // Ctrl + Shift のみ
-                return KeyEventType.ToggleIndexAndDirectory;
+                return KeyEventType.ChangeAppMode;
             }
 
             // Ctrl + 何か

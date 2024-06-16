@@ -5,13 +5,13 @@
         /// <summary>
         /// DisplayFileListCommand ファクトリメソッド
         /// </summary>
-        internal static DisplayFileListCommand Create(string mode, AppKeys.KeyEventType keyEventType, MainWindow mainWindow, History history)
+        internal static DisplayFileListCommand Create(AppMode mode, AppKeys.KeyEventType keyEventType, MainWindow mainWindow, History history)
         {
-            if (mode == "index")
+            if (mode == AppMode.Index)
             {
                 return CreateOfIndexMode(keyEventType, mainWindow, history);
             }
-            else if (mode == "directory")
+            else if (mode == AppMode.Directory)
             {
                 return CreateOfDirectoryMode(keyEventType, mainWindow, history);
             }

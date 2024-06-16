@@ -19,7 +19,7 @@ namespace MyFileLauncher
         private AppHotKey _appHotKey;
         private History _history;
         private FileIndex _fileIndex;
-        private string _searchMode = "index";    // TODO: リファクタ
+        private AppMode _appMode = AppMode.Index;
         private KeyCodeWindow? _keyCodeWindow;
 
         public MainWindow()
@@ -154,9 +154,9 @@ namespace MyFileLauncher
                 // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
                 e.Handled = true;
             }
-            else if (key == AppKeys.KeyEventType.ToggleIndexAndDirectory)
+            else if (key == AppKeys.KeyEventType.ChangeAppMode)
             {
-                ToggleModeIndexAndDirectory();
+                ChangeAppMode();
             }
         }
 
@@ -179,21 +179,20 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// インデックスモードとディレクトリモードを切り替える
+        /// アプリ動作モードを切り替える
         /// </summary>
-        private void ToggleModeIndexAndDirectory()
+        private void ChangeAppMode()
         {
-            // TODO: リファクタ
-            if (_searchMode == "index")
+            if (_appMode == AppMode.Index)
             {
-                _searchMode = "directory";
+                _appMode = AppMode.Directory;
             }
             else
             {
-                _searchMode = "index";
+                _appMode = AppMode.Index;
             }
 
-            Mode.Text = _searchMode;
+            Mode.Text = _appMode.ToString();
         }
 
         /// <summary>
@@ -201,11 +200,11 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_searchMode == "index")
+            if (_appMode == AppMode.Index)
             {
                 FileListDisplaying.UpdateOfIndex(_history, _fileIndex, SearchText.Text);
             }
-            else if (_searchMode == "directory")
+            else if (_appMode == AppMode.Directory)
             {
                 FileListDisplaying.UpdateOfDirectory(SearchText.Text);
             }
@@ -227,7 +226,7 @@ namespace MyFileLauncher
             }
 
             // イベントに見合った処理を実行
-            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_searchMode, keyEventType, this, _history);
+            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventType, this, _history);
             command.Execute();
         }
 
