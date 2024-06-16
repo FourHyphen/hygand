@@ -148,6 +148,12 @@ namespace MyFileLauncher
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
             AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
+            // 専用に処理しないキー入力ならここで終了
+            if (keyEventType == AppKeys.KeyEventType.None)
+            {
+                return;
+            }
+
             // フォーカスがどこに当たっていても動作モード切り替えは有効
             if (keyEventType == AppKeys.KeyEventType.ChangeAppMode)
             {
