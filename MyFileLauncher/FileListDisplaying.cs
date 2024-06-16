@@ -81,13 +81,44 @@ namespace MyFileLauncher
         /// ディレクトリの中身をセットする
         /// </summary>
         /// <remarks>アクセス権がないなどの場合は呼び出し元で制御すること</remarks>
-        internal void UpdateOfDirectory(string dirPath)
+        internal void UpdateOfDirectory(string searchText)
+        {
+            if (System.IO.Directory.Exists(searchText))
+            {
+                // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
+                FileList = GetFilesAndDirectories(searchText);
+            }
+            else
+            {
+                // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
+                // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
+                string dirPath = System.IO.Path.GetDirectoryName(searchText)!;
+                string start = System.IO.Path.GetFileName(searchText);
+
+                FileList = GetFilesAndDirectoriesStartsWith(dirPath, start);
+            }
+        }
+
+        /// <summary>
+        /// 存在するディレクトリの中にある、全てのファイル・ディレクトリをフルパス形式で返す
+        /// </summary>
+        private string[] GetFilesAndDirectories(string dirPath)
         {
             // ディレクトリの中にあるディレクトリの一覧取得
             string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
 
             // ディレクトリの中にあるファイルの一覧取得
-            FileList = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
+            return dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
+        }
+
+        /// <summary>
+        /// 存在するディレクトリの中にある、前方一致するファイル・ディレクトリをフルパス形式で返す
+        /// </summary>
+        private string[] GetFilesAndDirectoriesStartsWith(string dirPath, string start)
+        {
+            string[] files = GetFilesAndDirectories(dirPath);
+
+            return files.Where(path => System.IO.Path.GetFileName(path).StartsWith(start)).ToArray();
         }
     }
 }

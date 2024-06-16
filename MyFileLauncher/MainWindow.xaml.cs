@@ -207,11 +207,7 @@ namespace MyFileLauncher
             }
             else if (_searchMode == "directory")
             {
-                // TODO: 存在するディレクトリ内の前方一致するファイル・ディレクトリを表示する
-                if (System.IO.Directory.Exists(SearchText.Text))
-                {
-                    FileListDisplaying.UpdateOfDirectory(SearchText.Text);
-                }
+                FileListDisplaying.UpdateOfDirectory(SearchText.Text);
             }
         }
 
