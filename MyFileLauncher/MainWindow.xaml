@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyFileLauncher"
         mc:Ignorable="d"
+        PreviewKeyDown="EventKeyDowned"
         Title="MainWindow" Height="300" Width="600">
     <Grid>
         <DockPanel>
@@ -37,7 +38,6 @@
 
                     <Grid Grid.Column="1">
                         <TextBox x:Name="SearchText"
-                                 PreviewKeyDown="EventSearchTextKeyDowned"
                                  TextChanged="EventSearchTextChanged"/>
                     </Grid>
                 </Grid>
@@ -56,7 +56,6 @@
                                   ScrollViewer.VerticalScrollBarVisibility="Disabled">
                             <ListView.Resources>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="KeyDown" Handler="EventDisplayFileListKeyDowned"/>
                                 </Style>
                             </ListView.Resources>
                         </ListView>

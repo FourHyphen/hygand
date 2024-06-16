@@ -140,41 +140,42 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// イベント: テキストボックス内のキー押下時
+        /// MainWindows でのキーダウン時のイベント
         /// </summary>
-        private void EventSearchTextKeyDowned(object sender, System.Windows.Input.KeyEventArgs e)
+        private void EventKeyDowned(object sender, KeyEventArgs e)
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            AppKeys.KeyEventType key = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-            if (key == AppKeys.KeyEventType.FocusOnFileList)
+            AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+
+            // フォーカスがどこに当たっていても動作モード切り替えは有効
+            if (keyEventType == AppKeys.KeyEventType.ChangeAppMode)
             {
+                ChangeAppMode();
+                return;
+            }
+
+            if (keyEventType == AppKeys.KeyEventType.FocusOnFileList)
+            {
+                // テキストボックスにフォーカスがある場合に限って FileList にフォーカス移動
+                // (すでに FileList にフォーカスがある場合は改めてフォーカス移動する必要ない))
+                if (!SearchText.IsFocused)
+                {
+                    return;
+                }
+
                 MoveFocusOnFileList();
 
                 // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
                 e.Handled = true;
-            }
-            else if (key == AppKeys.KeyEventType.ChangeAppMode)
-            {
-                ChangeAppMode();
-            }
-        }
-
-        /// <summary>
-        /// フォーカスをファイルリストに移動する
-        /// </summary>
-        private void MoveFocusOnFileList()
-        {
-            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
-            if (FileListDisplaying.FileList.Count() == 0)
-            {
                 return;
             }
 
-            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
-            if (obj is ListViewItem target)
+            // ファイルリスト内のキー押下時はキー入力内容に見合った処理を実行
+            if (IsFocusedDisplayFileList())
             {
-                target.Focus();
+                DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventType, this, _history);
+                command.Execute();
             }
         }
 
@@ -196,6 +197,51 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// フォーカスをファイルリストに移動する
+        /// </summary>
+        private void MoveFocusOnFileList()
+        {
+            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
+            if (FileListDisplaying.FileList.Count() == 0)
+            {
+                return;
+            }
+
+            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
+            if (obj is ListViewItem target)
+            {
+                target.Focus();
+            }
+        }
+
+        /// <summary>
+        /// DisplayFileList にフォーカスが当たっているかを返す
+        /// </summary>
+        private bool IsFocusedDisplayFileList()
+        {
+            // DisplayFileList そのものにフォーカスが当たっているか
+            if (DisplayFileList.IsFocused)
+            {
+                return true;
+            }
+
+            // DisplayFileList の ListViewItem のいずれかにフォーカスが当たっているか
+            for (int i = 0; i < DisplayFileList.Items.Count; i++)
+            {
+                var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
+                if (obj is ListViewItem target)
+                {
+                    if (target.IsFocused)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// イベント: テキストボックス内の文字列で検索して結果を表示
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
@@ -208,26 +254,6 @@ namespace MyFileLauncher
             {
                 FileListDisplaying.UpdateOfDirectory(SearchText.Text);
             }
-        }
-
-        /// <summary>
-        /// イベント：DisplayFileList のキーダウン時
-        /// </summary>
-        private void EventDisplayFileListKeyDowned(object sender, KeyEventArgs e)
-        {
-            // 単押しの場合                  → キー情報は e.Key に入る
-            // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            var keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-
-            if (keyEventType == AppKeys.KeyEventType.FocusOnFileList)
-            {
-                // すでに DisplayFileList にフォーカス当たっているので何もしない
-                return;
-            }
-
-            // イベントに見合った処理を実行
-            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventType, this, _history);
-            command.Execute();
         }
 
         /// <summary>
