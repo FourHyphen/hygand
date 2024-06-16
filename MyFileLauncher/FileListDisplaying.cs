@@ -92,7 +92,7 @@ namespace MyFileLauncher
 
             // ユーザーがドライブのパス入力中などでディレクトリパス取得不可の場合は何もしない
             string? dirPath = System.IO.Path.GetDirectoryName(searchText);
-            if (dirPath == null || dirPath == String.Empty)
+            if (dirPath == null || dirPath == String.Empty || !System.IO.Directory.Exists(dirPath))
             {
                 return;
             }
