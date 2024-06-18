@@ -3,7 +3,7 @@ using System;
 
 namespace MyFileLauncher
 {
-    internal abstract class DisplayFileListCommand
+    internal abstract class MainWindowCommand
     {
         internal abstract void Execute();
 

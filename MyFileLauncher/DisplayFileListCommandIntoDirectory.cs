@@ -3,7 +3,7 @@
     /// <summary>
     /// ディレクトリに入る
     /// </summary>
-    internal class DisplayFileListCommandIntoDirectory : DisplayFileListCommand
+    internal class DisplayFileListCommandIntoDirectory : MainWindowCommand
     {
         private MainWindow _mainWindow;
 

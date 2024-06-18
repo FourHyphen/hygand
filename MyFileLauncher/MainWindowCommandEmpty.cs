@@ -3,7 +3,7 @@
     /// <summary>
     /// DisplayFileList への空コマンド定義クラス
     /// </summary>
-    internal class DisplayFileListCommandEmpty : DisplayFileListCommand
+    internal class MainWindowCommandEmpty : MainWindowCommand
     {
         internal override void Execute()
         {

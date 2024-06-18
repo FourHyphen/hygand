@@ -3,11 +3,11 @@
     /// <summary>
     /// ディレクトリ階層を 1 つ戻る
     /// </summary>
-    internal class DisplayFileListCommandBackDirectory : DisplayFileListCommand
+    internal class MainWindowCommandBackDirectory : MainWindowCommand
     {
         private MainWindow _mainWindow;
 
-        internal DisplayFileListCommandBackDirectory(MainWindow mainWindow)
+        internal MainWindowCommandBackDirectory(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
         }

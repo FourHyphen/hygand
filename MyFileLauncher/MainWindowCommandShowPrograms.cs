@@ -6,12 +6,12 @@ namespace MyFileLauncher
     /// <summary>
     /// ファイルに紐づくプログラムの一覧を表示する
     /// </summary>
-    internal class DisplayFileListCommandShowPrograms : DisplayFileListCommand
+    internal class MainWindowCommandShowPrograms : MainWindowCommand
     {
         private MainWindow _mainWindow;
         private History _history;
 
-        internal DisplayFileListCommandShowPrograms(MainWindow mainWindow, History history)
+        internal MainWindowCommandShowPrograms(MainWindow mainWindow, History history)
         {
             _mainWindow = mainWindow;
             _history = history;

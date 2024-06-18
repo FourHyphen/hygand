@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -221,7 +219,7 @@ namespace MyFileLauncher
         {
             // キー入力内容に見合った処理を実行
             AppKeys.KeyEventOnFileList keyEventOnFileList = AppKeys.ToKeyEventOnFileList(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventOnFileList, this, _history);
+            MainWindowCommand command = MainWindowCommandFocusedFileListFactory.Create(_appMode, keyEventOnFileList, this, _history);
             command.Execute();
 
             return;
@@ -232,40 +230,12 @@ namespace MyFileLauncher
         /// </summary>
         private void EventKeyDownedOnSearchText(KeyEventArgs e)
         {
+            // キー入力内容に見合った処理を実行
             AppKeys.KeyEventOnTextBox keyEventOnTextBox = AppKeys.ToKeyEventOnTextBox(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            MainWindowCommand command = MainWindowCommandFocusedSearchTextFactory.Create(_appMode, keyEventOnTextBox, this, e);
+            command.Execute();
 
-            // エンターキー押下時、前方一致検索の結果 1 件だけならそのディレクトリの中に入る
-            if (_appMode == AppMode.Directory)
-            {
-                // TODO: 実装
-            }
-
-            if (keyEventOnTextBox == AppKeys.KeyEventOnTextBox.FocusOnFileList)
-            {
-                MoveFocusOnFileList();
-
-                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
-                e.Handled = true;
-                return;
-            }
-        }
-
-        /// <summary>
-        /// フォーカスをファイルリストに移動する
-        /// </summary>
-        private void MoveFocusOnFileList()
-        {
-            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
-            if (FileListDisplaying.FileList.Count() == 0)
-            {
-                return;
-            }
-
-            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
-            if (obj is ListViewItem target)
-            {
-                target.Focus();
-            }
+            return;
         }
 
         /// <summary>

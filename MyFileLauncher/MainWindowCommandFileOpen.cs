@@ -3,12 +3,12 @@
     /// <summary>
     /// 既定のプログラムでファイルを開く
     /// </summary>
-    internal class DisplayFileListCommandFileOpen : DisplayFileListCommand
+    internal class MainWindowCommandFileOpen : MainWindowCommand
     {
         private MainWindow _mainWindow;
         private History _history;
 
-        internal DisplayFileListCommandFileOpen(MainWindow mainWindow, History history)
+        internal MainWindowCommandFileOpen(MainWindow mainWindow, History history)
         {
             _mainWindow = mainWindow;
             _history = history;

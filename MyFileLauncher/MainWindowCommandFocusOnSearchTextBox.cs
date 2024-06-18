@@ -5,11 +5,11 @@ namespace MyFileLauncher
     /// <summary>
     /// MainWindow の SearchTextBox にフォーカスを当てる
     /// </summary>
-    internal class DisplayFileListCommandFocusOnSearchTextBox : DisplayFileListCommand
+    internal class MainWindowCommandFocusOnSearchTextBox : MainWindowCommand
     {
         private MainWindow _mainWindow;
 
-        internal DisplayFileListCommandFocusOnSearchTextBox(MainWindow mainWindow)
+        internal MainWindowCommandFocusOnSearchTextBox(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
         }
