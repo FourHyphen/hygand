@@ -1,103 +1,123 @@
 ﻿using System.Windows.Input;
+using static MyFileLauncher.AppKeys;
 
 namespace MyFileLauncher
 {
     internal class AppKeys
     {
         /// <summary>
-        /// アプリケーションで有効な、キーによる操作内容
+        /// アプリケーションのどこにフォーカス当たっていても有効な、キーによる操作内容
         /// </summary>
-        internal enum KeyEventType
+        internal enum KeyEventOnAnyWhere
         {
-            FocusOnFileList,
-            FocusOnSearchTextBox,
-            FileOpen,
-            BackDirectory,
-            IntoDirectory,
-            ShowPrograms,
             ChangeAppMode,
             None
         }
 
         /// <summary>
-        /// キー入力内容をアプリケーションイベント内容に変換する
+        /// フォーカスがテキストボックスにある場合に有効な、キーによる操作内容
         /// </summary>
-        public static KeyEventType ToKeyEventType(Key key, Key systemKey, ModifierKeys modifier)
+        internal enum KeyEventOnTextBox
         {
-            // 単押しの場合                  → キー情報は e.Key に入る
-            // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            KeyEventType keyEventType = ToKeyEventTypeConbination(systemKey, modifier);
-            if (keyEventType != KeyEventType.None)
-            {
-                return keyEventType;
-            }
-
-            return ToKeyEventTypeOneKey(key);
+            FocusOnFileList,
+            None
         }
 
         /// <summary>
-        /// キー入力内容の組み合わせをアプリケーションイベント内容に変換する
+        /// フォーカスがファイルリストにある場合に有効な、キーによる操作内容
         /// </summary>
-        private static KeyEventType ToKeyEventTypeConbination(Key key, ModifierKeys modifier)
+        internal enum KeyEventOnFileList
+        {
+            FocusOnSearchTextBox,
+            FileOpen,
+            BackDirectory,
+            IntoDirectory,
+            ShowPrograms,
+            None
+        }
+
+        /// <summary>
+        /// キー入力内容をフォーカスがどこにあっても有効なアプリケーションイベントに変換する
+        /// </summary>
+        internal static KeyEventOnAnyWhere ToKeyEventOnAnyWhere(Key key, Key systemKey, ModifierKeys modifier)
         {
             // Ctrl + Shift + 何か
             if (modifier == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 // Ctrl + Shift のみ
-                return KeyEventType.ChangeAppMode;
+                return KeyEventOnAnyWhere.ChangeAppMode;
             }
 
-            // Ctrl + 何か
-            if (modifier == ModifierKeys.Control)
+            return KeyEventOnAnyWhere.None;
+        }
+
+        /// <summary>
+        /// キー入力内容をフォーカスがテキストボックスにある場合に有効なアプリケーションイベントに変換する
+        /// </summary>
+        internal static KeyEventOnTextBox ToKeyEventOnTextBox(Key key, Key systemKey, ModifierKeys modifier)
+        {
+            if (key == Key.Down)
             {
-                // nothing
+                return KeyEventOnTextBox.FocusOnFileList;
             }
 
+            return KeyEventOnTextBox.None;
+        }
+
+        /// <summary>
+        /// キー入力内容をフォーカスがファイルリストにある場合に有効なアプリケーションイベントに変換する
+        /// </summary>
+        internal static KeyEventOnFileList ToKeyEventOnFileList(Key key, Key systemKey, ModifierKeys modifier)
+        {
+            KeyEventOnFileList keyEvent = ToKeyEventOnFileListConbination(key, modifier);
+            if (keyEvent != KeyEventOnFileList.None)
+            {
+                return keyEvent;
+            }
+
+            return ToKeyEventOnFileListOneKey(key);
+        }
+
+        /// <summary>
+        /// キー入力内容の組み合わせを KeyEventOnFileList に変換する
+        /// </summary>
+        private static KeyEventOnFileList ToKeyEventOnFileListConbination(Key key, ModifierKeys modifier)
+        {
             // Shift + 何か
             if (modifier == ModifierKeys.Shift)
             {
                 if (key == Key.F10)
                 {
-                    return KeyEventType.ShowPrograms;
+                    return KeyEventOnFileList.ShowPrograms;
                 }
             }
 
-            // Alt + 何か
-            if (modifier == ModifierKeys.Alt)
-            {
-                // nothing
-            }
-
-            return KeyEventType.None;
+            return KeyEventOnFileList.None;
         }
 
         /// <summary>
         /// 単体キー入力内容をアプリケーションイベント内容に変換する
         /// </summary>
-        private static KeyEventType ToKeyEventTypeOneKey(Key key)
+        private static KeyEventOnFileList ToKeyEventOnFileListOneKey(Key key)
         {
-            if (key == Key.Down)
+            if (key == Key.Up)
             {
-                return KeyEventType.FocusOnFileList;
-            }
-            else if (key == Key.Up)
-            {
-                return KeyEventType.FocusOnSearchTextBox;
+                return KeyEventOnFileList.FocusOnSearchTextBox;
             }
             else if (key == Key.Enter)
             {
-                return KeyEventType.FileOpen;
+                return KeyEventOnFileList.FileOpen;
             }
             else if (key == Key.Left)
             {
-                return KeyEventType.BackDirectory;
+                return KeyEventOnFileList.BackDirectory;
             }
             else if (key == Key.Right)
             {
-                return KeyEventType.IntoDirectory;
+                return KeyEventOnFileList.IntoDirectory;
             }
 
-            return KeyEventType.None;
+            return KeyEventOnFileList.None;
         }
     }
 }

@@ -146,37 +146,26 @@ namespace MyFileLauncher
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            AppKeys.KeyEventType keyEventType = AppKeys.ToKeyEventType(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-
-            // 専用に処理しないキー入力ならここで終了
-            if (keyEventType == AppKeys.KeyEventType.None)
-            {
-                return;
-            }
+            AppKeys.KeyEventOnAnyWhere keyEventOnAnyWhere = AppKeys.ToKeyEventOnAnyWhere(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
             // フォーカスがどこに当たっていても動作モード切り替えは有効
-            if (keyEventType == AppKeys.KeyEventType.ChangeAppMode)
+            if (keyEventOnAnyWhere == AppKeys.KeyEventOnAnyWhere.ChangeAppMode)
             {
                 ChangeAppMode();
                 return;
             }
 
-            // ファイルリスト内のキー押下時はキー入力内容に見合った処理を実行
+            // ファイルリスト内でのキー押下時
             if (IsFocusedDisplayFileList())
             {
-                DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventType, this, _history);
-                command.Execute();
+                EventKeyDownedOnDisplayFileList(e);
                 return;
             }
 
-            // テキストボックスにフォーカスがある場合に限って FileList にフォーカス移動
-            // (すでに FileList にフォーカスがある場合は改めてフォーカス移動する必要ない))
-            if (SearchText.IsFocused && keyEventType == AppKeys.KeyEventType.FocusOnFileList)
+            // 検索テキストボックス内でのキー押下時
+            if (SearchText.IsFocused)
             {
-                MoveFocusOnFileList();
-
-                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
-                e.Handled = true;
+                EventKeyDownedOnSearchText(e);
                 return;
             }
         }
@@ -196,24 +185,6 @@ namespace MyFileLauncher
             }
 
             Mode.Text = _appMode.ToString();
-        }
-
-        /// <summary>
-        /// フォーカスをファイルリストに移動する
-        /// </summary>
-        private void MoveFocusOnFileList()
-        {
-            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
-            if (FileListDisplaying.FileList.Count() == 0)
-            {
-                return;
-            }
-
-            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
-            if (obj is ListViewItem target)
-            {
-                target.Focus();
-            }
         }
 
         /// <summary>
@@ -241,6 +212,60 @@ namespace MyFileLauncher
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// フォーカスが DisplayFileList に当たっている場合のキー押下時処理
+        /// </summary>
+        private void EventKeyDownedOnDisplayFileList(KeyEventArgs e)
+        {
+            // キー入力内容に見合った処理を実行
+            AppKeys.KeyEventOnFileList keyEventOnFileList = AppKeys.ToKeyEventOnFileList(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            DisplayFileListCommand command = DisplayFileListCommandFactory.Create(_appMode, keyEventOnFileList, this, _history);
+            command.Execute();
+
+            return;
+        }
+
+        /// <summary>
+        /// フォーカスが SearchText に当たっている場合のキー押下時処理
+        /// </summary>
+        private void EventKeyDownedOnSearchText(KeyEventArgs e)
+        {
+            AppKeys.KeyEventOnTextBox keyEventOnTextBox = AppKeys.ToKeyEventOnTextBox(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+
+            // エンターキー押下時、前方一致検索の結果 1 件だけならそのディレクトリの中に入る
+            if (_appMode == AppMode.Directory)
+            {
+                // TODO: 実装
+            }
+
+            if (keyEventOnTextBox == AppKeys.KeyEventOnTextBox.FocusOnFileList)
+            {
+                MoveFocusOnFileList();
+
+                // 処理済みにしないとフォーカス移動後に下キー押下時の既定処理が走ってしまう
+                e.Handled = true;
+                return;
+            }
+        }
+
+        /// <summary>
+        /// フォーカスをファイルリストに移動する
+        /// </summary>
+        private void MoveFocusOnFileList()
+        {
+            // _fileListDisplay.DisplayFileList.Focus() ではファイルリストの末尾などにフォーカス移動した
+            if (FileListDisplaying.FileList.Count() == 0)
+            {
+                return;
+            }
+
+            var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0);
+            if (obj is ListViewItem target)
+            {
+                target.Focus();
+            }
         }
 
         /// <summary>

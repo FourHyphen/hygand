@@ -5,7 +5,7 @@
         /// <summary>
         /// DisplayFileListCommand ファクトリメソッド
         /// </summary>
-        internal static DisplayFileListCommand Create(AppMode mode, AppKeys.KeyEventType keyEventType, MainWindow mainWindow, History history)
+        internal static DisplayFileListCommand Create(AppMode mode, AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
         {
             if (mode == AppMode.Index)
             {
@@ -22,30 +22,30 @@
         /// <summary>
         /// インデックスモードの場合の Command を返す
         /// </summary>
-        private static DisplayFileListCommand CreateOfIndexMode(AppKeys.KeyEventType keyEventType, MainWindow mainWindow, History history)
+        private static DisplayFileListCommand CreateOfIndexMode(AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
         {
             return keyEventType switch
             {
-                AppKeys.KeyEventType.FileOpen             => new DisplayFileListCommandFileOpen(mainWindow, history),
-                AppKeys.KeyEventType.FocusOnSearchTextBox => new DisplayFileListCommandFocusOnSearchTextBox(mainWindow),
-                AppKeys.KeyEventType.ShowPrograms         => new DisplayFileListCommandShowPrograms(mainWindow, history),
-                _                                         => new DisplayFileListCommandEmpty(),
+                AppKeys.KeyEventOnFileList.FileOpen             => new DisplayFileListCommandFileOpen(mainWindow, history),
+                AppKeys.KeyEventOnFileList.FocusOnSearchTextBox => new DisplayFileListCommandFocusOnSearchTextBox(mainWindow),
+                AppKeys.KeyEventOnFileList.ShowPrograms         => new DisplayFileListCommandShowPrograms(mainWindow, history),
+                _                                               => new DisplayFileListCommandEmpty(),
             };
         }
 
         /// <summary>
         /// ディレクトリモードの場合の Command を返す
         /// </summary>
-        private static DisplayFileListCommand CreateOfDirectoryMode(AppKeys.KeyEventType keyEventType, MainWindow mainWindow, History history)
+        private static DisplayFileListCommand CreateOfDirectoryMode(AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
         {
             return keyEventType switch
             {
-                AppKeys.KeyEventType.FileOpen             => new DisplayFileListCommandFileOpen(mainWindow, history),
-                AppKeys.KeyEventType.FocusOnSearchTextBox => new DisplayFileListCommandFocusOnSearchTextBox(mainWindow),
-                AppKeys.KeyEventType.ShowPrograms         => new DisplayFileListCommandShowPrograms(mainWindow, history),
-                AppKeys.KeyEventType.BackDirectory        => new DisplayFileListCommandBackDirectory(mainWindow),
-                AppKeys.KeyEventType.IntoDirectory        => new DisplayFileListCommandIntoDirectory(mainWindow),
-                _                                         => new DisplayFileListCommandEmpty(),
+                AppKeys.KeyEventOnFileList.FileOpen             => new DisplayFileListCommandFileOpen(mainWindow, history),
+                AppKeys.KeyEventOnFileList.FocusOnSearchTextBox => new DisplayFileListCommandFocusOnSearchTextBox(mainWindow),
+                AppKeys.KeyEventOnFileList.ShowPrograms         => new DisplayFileListCommandShowPrograms(mainWindow, history),
+                AppKeys.KeyEventOnFileList.BackDirectory        => new DisplayFileListCommandBackDirectory(mainWindow),
+                AppKeys.KeyEventOnFileList.IntoDirectory        => new DisplayFileListCommandIntoDirectory(mainWindow),
+                _                                               => new DisplayFileListCommandEmpty(),
             };
         }
     }
