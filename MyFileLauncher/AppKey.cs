@@ -69,7 +69,7 @@ namespace MyFileLauncher
         /// </summary>
         internal static KeyEventOnFileList ToKeyEventOnFileList(Key key, Key systemKey, ModifierKeys modifier)
         {
-            KeyEventOnFileList keyEvent = ToKeyEventOnFileListConbination(key, modifier);
+            KeyEventOnFileList keyEvent = ToKeyEventOnFileListConbination(systemKey, modifier);
             if (keyEvent != KeyEventOnFileList.None)
             {
                 return keyEvent;
@@ -81,12 +81,12 @@ namespace MyFileLauncher
         /// <summary>
         /// キー入力内容の組み合わせを KeyEventOnFileList に変換する
         /// </summary>
-        private static KeyEventOnFileList ToKeyEventOnFileListConbination(Key key, ModifierKeys modifier)
+        private static KeyEventOnFileList ToKeyEventOnFileListConbination(Key systemKey, ModifierKeys modifier)
         {
             // Shift + 何か
             if (modifier == ModifierKeys.Shift)
             {
-                if (key == Key.F10)
+                if (systemKey == Key.F10)
                 {
                     return KeyEventOnFileList.ShowPrograms;
                 }
