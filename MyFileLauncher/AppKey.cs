@@ -20,6 +20,7 @@ namespace MyFileLauncher
         internal enum KeyEventOnTextBox
         {
             FocusOnFileList,
+            IntoDirectory,
             None
         }
 
@@ -59,6 +60,10 @@ namespace MyFileLauncher
             if (key == Key.Down)
             {
                 return KeyEventOnTextBox.FocusOnFileList;
+            }
+            else if (key == Key.Right || key == Key.Return)
+            {
+                return KeyEventOnTextBox.IntoDirectory;
             }
 
             return KeyEventOnTextBox.None;

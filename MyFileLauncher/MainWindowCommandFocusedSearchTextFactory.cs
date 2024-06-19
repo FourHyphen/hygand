@@ -7,14 +7,15 @@ namespace MyFileLauncher
     {
         internal static MainWindowCommand Create(AppMode appMode, AppKeys.KeyEventOnTextBox keyEventOnTextBox, MainWindow mainWindow, KeyEventArgs e)
         {
-            // ディレクトリの中に入る要求で、かつ前方一致検索の結果 1 件だけの場合、テキストボックス記載ディレクトリに入る
-            if (appMode == AppMode.Directory)
+            // テキストボックス記載ディレクトリの中に入るのは条件付きのため注意
+            if (keyEventOnTextBox == AppKeys.KeyEventOnTextBox.IntoDirectory)
             {
-                // TODO: 実装
-                //return new MainWindowCommandIntoDirectory(mainWindow);
+                if (appMode == AppMode.Directory)
+                {
+                    return new SearchTextCommandIntoDirectory(mainWindow);
+                }
             }
-
-            if (keyEventOnTextBox == AppKeys.KeyEventOnTextBox.FocusOnFileList)
+            else if (keyEventOnTextBox == AppKeys.KeyEventOnTextBox.FocusOnFileList)
             {
                 return new MainWindowCommandMoveFocusOnFileList(mainWindow, e);
             }

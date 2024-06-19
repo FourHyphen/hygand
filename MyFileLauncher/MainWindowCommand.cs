@@ -114,5 +114,13 @@ namespace MyFileLauncher
                 System.Windows.Input.Keyboard.Focus(textBox);
             }), null);
         }
+
+        /// <summary>
+        /// テキストボックスの末尾にキーカーソルをセットする
+        /// </summary>
+        protected void SetKeyCursolEndOfTextBox(TextBox textBox)
+        {
+            textBox.Select(textBox.Text.Length, 0);
+        }
     }
 }
