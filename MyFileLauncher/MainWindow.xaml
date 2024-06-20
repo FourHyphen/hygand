@@ -32,8 +32,7 @@
 
                     <Grid Grid.Column="0">
                         <TextBox x:Name="Mode"
-                                 IsEnabled="False"
-                                 Text="index"/>
+                                 IsEnabled="False"/>
                     </Grid>
 
                     <Grid Grid.Column="1">

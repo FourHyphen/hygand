@@ -27,18 +27,30 @@ namespace MyFileLauncher
             // データバインドに必要
             DataContext = this;
 
+            // 初期モード設定
+            InitAppMode();
+
             // ホットキー設定
             SetHotKey();
 
             // インデックス設定
             InitFileIndex();
 
-            // ファイルリスト初期化
+            // 画面表示内容初期化
             _history = History.CreateInstance();
-            InitDisplayFileList(_history);
+            ResetDisplay(_history);
 
             // 起動後すぐに検索を始められるよう SearchTextBox にフォーカスセット
             SearchText.Focus();
+        }
+
+        /// <summary>
+        ///  モード初期化
+        /// </summary>
+        private void InitAppMode()
+        {
+            _appMode = AppMode.Index;
+            Mode.Text = _appMode.ToString();
         }
 
         /// <summary>
@@ -56,15 +68,27 @@ namespace MyFileLauncher
         {
             if (Visibility == Visibility.Visible)
             {
-                Hide();
-
-                // キー確認ウィンドウが表示されていれば閉じる
-                DestroyKeyCodeWindow();
+                // 画面を非表示にする
+                HideWindow();
             }
             else
             {
+                // 前回の画面表示をリセットしてから表示
                 Show();
+                ResetDisplay(_history);
             }
+        }
+
+        /// <summary>
+        /// 画面を非表示にする
+        /// </summary>
+        internal void HideWindow()
+        {
+            // TODO: Hide 時のイベントがあればそこで処理する
+            // キー確認ウィンドウが表示されていれば閉じる
+            DestroyKeyCodeWindow();
+
+            Hide();
         }
 
         /// <summary>
@@ -83,6 +107,44 @@ namespace MyFileLauncher
             }
 
             _keyCodeWindow = null;
+        }
+
+        /// <summary>
+        /// アプリの表示を初期化する
+        /// </summary>
+        private void ResetDisplay(History history)
+        {
+            // モード初期化
+            InitAppMode();
+
+            // テキストボックス初期化
+            SearchText.Text = "";
+
+            // ファイルリスト初期化
+            InitDisplayFileList(history);
+        }
+
+        /// <summary>
+        /// DisplayFileList 初期設定
+        /// </summary>
+        private void InitDisplayFileList(History history)
+        {
+            // ファイルリストの初期値に履歴をセット
+            FileListDisplaying.UpdateOfHistory(history);
+
+            // スクロールバー表示のための ScrollViewer 横幅設定
+            DisplayFileListScrollViewer.MaxWidth = this.Width - BufferDisplayFileListWidth;
+
+            // スクロールバー表示のための ScrollViewer 高さ設定
+            // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合は初期値設定
+            if (FileListArea.ActualHeight != double.NaN && FileListArea.ActualHeight > 0.0)
+            {
+                DisplayFileListScrollViewer.MaxHeight = (double)FileListArea.ActualHeight;
+            }
+            else
+            {
+                DisplayFileListScrollViewer.MaxHeight = DefaultDisplayFileListScrollViewerHeight;
+            }
         }
 
         /// <summary>
@@ -112,29 +174,6 @@ namespace MyFileLauncher
         {
             MessageBoxResult mbr = MessageBox.Show("インデックスを作成しますか？", "Index.info does not exist.", MessageBoxButton.YesNo);
             return (mbr == MessageBoxResult.Yes);
-        }
-
-        /// <summary>
-        /// DisplayFileList 初期設定
-        /// </summary>
-        private void InitDisplayFileList(History history)
-        {
-            // ファイルリストの初期値に履歴をセット
-            FileListDisplaying.UpdateOfHistory(history);
-
-            // スクロールバー表示のための ScrollViewer 横幅設定
-            DisplayFileListScrollViewer.MaxWidth = this.Width - BufferDisplayFileListWidth;
-
-            // スクロールバー表示のための ScrollViewer 高さ設定
-            // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合は初期値設定
-            if (FileListArea.ActualHeight != double.NaN && FileListArea.ActualHeight > 0.0)
-            {
-                DisplayFileListScrollViewer.MaxHeight = (double)FileListArea.ActualHeight;
-            }
-            else
-            {
-                DisplayFileListScrollViewer.MaxHeight = DefaultDisplayFileListScrollViewerHeight;
-            }
         }
 
         /// <summary>
@@ -218,6 +257,7 @@ namespace MyFileLauncher
         private void EventKeyDownedOnDisplayFileList(KeyEventArgs e)
         {
             // キー入力内容に見合った処理を実行
+            // TODO: ファイルやディレクトリに使える文字が入力された場合、SearchText に転送する(ことで前方一致検索する)
             AppKeys.KeyEventOnFileList keyEventOnFileList = AppKeys.ToKeyEventOnFileList(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
             MainWindowCommand command = MainWindowCommandFocusedFileListFactory.Create(_appMode, keyEventOnFileList, this, _history);
             command.Execute();

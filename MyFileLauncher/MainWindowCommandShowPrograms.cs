@@ -60,7 +60,7 @@ namespace MyFileLauncher
             if (fcmw.DidExecuteContext)
             {
                 _history.Add(fcmw.FilePath);
-                _mainWindow.Hide();
+                _mainWindow.HideWindow();
             }
         }
     }

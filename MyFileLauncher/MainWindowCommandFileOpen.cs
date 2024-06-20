@@ -30,7 +30,7 @@
             _history.Add(focusedFilePath);
 
             // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
-            _mainWindow.Hide();
+            _mainWindow.HideWindow();
         }
     }
 }
