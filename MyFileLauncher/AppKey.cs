@@ -61,7 +61,7 @@ namespace MyFileLauncher
             {
                 return KeyEventOnTextBox.FocusOnFileList;
             }
-            else if (key == Key.Right || key == Key.Return)
+            else if (key == Key.Right)
             {
                 return KeyEventOnTextBox.IntoDirectory;
             }
