@@ -3,11 +3,11 @@
     /// <summary>
     /// ディレクトリに入る
     /// </summary>
-    internal class DisplayFileListCommandIntoDirectory : MainWindowCommand
+    internal class MainWindowCommandIntoDirectory : MainWindowCommand
     {
         private MainWindow _mainWindow;
 
-        internal DisplayFileListCommandIntoDirectory(MainWindow mainWindow)
+        internal MainWindowCommandIntoDirectory(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
         }

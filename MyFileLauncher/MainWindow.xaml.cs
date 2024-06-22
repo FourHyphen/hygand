@@ -177,34 +177,30 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// MainWindows でのキーダウン時のイベント
+        /// MainWindow でのキーダウン時のイベント
         /// </summary>
         private void EventKeyDowned(object sender, KeyEventArgs e)
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            AppKeys.KeyEventOnAnyWhere keyEventOnAnyWhere = AppKeys.ToKeyEventOnAnyWhere(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            AppKeys.KeyEvent keyEventOnAnyWhere = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
             // フォーカスがどこに当たっていても動作モード切り替えは有効
-            if (keyEventOnAnyWhere == AppKeys.KeyEventOnAnyWhere.ChangeAppMode)
+            if (keyEventOnAnyWhere == AppKeys.KeyEvent.ChangeAppMode)
             {
                 ChangeAppMode();
                 return;
             }
 
-            // ファイルリスト内でのキー押下時
-            if (IsFocusedDisplayFileList())
-            {
-                EventKeyDownedOnDisplayFileList(e);
-                return;
-            }
+            // キー入力内容に見合った処理を実行
+            //TODO: フォーカスは常にテキストボックスで保持して、上下左右キーでファイルリストを移動できるようにする;
+            //    ListView でなくなるかもしれない;
+            //      -> フォーカスをテキストボックスとファイルリストでやり取りするから面倒だと気付いた;
+            AppKeys.KeyEvent keyEvent = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            MainWindowCommand command = MainWindowCommandFactory.Create(_appMode, keyEvent, this, _history);
+            command.Execute();
 
-            // 検索テキストボックス内でのキー押下時
-            if (SearchText.IsFocused)
-            {
-                EventKeyDownedOnSearchText(e);
-                return;
-            }
+            return;
         }
 
         /// <summary>
@@ -222,60 +218,6 @@ namespace MyFileLauncher
             }
 
             Mode.Text = _appMode.ToString();
-        }
-
-        /// <summary>
-        /// DisplayFileList にフォーカスが当たっているかを返す
-        /// </summary>
-        private bool IsFocusedDisplayFileList()
-        {
-            // DisplayFileList そのものにフォーカスが当たっているか
-            if (DisplayFileList.IsFocused)
-            {
-                return true;
-            }
-
-            // DisplayFileList の ListViewItem のいずれかにフォーカスが当たっているか
-            for (int i = 0; i < DisplayFileList.Items.Count; i++)
-            {
-                var obj = DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
-                if (obj is ListViewItem target)
-                {
-                    if (target.IsFocused)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// フォーカスが DisplayFileList に当たっている場合のキー押下時処理
-        /// </summary>
-        private void EventKeyDownedOnDisplayFileList(KeyEventArgs e)
-        {
-            // キー入力内容に見合った処理を実行
-            // TODO: ファイルやディレクトリに使える文字が入力された場合、SearchText に転送する(ことで前方一致検索する)
-            AppKeys.KeyEventOnFileList keyEventOnFileList = AppKeys.ToKeyEventOnFileList(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-            MainWindowCommand command = MainWindowCommandFocusedFileListFactory.Create(_appMode, keyEventOnFileList, this, _history);
-            command.Execute();
-
-            return;
-        }
-
-        /// <summary>
-        /// フォーカスが SearchText に当たっている場合のキー押下時処理
-        /// </summary>
-        private void EventKeyDownedOnSearchText(KeyEventArgs e)
-        {
-            // キー入力内容に見合った処理を実行
-            AppKeys.KeyEventOnTextBox keyEventOnTextBox = AppKeys.ToKeyEventOnTextBox(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
-            MainWindowCommand command = MainWindowCommandFocusedSearchTextFactory.Create(_appMode, keyEventOnTextBox, this, e);
-            command.Execute();
-
-            return;
         }
 
         /// <summary>

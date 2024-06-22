@@ -1,19 +1,25 @@
 ﻿namespace MyFileLauncher
 {
-    internal static class MainWindowCommandFocusedFileListFactory
+    internal static class MainWindowCommandFactory
     {
-        /// <summary>
-        /// フォーカスが DisplayFileList にある場合のファクトリメソッド
-        /// </summary>
-        internal static MainWindowCommand Create(AppMode mode, AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
+        internal static MainWindowCommand Create(AppMode appMode, AppKeys.KeyEvent keyEvent, MainWindow mainWindow, History history)
         {
-            if (mode == AppMode.Index)
+            if (keyEvent == AppKeys.KeyEvent.DownFileList)
             {
-                return CreateOfIndexMode(keyEventType, mainWindow, history);
+                return new MainWindowCommandDownFileList(mainWindow);
             }
-            else if (mode == AppMode.Directory)
+            else if (keyEvent == AppKeys.KeyEvent.UpFileList)
             {
-                return CreateOfDirectoryMode(keyEventType, mainWindow, history);
+                return new MainWindowCommandUpFileList(mainWindow);
+            }
+
+            if (appMode == AppMode.Index)
+            {
+                return CreateOfIndexMode(keyEvent, mainWindow, history);
+            }
+            else if (appMode == AppMode.Directory)
+            {
+                return CreateOfDirectoryMode(keyEvent, mainWindow, history);
             }
 
             return new MainWindowCommandEmpty();
@@ -22,30 +28,28 @@
         /// <summary>
         /// インデックスモードの場合の Command を返す
         /// </summary>
-        private static MainWindowCommand CreateOfIndexMode(AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
+        private static MainWindowCommand CreateOfIndexMode(AppKeys.KeyEvent keyEvent, MainWindow mainWindow, History history)
         {
-            return keyEventType switch
+            return keyEvent switch
             {
-                AppKeys.KeyEventOnFileList.FileOpen             => new MainWindowCommandFileOpen(mainWindow, history),
-                AppKeys.KeyEventOnFileList.FocusOnSearchTextBox => new MainWindowCommandFocusOnSearchTextBox(mainWindow),
-                AppKeys.KeyEventOnFileList.ShowPrograms         => new MainWindowCommandShowPrograms(mainWindow, history),
-                _                                               => new MainWindowCommandEmpty(),
+                AppKeys.KeyEvent.FileOpen     => new MainWindowCommandFileOpen(mainWindow, history),
+                AppKeys.KeyEvent.ShowPrograms => new MainWindowCommandShowPrograms(mainWindow, history),
+                _                             => new MainWindowCommandEmpty(),
             };
         }
 
         /// <summary>
         /// ディレクトリモードの場合の Command を返す
         /// </summary>
-        private static MainWindowCommand CreateOfDirectoryMode(AppKeys.KeyEventOnFileList keyEventType, MainWindow mainWindow, History history)
+        private static MainWindowCommand CreateOfDirectoryMode(AppKeys.KeyEvent keyEvent, MainWindow mainWindow, History history)
         {
-            return keyEventType switch
+            return keyEvent switch
             {
-                AppKeys.KeyEventOnFileList.FileOpen             => new MainWindowCommandFileOpen(mainWindow, history),
-                AppKeys.KeyEventOnFileList.FocusOnSearchTextBox => new MainWindowCommandFocusOnSearchTextBox(mainWindow),
-                AppKeys.KeyEventOnFileList.ShowPrograms         => new MainWindowCommandShowPrograms(mainWindow, history),
-                AppKeys.KeyEventOnFileList.BackDirectory        => new MainWindowCommandBackDirectory(mainWindow),
-                AppKeys.KeyEventOnFileList.IntoDirectory        => new DisplayFileListCommandIntoDirectory(mainWindow),
-                _                                               => new MainWindowCommandEmpty(),
+                AppKeys.KeyEvent.FileOpen      => new MainWindowCommandFileOpen(mainWindow, history),
+                AppKeys.KeyEvent.ShowPrograms  => new MainWindowCommandShowPrograms(mainWindow, history),
+                AppKeys.KeyEvent.BackDirectory => new MainWindowCommandBackDirectory(mainWindow),
+                AppKeys.KeyEvent.IntoDirectory => new MainWindowCommandIntoDirectory(mainWindow),
+                _                              => new MainWindowCommandEmpty(),
             };
         }
     }

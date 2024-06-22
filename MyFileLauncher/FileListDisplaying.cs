@@ -13,10 +13,10 @@ namespace MyFileLauncher
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string[] _fileList = new string[0];
+        private List<FileDisplaying> _fileList = new List<FileDisplaying>();
 
         // internal では画面に反映されなかったため public
-        public string[] FileList
+        public List<FileDisplaying> FileList
         {
             get
             {
@@ -39,6 +39,41 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// SelectedIndex を 1 増やす
+        /// すでにインデックス最大値なら何もしない
+        /// </summary>
+        internal void IncrementSelectedIndex()
+        {
+            int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
+            int newSelected = nowSelected + 1;
+
+            ChangeSelectedIndex(nowSelected, newSelected);
+        }
+
+        private void ChangeSelectedIndex(int nowSelected, int newSelected)
+        {
+            if (newSelected < 0 || newSelected >= _fileList.Count)
+            {
+                return;
+            }
+
+            _fileList[nowSelected].IsSelected = false;
+            _fileList[newSelected].IsSelected = true;
+        }
+
+        /// <summary>
+        /// SelectedIndex を 1 減らす
+        /// すでにインデックス最大値なら何もしない
+        /// </summary>
+        internal void DecrementSelectedIndex()
+        {
+            int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
+            int newSelected = nowSelected - 1;
+
+            ChangeSelectedIndex(nowSelected, newSelected);
+        }
+
+        /// <summary>
         /// 履歴をセットする
         /// </summary>
         internal void UpdateOfHistory(History history)
@@ -51,7 +86,8 @@ namespace MyFileLauncher
         /// </summary>
         private void UpdatePart(string[] files)
         {
-            FileList = Slice(files, DisplayingNum);
+            string[] sliced = Slice(files, DisplayingNum);
+            FileList = ToFileListDisplaying(sliced, 0);
         }
 
         /// <summary>
@@ -66,6 +102,14 @@ namespace MyFileLauncher
             }
 
             return array[0..end].ToArray();
+        }
+
+        private List<FileDisplaying> ToFileListDisplaying(string[] files, int selectedIndex)
+        {
+            List<FileDisplaying> fileDisplayings = files.Select(file => new FileDisplaying(file)).ToList();
+            fileDisplayings[selectedIndex].IsSelected = true;
+
+            return fileDisplayings;
         }
 
         /// <summary>
@@ -86,7 +130,7 @@ namespace MyFileLauncher
             // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
             if (System.IO.Directory.Exists(searchText))
             {
-                FileList = GetFilesAndDirectories(searchText);
+                FileList = ToFileListDisplaying(GetFilesAndDirectories(searchText), 0);
                 return;
             }
 
@@ -100,7 +144,7 @@ namespace MyFileLauncher
             // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
             // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
             string start = System.IO.Path.GetFileName(searchText);
-            FileList = GetFilesAndDirectoriesStartsWith(dirPath!, start);
+            FileList = ToFileListDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), 0);
         }
 
         /// <summary>

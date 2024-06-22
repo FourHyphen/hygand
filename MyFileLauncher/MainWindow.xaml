@@ -51,12 +51,28 @@
 
                         <ListView x:Name="DisplayFileList"
                                   ItemsSource="{Binding Path=FileListDisplaying.FileList}"
+                                  IsEnabled="False"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                   ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                            <ListView.Resources>
+                            <!--IsSelected=true の場合に表示を変更する設定-->
+                            <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Setter Property="Background" Value="Black"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
-                            </ListView.Resources>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="file" DisplayMemberBinding="{Binding FilePath}"/>
+                                    <GridViewColumn Header="IsSelected" DisplayMemberBinding="{Binding IsSelected}"/>
+                                </GridView>
+                            </ListView.View>
                         </ListView>
                     </ScrollViewer>
                 </Grid>
