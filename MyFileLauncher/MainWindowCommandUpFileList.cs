@@ -11,7 +11,7 @@
 
         internal override void Execute()
         {
-            _mainWindow.FileListDisplaying.DecrementSelectedIndex();
+            _mainWindow.FileListDisplaying.SelectBack();
         }
     }
 }

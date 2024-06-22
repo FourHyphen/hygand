@@ -1,4 +1,6 @@
-﻿namespace MyFileLauncher
+﻿using System;
+
+namespace MyFileLauncher
 {
     /// <summary>
     /// 既定のプログラムでファイルを開く
@@ -31,6 +33,28 @@
 
             // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
             _mainWindow.HideWindow();
+        }
+
+        /// <summary>
+        /// 登録されたプログラムでファイルを開く
+        /// </summary>
+        private void OpenFile(string filePath)
+        {
+            Type? type = Type.GetTypeFromProgID("Shell.Application");
+            if (type == null)
+            {
+                return;
+            }
+
+            // 参照に Microsoft Shell Controls And Automation を追加することで Shell32 を参照できる
+            Shell32.Shell? shell = (Shell32.Shell?)Activator.CreateInstance(type!);
+            if (shell == null)
+            {
+                return;
+            }
+
+            shell!.Open(filePath);
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell!);
         }
     }
 }

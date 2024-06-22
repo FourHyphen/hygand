@@ -39,10 +39,10 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// SelectedIndex を 1 増やす
-        /// すでにインデックス最大値なら何もしない
+        /// 次のファイルを選択状態にする
+        /// すでに末尾なら何もしない
         /// </summary>
-        internal void IncrementSelectedIndex()
+        internal void SelectNext()
         {
             int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
             int newSelected = nowSelected + 1;
@@ -62,10 +62,10 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// SelectedIndex を 1 減らす
-        /// すでにインデックス最大値なら何もしない
+        /// 1 つ前のファイルを選択状態にする
+        /// すでに先頭なら何もしない
         /// </summary>
-        internal void DecrementSelectedIndex()
+        internal void SelectBack()
         {
             int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
             int newSelected = nowSelected - 1;

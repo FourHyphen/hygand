@@ -61,5 +61,18 @@ namespace MyFileLauncher
                 _mainWindow.HideWindow();
             }
         }
+
+        /// <summary>
+        /// テキストボックスにフォーカスを当てる
+        /// </summary>
+        private void SetFocusTextBox(TextBox textBox)
+        {
+            // Dispatcher 使わないと DisplayFileList ->  TextBox 方向にフォーカス移動できなかった
+            textBox.Dispatcher.BeginInvoke(new System.Action(() =>
+            {
+                textBox.Focus();
+                System.Windows.Input.Keyboard.Focus(textBox);
+            }), null);
+        }
     }
 }

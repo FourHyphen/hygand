@@ -183,17 +183,17 @@ namespace MyFileLauncher
         {
             // 単押しの場合                  → キー情報は e.Key に入る
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
-            AppKeys.KeyEvent keyEventOnAnyWhere = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
+            AppKeys.KeyEvent keyEvent = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
-            // フォーカスがどこに当たっていても動作モード切り替えは有効
-            if (keyEventOnAnyWhere == AppKeys.KeyEvent.ChangeAppMode)
+            // 動作モード切り替え
+            // TODO: command 化
+            if (keyEvent == AppKeys.KeyEvent.ChangeAppMode)
             {
                 ChangeAppMode();
                 return;
             }
 
             // キー入力内容に見合った処理を実行
-            AppKeys.KeyEvent keyEvent = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
             MainWindowCommand command = MainWindowCommandFactory.Create(_appMode, keyEvent, this, _history);
             command.Execute();
 

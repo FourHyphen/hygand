@@ -28,20 +28,20 @@
                 return;
             }
 
-            // 戻り先でフォーカスを当てるための、今表示されているディレクトリパス取得
-            string willFocusDirPath = GetNowDisplayingDirPath(selectedFilePath);
+            // 戻り先の選択状態を再現するための、今表示されているディレクトリパス取得
+            string willSelectDirPath = GetNowDisplayingDirPath(selectedFilePath);
 
             // 更新
             UpdateOfDirectoryInfo(_mainWindow, dirPath);
 
-            // 移動元にフォーカスを当て、移動前の状態に戻す
-            SelectFile(_mainWindow, willFocusDirPath);
+            // 移動元の選択状態を再現
+            SelectFile(willSelectDirPath);
         }
 
         /// <summary>
         /// 1 階層戻る先のディレクトリパスを返す
         /// </summary>
-        private string? GetBackDirectoryPath(string focusedFilePath, string searchText)
+        private string? GetBackDirectoryPath(string selectedFilePath, string searchText)
         {
             // 今のテキストボックスがディレクトリのパスであればこれの 1 階層上を返す
             if (System.IO.Directory.Exists(searchText))
@@ -50,16 +50,27 @@
             }
 
             // 選択されているファイルのディレクトリパスを返す
-            return System.IO.Path.GetDirectoryName(focusedFilePath)!;
+            return System.IO.Path.GetDirectoryName(selectedFilePath)!;
         }
 
         /// <summary>
         /// 今表示しているディレクトリのパスを返す
         /// </summary>
-        private string GetNowDisplayingDirPath(string focusedFilePath)
+        private string GetNowDisplayingDirPath(string selectedFilePath)
         {
-            // 今フォーカスが当たっているファイルパスの 1 階層上が、今表示しているディレクトリのパス
-            return System.IO.Path.GetDirectoryName(focusedFilePath);
+            // 今選択されているファイルパスの 1 階層上が、今表示しているディレクトリのパス
+            return System.IO.Path.GetDirectoryName(selectedFilePath);
+        }
+
+        /// <summary>
+        /// ファイルリストの特定のファイルを選択状態にする
+        /// </summary>
+        private void SelectFile(string filePath)
+        {
+            // ListView 更新直後だと ListView の Item が空になったため、ListView に Item がセットされるようにする
+            _mainWindow.UpdateLayout();
+
+            _mainWindow.FileListDisplaying.SetSelect(filePath);
         }
     }
 }

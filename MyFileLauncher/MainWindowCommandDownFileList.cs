@@ -13,7 +13,7 @@ namespace MyFileLauncher
 
         internal override void Execute()
         {
-            _mainWindow.FileListDisplaying.IncrementSelectedIndex();
+            _mainWindow.FileListDisplaying.SelectNext();
         }
     }
 }
