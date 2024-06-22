@@ -70,7 +70,6 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="file" DisplayMemberBinding="{Binding FilePath}"/>
-                                    <GridViewColumn Header="IsSelected" DisplayMemberBinding="{Binding IsSelected}"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>

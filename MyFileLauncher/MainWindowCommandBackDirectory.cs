@@ -14,28 +14,28 @@
 
         internal override void Execute()
         {
-            // 今フォーカスされているファイルパスを取得
-            string? focusedFilePath = GetListViewItemStringFocused(_mainWindow);
-            if (focusedFilePath == null)
+            // 今選択されているファイルパスを取得
+            string? selectedFilePath = GetDisplayingFileListSelected(_mainWindow);
+            if (selectedFilePath == null)
             {
                 return;
             }
 
             // 戻り先ディレクトリパス取得
-            string? dirPath = GetBackDirectoryPath(focusedFilePath, _mainWindow.SearchText.Text);
+            string? dirPath = GetBackDirectoryPath(selectedFilePath, _mainWindow.SearchText.Text);
             if (dirPath == null)
             {
                 return;
             }
 
             // 戻り先でフォーカスを当てるための、今表示されているディレクトリパス取得
-            string willFocusDirPath = GetNowDisplayingDirPath(focusedFilePath);
+            string willFocusDirPath = GetNowDisplayingDirPath(selectedFilePath);
 
             // 更新
             UpdateOfDirectoryInfo(_mainWindow, dirPath);
 
             // 移動元にフォーカスを当て、移動前の状態に戻す
-            SetFocusListViewItem(_mainWindow, willFocusDirPath);
+            SelectFile(_mainWindow, willFocusDirPath);
         }
 
         /// <summary>

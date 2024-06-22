@@ -193,9 +193,6 @@ namespace MyFileLauncher
             }
 
             // キー入力内容に見合った処理を実行
-            //TODO: フォーカスは常にテキストボックスで保持して、上下左右キーでファイルリストを移動できるようにする;
-            //    ListView でなくなるかもしれない;
-            //      -> フォーカスをテキストボックスとファイルリストでやり取りするから面倒だと気付いた;
             AppKeys.KeyEvent keyEvent = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
             MainWindowCommand command = MainWindowCommandFactory.Create(_appMode, keyEvent, this, _history);
             command.Execute();

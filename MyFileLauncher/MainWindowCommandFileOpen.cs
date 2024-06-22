@@ -16,18 +16,18 @@
 
         internal override void Execute()
         {
-            // フォーカスの当たっているファイルパスを取得
-            string? focusedFilePath = GetListViewItemStringFocused(_mainWindow);
-            if (focusedFilePath == null)
+            // 現在選択されているファイルパスを取得
+            string? selectedFilePath = GetDisplayingFileListSelected(_mainWindow);
+            if (selectedFilePath == null)
             {
                 return;
             }
 
             // ファイルを開く
-            OpenFile(focusedFilePath);
+            OpenFile(selectedFilePath);
 
             // 履歴に追加
-            _history.Add(focusedFilePath);
+            _history.Add(selectedFilePath);
 
             // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
             _mainWindow.HideWindow();

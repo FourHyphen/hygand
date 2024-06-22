@@ -19,15 +19,15 @@ namespace MyFileLauncher
 
         internal override void Execute()
         {
-            // フォーカスされているファイルパスを取得
-            string? focusedFilePath = GetListViewItemStringFocused(_mainWindow);
-            if (focusedFilePath == null)
+            // 選択されているファイルパスを取得
+            string? selectedFilePath = GetDisplayingFileListSelected(_mainWindow);
+            if (selectedFilePath == null)
             {
                 return;
             }
 
             // コンテキストメニュー一覧ウィンドウを表示
-            FileContextMenuWindow window = new FileContextMenuWindow(focusedFilePath);
+            FileContextMenuWindow window = new FileContextMenuWindow(selectedFilePath);
             window.Owner = _mainWindow;
             window.Show();
 
@@ -44,19 +44,17 @@ namespace MyFileLauncher
             // 無効化からの復帰
             _mainWindow.IsEnabled = true;
 
+            // 検索テキストボックスにフォーカス移動
+            SetFocusTextBox(_mainWindow.SearchText);
+
             if (!(sender is FileContextMenuWindow))
             {
-                // 操作したファイルパス不明のため検索テキストボックスにフォーカス移動
-                // ここは基本的に通らない想定
-                SetFocusTextBox(_mainWindow.SearchText);
+                // 操作したファイルパス不明、ここは基本的に通らない想定
                 return;
             }
 
-            // ウィンドウ閉じただけだとフォーカスは宙ぶらりんになったので明示的に指定
-            FileContextMenuWindow fcmw = (FileContextMenuWindow)sender;
-            SetFocusListViewItem(_mainWindow, fcmw.FilePath);
-
             // コンテキストを実行した場合、用は済んだので履歴に追加してメイン画面を非表示化
+            FileContextMenuWindow fcmw = (FileContextMenuWindow)sender;
             if (fcmw.DidExecuteContext)
             {
                 _history.Add(fcmw.FilePath);

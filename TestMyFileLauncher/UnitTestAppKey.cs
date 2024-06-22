@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace TestMyFileLauncher
 {
@@ -13,12 +12,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeFileOpenFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Enter,
-                                                                                            systemKey: Key.None,
-                                                                                            modifier: ModifierKeys.None);
+            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Enter,
+                                                                                    systemKey: Key.None,
+                                                                                    modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.FileOpen, actual: ket) ;
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.FileOpen, actual: ket) ;
         }
 
         /// <summary>
@@ -28,12 +27,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeBackDirectoryFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Left,
-                                                                                            systemKey: Key.None,
-                                                                                            modifier: ModifierKeys.None);
+            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Left,
+                                                                                    systemKey: Key.None,
+                                                                                    modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.BackDirectory, actual: ket);
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.BackDirectory, actual: ket);
         }
 
         /// <summary>
@@ -43,42 +42,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeIntoDirectoryFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Right,
-                                                                                            systemKey: Key.None,
-                                                                                            modifier: ModifierKeys.None);
+            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Right,
+                                                                                    systemKey: Key.None,
+                                                                                    modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.IntoDirectory, actual: ket);
-        }
-
-        /// <summary>
-        /// 所定のキー入力をフォーカスをファイルリストに移動するイベントに変換する
-        /// </summary>
-        [TestMethod]
-        public void ToKeyEventTypeFocusOnFileListFromInputKey()
-        {
-            // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Down,
-                                                                                            systemKey: Key.None,
-                                                                                            modifier: ModifierKeys.None);
-
-            // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.FocusOnFileList, actual: ket);
-        }
-
-        /// <summary>
-        /// 所定のキー入力をフォーカスを検索テキストボックスに移動するイベントに変換する
-        /// </summary>
-        [TestMethod]
-        public void ToKeyEventTypeFocusOnSearchTextBoxFromInputKey()
-        {
-            // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.Up,
-                                                                                            systemKey: Key.None,
-                                                                                            modifier: ModifierKeys.None);
-
-            // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.FocusOnSearchTextBox, actual: ket);
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.IntoDirectory, actual: ket);
         }
 
         /// <summary>
@@ -88,12 +57,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeNoneFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEventType ket = MyFileLauncher.AppKeys.ToKeyEventType(key: Key.LeftShift,
-                                                                                            systemKey: Key.RightShift,
-                                                                                            modifier: ModifierKeys.Control);
+            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.LeftShift,
+                                                                                    systemKey: Key.RightShift,
+                                                                                    modifier: ModifierKeys.Control);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEventType.None, actual: ket);
+            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.None, actual: ket);
         }
     }
 }

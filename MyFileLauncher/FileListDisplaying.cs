@@ -74,6 +74,32 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// 現在選択されている item を返す
+        /// </summary>
+        internal FileDisplaying? GetSelectedItem()
+        {
+            return _fileList.Find(file => file.IsSelected);
+        }
+
+        /// <summary>
+        /// ファイルパスを選択状態にする
+        /// </summary>
+        internal void SetSelect(string filePath)
+        {
+            // 2 重選択状態がないよう、いったん選択状態をリセット
+            foreach (FileDisplaying file in _fileList)
+            {
+                file.IsSelected = false;
+            }
+
+            FileDisplaying? item = _fileList.Find(file => file.FilePath == filePath);
+            if (item != null)
+            {
+                item!.IsSelected = true;
+            }
+        }
+
+        /// <summary>
         /// 履歴をセットする
         /// </summary>
         internal void UpdateOfHistory(History history)

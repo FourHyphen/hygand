@@ -46,17 +46,11 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// フォーカスが当てられている ListViewItem の Content を返す、何も当たっていなければ null を返す
+        /// 現在選択されているファイルリストのファイルパスを返す、何も当たっていなければ null を返す
         /// </summary>
-        protected string? GetListViewItemStringFocused(MainWindow mainWindow)
+        protected string? GetDisplayingFileListSelected(MainWindow mainWindow)
         {
-            ListViewItem? focused = GetListViewItemFocused(mainWindow);
-            if (focused == null)
-            {
-                return null;
-            }
-
-            return (string)focused.Content;
+            return mainWindow.FileListDisplaying.GetSelectedItem()?.FilePath;
         }
 
         /// <summary>
@@ -83,23 +77,12 @@ namespace MyFileLauncher
         /// <summary>
         /// ListView の特定の Item にフォーカスを当てる
         /// </summary>
-        protected void SetFocusListViewItem(MainWindow mainWindow, string filePath)
+        protected void SelectFile(MainWindow mainWindow, string filePath)
         {
             // ListView 更新直後だと ListView の Item が空になったため、ListView に Item がセットされるようにする
             mainWindow.UpdateLayout();
 
-            for (int i = 0; i < mainWindow.DisplayFileList.Items.Count; i++)
-            {
-                var obj = mainWindow.DisplayFileList.ItemContainerGenerator.ContainerFromIndex(i);
-                if (obj is ListViewItem target)
-                {
-                    if ((string)target.Content == filePath)
-                    {
-                        target.Focus();
-                        return;
-                    }
-                }
-            }
+            mainWindow.FileListDisplaying.SetSelect(filePath);
         }
 
         /// <summary>

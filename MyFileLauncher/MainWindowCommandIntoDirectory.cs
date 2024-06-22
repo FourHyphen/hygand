@@ -14,21 +14,21 @@
 
         internal override void Execute()
         {
-            // フォーカスされているファイルパスを取得
-            string? focusedFilePath = GetListViewItemStringFocused(_mainWindow);
-            if (focusedFilePath == null)
+            // 現在選択されているファイルパスを取得
+            string? selectedFilePath = GetDisplayingFileListSelected(_mainWindow);
+            if (selectedFilePath == null)
             {
                 return;
             }
 
-            // フォーカスされているパスがディレクトリでない場合は入れないのでここで終了
-            if (!System.IO.Directory.Exists(focusedFilePath))
+            // 選択されているパスがディレクトリでない場合は入れないのでここで終了
+            if (!System.IO.Directory.Exists(selectedFilePath))
             {
                 return;
             }
 
             // 更新
-            UpdateOfDirectoryInfo(_mainWindow, focusedFilePath);
+            UpdateOfDirectoryInfo(_mainWindow, selectedFilePath);
         }
     }
 }
