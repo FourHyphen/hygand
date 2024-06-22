@@ -24,14 +24,6 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// 現在選択されているファイルリストのファイルパスを返す、何も当たっていなければ null を返す
-        /// </summary>
-        protected string? GetDisplayingFileListSelected(MainWindow mainWindow)
-        {
-            return mainWindow.FileListDisplaying.GetSelectedItem()?.FilePath;
-        }
-
-        /// <summary>
         /// テキストボックスの末尾にキーカーソルをセットする
         /// </summary>
         protected void SetKeyCursolEndOfTextBox(TextBox textBox)

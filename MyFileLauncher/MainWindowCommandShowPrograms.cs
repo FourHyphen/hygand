@@ -20,7 +20,7 @@ namespace MyFileLauncher
         internal override void Execute()
         {
             // 選択されているファイルパスを取得
-            string? selectedFilePath = GetDisplayingFileListSelected(_mainWindow);
+            string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
             if (selectedFilePath == null)
             {
                 return;

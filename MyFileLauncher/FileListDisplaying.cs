@@ -22,7 +22,7 @@ namespace MyFileLauncher
             {
                 return _fileList;
             }
-            set
+            private set
             {
                 _fileList = value;
                 NotifyPropertyChanged(nameof(FileList));
@@ -74,11 +74,11 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// 現在選択されている item を返す
+        /// 現在選択されている item のファイルパスを返す
         /// </summary>
-        internal FileDisplaying? GetSelectedItem()
+        internal string? GetSelectedFilePath()
         {
-            return _fileList.Find(file => file.IsSelected);
+            return _fileList.Find(file => file.IsSelected)?.FilePath;
         }
 
         /// <summary>
