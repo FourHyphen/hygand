@@ -10,14 +10,14 @@ namespace MyFileLauncher
         /// <summary>
         /// ディレクトリの情報で画面を更新
         /// </summary>
-        protected void UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath)
+        protected void UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
         {
             // テキストボックスにディレクトリセット
             mainWindow.SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
             // TDOO: アクセス権がなかった場合の System.UnauthorizedAccessException への対応
-            mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath);
+            mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
 
             // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
             mainWindow.DisplayFileListScrollViewer.ScrollToRightEnd();

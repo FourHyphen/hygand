@@ -31,11 +31,8 @@
             // 戻り先の選択状態を再現するための、今表示されているディレクトリパス取得
             string willSelectDirPath = GetNowDisplayingDirPath(selectedFilePath);
 
-            // 更新
-            UpdateOfDirectoryInfo(_mainWindow, dirPath);
-
-            // 移動元の選択状態を再現
-            SelectFile(willSelectDirPath);
+            // 更新(移動元の選択状態を再現)
+            UpdateOfDirectoryInfo(_mainWindow, dirPath, willSelectDirPath);
         }
 
         /// <summary>
@@ -60,17 +57,6 @@
         {
             // 今選択されているファイルパスの 1 階層上が、今表示しているディレクトリのパス
             return System.IO.Path.GetDirectoryName(selectedFilePath);
-        }
-
-        /// <summary>
-        /// ファイルリストの特定のファイルを選択状態にする
-        /// </summary>
-        private void SelectFile(string filePath)
-        {
-            // ListView 更新直後だと ListView の Item が空になったため、ListView に Item がセットされるようにする
-            _mainWindow.UpdateLayout();
-
-            _mainWindow.FileListDisplaying.SetSelect(filePath);
         }
     }
 }

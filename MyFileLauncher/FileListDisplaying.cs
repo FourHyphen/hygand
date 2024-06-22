@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,11 @@ namespace MyFileLauncher
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private List<FileDisplaying> _fileList = new List<FileDisplaying>();
+        // List では要素の更新が画面に反映されなかった
+        private ObservableCollection<FileDisplaying> _fileList = new ObservableCollection<FileDisplaying>();
 
         // internal では画面に反映されなかったため public
-        public List<FileDisplaying> FileList
+        public ObservableCollection<FileDisplaying> FileList
         {
             get
             {
@@ -44,11 +46,25 @@ namespace MyFileLauncher
         /// </summary>
         internal void SelectNext()
         {
-            int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
+            int nowSelected = GetSelectedIndex();
             int newSelected = nowSelected + 1;
 
             ChangeSelectedIndex(nowSelected, newSelected);
         }
+
+        private int GetSelectedIndex()
+        {
+            for (int i = 0; i < _fileList.Count; i++)
+            {
+                if (_fileList[i].IsSelected)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
 
         private void ChangeSelectedIndex(int nowSelected, int newSelected)
         {
@@ -57,8 +73,8 @@ namespace MyFileLauncher
                 return;
             }
 
-            _fileList[nowSelected].IsSelected = false;
-            _fileList[newSelected].IsSelected = true;
+            _fileList[nowSelected] = new FileDisplaying(_fileList[nowSelected].FilePath, false);
+            _fileList[newSelected] = new FileDisplaying(_fileList[newSelected].FilePath, true);
         }
 
         /// <summary>
@@ -67,7 +83,7 @@ namespace MyFileLauncher
         /// </summary>
         internal void SelectBack()
         {
-            int nowSelected = _fileList.FindIndex(0, file => file.IsSelected);
+            int nowSelected = GetSelectedIndex();
             int newSelected = nowSelected - 1;
 
             ChangeSelectedIndex(nowSelected, newSelected);
@@ -78,25 +94,8 @@ namespace MyFileLauncher
         /// </summary>
         internal string? GetSelectedFilePath()
         {
-            return _fileList.Find(file => file.IsSelected)?.FilePath;
-        }
-
-        /// <summary>
-        /// ファイルパスを選択状態にする
-        /// </summary>
-        internal void SetSelect(string filePath)
-        {
-            // 2 重選択状態がないよう、いったん選択状態をリセット
-            foreach (FileDisplaying file in _fileList)
-            {
-                file.IsSelected = false;
-            }
-
-            FileDisplaying? item = _fileList.Find(file => file.FilePath == filePath);
-            if (item != null)
-            {
-                item!.IsSelected = true;
-            }
+            // TODO: ? なしにする
+            return _fileList[GetSelectedIndex()].FilePath;
         }
 
         /// <summary>
@@ -130,10 +129,20 @@ namespace MyFileLauncher
             return array[0..end].ToArray();
         }
 
-        private List<FileDisplaying> ToFileListDisplaying(string[] files, int selectedIndex)
+        private ObservableCollection<FileDisplaying> ToFileListDisplaying(string[] files, int selectedIndex)
         {
-            List<FileDisplaying> fileDisplayings = files.Select(file => new FileDisplaying(file)).ToList();
-            fileDisplayings[selectedIndex].IsSelected = true;
+            ObservableCollection<FileDisplaying> fileDisplayings = new ObservableCollection<FileDisplaying>();
+            for (int i = 0; i < files.Count(); i++)
+            {
+                if (i == selectedIndex)
+                {
+                    fileDisplayings.Add(new FileDisplaying(files[i], true));
+                }
+                else
+                {
+                    fileDisplayings.Add(new FileDisplaying(files[i], false));
+                }
+            }
 
             return fileDisplayings;
         }
@@ -149,9 +158,10 @@ namespace MyFileLauncher
 
         /// <summary>
         /// ディレクトリの中身をセットする
+        /// 選択状態にしたいファイルがある場合、そのファイルを初期選択状態にする
         /// </summary>
         /// <remarks>アクセス権がないなどの場合は呼び出し元で制御すること</remarks>
-        internal void UpdateOfDirectory(string searchText)
+        internal void UpdateOfDirectory(string searchText, string initSelectFilePath = "")
         {
             // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
             if (System.IO.Directory.Exists(searchText))
@@ -170,7 +180,10 @@ namespace MyFileLauncher
             // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
             // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
             string start = System.IO.Path.GetFileName(searchText);
-            FileList = ToFileListDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), 0);
+            string[] files = GetFilesAndDirectoriesStartsWith(dirPath!, start);
+
+            int initSelectIndex = GetInitSelectIndex(files, initSelectFilePath);
+            FileList = ToFileListDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), initSelectIndex);
         }
 
         /// <summary>
@@ -193,6 +206,22 @@ namespace MyFileLauncher
             string[] files = GetFilesAndDirectories(dirPath);
 
             return files.Where(path => System.IO.Path.GetFileName(path).StartsWith(start)).ToArray();
+        }
+
+        private int GetInitSelectIndex(string[] files, string initSelectFilePath)
+        {
+            if (initSelectFilePath != "")
+            {
+                for (int i = 0; i < files.Count(); i++)
+                {
+                    if (files[i] == initSelectFilePath)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return 0;
         }
     }
 }
