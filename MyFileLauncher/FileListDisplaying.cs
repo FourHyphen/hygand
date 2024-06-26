@@ -52,7 +52,10 @@ namespace MyFileLauncher
             ChangeSelectedIndex(nowSelected, newSelected);
         }
 
-        private int GetSelectedIndex()
+        /// <summary>
+        /// 現在選択されている位置(インデックス)を返す
+        /// </summary>
+        internal int GetSelectedIndex()
         {
             for (int i = 0; i < _fileList.Count; i++)
             {
@@ -65,7 +68,9 @@ namespace MyFileLauncher
             return 0;
         }
 
-
+        /// <summary>
+        /// 選択されている位置(インデックス)を変更する
+        /// </summary>
         private void ChangeSelectedIndex(int nowSelected, int newSelected)
         {
             if (newSelected < 0 || newSelected >= _fileList.Count)
@@ -112,7 +117,7 @@ namespace MyFileLauncher
         private void UpdatePart(string[] files)
         {
             string[] sliced = Slice(files, DisplayingNum);
-            FileList = ToFileListDisplaying(sliced, 0);
+            FileList = ToFileDisplaying(sliced, 0);
         }
 
         /// <summary>
@@ -129,7 +134,10 @@ namespace MyFileLauncher
             return array[0..end].ToArray();
         }
 
-        private ObservableCollection<FileDisplaying> ToFileListDisplaying(string[] files, int selectedIndex)
+        /// <summary>
+        /// string 配列を FileDisplay のコレクションに変換する
+        /// </summary>
+        private ObservableCollection<FileDisplaying> ToFileDisplaying(string[] files, int selectedIndex)
         {
             ObservableCollection<FileDisplaying> fileDisplayings = new ObservableCollection<FileDisplaying>();
             for (int i = 0; i < files.Count(); i++)
@@ -166,7 +174,7 @@ namespace MyFileLauncher
             // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
             if (System.IO.Directory.Exists(searchText))
             {
-                FileList = ToFileListDisplaying(GetFilesAndDirectories(searchText), 0);
+                FileList = ToFileDisplaying(GetFilesAndDirectories(searchText), 0);
                 return;
             }
 
@@ -183,7 +191,7 @@ namespace MyFileLauncher
             string[] files = GetFilesAndDirectoriesStartsWith(dirPath!, start);
 
             int initSelectIndex = GetInitSelectIndex(files, initSelectFilePath);
-            FileList = ToFileListDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), initSelectIndex);
+            FileList = ToFileDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), initSelectIndex);
         }
 
         /// <summary>
