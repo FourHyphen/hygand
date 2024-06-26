@@ -24,6 +24,33 @@ namespace MyFileLauncher
         }
 
         /// <summary>
+        /// ListView の 1 行の高さを返す。1 行を取得できない場合は NaN を返す
+        /// </summary>
+        protected double GetListViewRowHeight(MainWindow mainWindow)
+        {
+            if (mainWindow.FileListDisplaying.FileList.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            if (mainWindow.DisplayFileList.ItemContainerGenerator.ContainerFromIndex(0) is not ListViewItem item)
+            {
+                return double.NaN;
+            }
+
+            return item.ActualHeight;
+        }
+
+        /// <summary>
+        ///  スクロール可能かを返す
+        /// </summary>
+        protected bool CanScroll(MainWindow mainWindow)
+        {
+            // スクロール可能な範囲がないなら全項目表示されているためスクロール不可
+            return (mainWindow.DisplayFileListScrollViewer.ScrollableHeight > 0.0);
+        }
+
+        /// <summary>
         /// テキストボックスの末尾にキーカーソルをセットする
         /// </summary>
         protected void SetKeyCursolEndOfTextBox(TextBox textBox)
