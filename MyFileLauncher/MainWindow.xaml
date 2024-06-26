@@ -24,6 +24,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <!--GridView のヘッダを非表示にするための設定-->
+                <Grid.Resources>
+                    <Style x:Key="ForHeaderInvisible" TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </Grid.Resources>
+
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="55"/>
@@ -68,7 +75,7 @@
                             </ListView.ItemContainerStyle>
 
                             <ListView.View>
-                                <GridView>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource ForHeaderInvisible}">
                                     <GridViewColumn Header="file" DisplayMemberBinding="{Binding FilePath}"/>
                                 </GridView>
                             </ListView.View>
