@@ -52,5 +52,23 @@
                 _                              => new MainWindowCommandEmpty(),
             };
         }
+
+        internal static MainWindowCommand CreateCommandSearchTextChanged(AppMode appMode,
+                                                                         MainWindow mainWindow,
+                                                                         History history,
+                                                                         FileIndex fileIndex,
+                                                                         string searchText)
+        {
+            if (appMode == AppMode.Index)
+            {
+                return new MainWindowCommandUpdateOfIndex(mainWindow, searchText, history, fileIndex);
+            }
+            else if (appMode == AppMode.Directory)
+            {
+                return new MainWindowCommandUpdateOfDirectory(mainWindow, searchText);
+            }
+
+            return new MainWindowCommandEmpty();
+        }
     }
 }
