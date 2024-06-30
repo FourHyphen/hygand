@@ -222,6 +222,8 @@ namespace MyFileLauncher
         /// </summary>
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
+            // TODO: 画面更新は MainWindowCommand に一本化する
+            // (FileListDisplaying.UpdateOfDirectory() のアクセス権なし例外制御を簡単にしたい)
             if (_appMode == AppMode.Index)
             {
                 FileListDisplaying.UpdateOfIndex(_history, _fileIndex, SearchText.Text);

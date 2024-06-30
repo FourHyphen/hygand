@@ -5,10 +5,19 @@ namespace MyFileLauncher
 {
     internal abstract class MainWindowCommand
     {
+        // TODO: Execute でこれを返すようにし、結果に応じて上位で制御できる余地を作る
+        internal enum Result
+        {
+            Success,
+            FailedUnauthorizedAccess,
+            FailedUnknow
+        }
+
         internal abstract void Execute();
 
         /// <summary>
         /// ディレクトリの情報で画面を更新
+        /// アクセス権がない場合の System.UnauthorizedAccessException 例外は呼び出し元で制御すること
         /// </summary>
         protected void UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
         {
@@ -16,7 +25,7 @@ namespace MyFileLauncher
             mainWindow.SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            // TDOO: アクセス権がなかった場合の System.UnauthorizedAccessException への対応
+            // アクセス権がなかった場合 System.UnauthorizedAccessException が送出される
             mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
 
             // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
