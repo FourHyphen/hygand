@@ -12,20 +12,20 @@
             _mainWindow = mainWindow;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
             // 今選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
             if (selectedFilePath == null)
             {
-                return;
+                return Result.NoProcess;
             }
 
             // 戻り先ディレクトリパス取得
             string? dirPath = GetBackDirectoryPath(selectedFilePath, _mainWindow.SearchText.Text);
             if (dirPath == null)
             {
-                return;
+                return Result.NoProcess;
             }
 
             // 戻り先の選択状態を再現するための、今表示されているディレクトリパス取得
@@ -33,6 +33,8 @@
 
             // 更新(移動元の選択状態を再現)
             UpdateOfDirectoryInfo(_mainWindow, dirPath, willSelectDirPath);
+
+            return Result.Success;
         }
 
         /// <summary>

@@ -11,10 +11,12 @@
             _searchText = searchText;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
-            // TODO: FileListDisplaying.UpdateOfDirectory() のアクセス権なし例外制御実装
+            // TODO: FileListDisplaying.UpdateOfDirectory() のアクセス権なし例外制御実装、Result.Unauthorized を返す
             _mainWindow.FileListDisplaying.UpdateOfDirectory(_searchText);
+
+            return Result.Success;
         }
     }
 }

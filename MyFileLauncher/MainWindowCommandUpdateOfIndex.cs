@@ -15,9 +15,10 @@
             _fileIndex = fileIndex;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
             _mainWindow.FileListDisplaying.UpdateOfIndex(_history, _fileIndex, _searchText);
+            return Result.Success;
         }
     }
 }

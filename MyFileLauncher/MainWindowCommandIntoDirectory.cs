@@ -12,23 +12,25 @@
             _mainWindow = mainWindow;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
             // 現在選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
             if (selectedFilePath == null)
             {
-                return;
+                return Result.NoProcess;
             }
 
             // 選択されているパスがディレクトリでない場合は入れないのでここで終了
             if (!System.IO.Directory.Exists(selectedFilePath))
             {
-                return;
+                return Result.NoProcess;
             }
 
-            // 更新
+            // 更新(TODO: アクセス権がなかった場合に Result.UnAuthorized を返す
             UpdateOfDirectoryInfo(_mainWindow, selectedFilePath);
+
+            return Result.Success;
         }
     }
 }

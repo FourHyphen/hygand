@@ -5,9 +5,10 @@
     /// </summary>
     internal class MainWindowCommandEmpty : MainWindowCommand
     {
-        internal override void Execute()
+        internal override Result Execute()
         {
             // nothing
+            return Result.NoProcess;
         }
     }
 }

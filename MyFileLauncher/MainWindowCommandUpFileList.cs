@@ -15,22 +15,22 @@ namespace MyFileLauncher
         /// 前を選択状態にする
         /// 上げたときにファイルリストの画面表示からはみ出さないよう、スクロールを調整する
         /// </summary>
-        internal override void Execute()
+        internal override Result Execute()
         {
-            // 前を選択状態にする
-            _mainWindow.FileListDisplaying.SelectBack();
-
             // 1 行の高さを取得(できないならここで終了)
             double rowHeight = GetListViewRowHeight(_mainWindow);
             if (rowHeight == double.NaN)
             {
-                return;
+                return Result.NoProcess;
             }
+
+            // 前を選択状態にする
+            _mainWindow.FileListDisplaying.SelectBack();
 
             // スクロールできないならここで終了
             if (!CanScroll(_mainWindow))
             {
-                return;
+                return Result.Success;
             }
 
             // 今のスクロール位置が表示範囲に合っていない場合はスクロールを調整
@@ -38,6 +38,8 @@ namespace MyFileLauncher
             {
                 UpScrollRow(rowHeight);
             }
+
+            return Result.Success;
         }
 
         /// <summary>

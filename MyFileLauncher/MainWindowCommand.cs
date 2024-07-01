@@ -5,15 +5,18 @@ namespace MyFileLauncher
 {
     internal abstract class MainWindowCommand
     {
-        // TODO: Execute でこれを返すようにし、結果に応じて上位で制御できる余地を作る
+        /// <summary>
+        /// Command 実行結果
+        /// </summary>
         internal enum Result
         {
             Success,
+            NoProcess,
             FailedUnauthorizedAccess,
             FailedUnknow
         }
 
-        internal abstract void Execute();
+        internal abstract Result Execute();
 
         /// <summary>
         /// ディレクトリの情報で画面を更新

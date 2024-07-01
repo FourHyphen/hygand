@@ -16,13 +16,13 @@ namespace MyFileLauncher
             _history = history;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
             // 現在選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
             if (selectedFilePath == null)
             {
-                return;
+                return Result.NoProcess;
             }
 
             // ファイルを開く
@@ -33,6 +33,8 @@ namespace MyFileLauncher
 
             // ファイルを開いたら用は済んだのでメインウィンドウを非表示化
             _mainWindow.HideWindow();
+
+            return Result.Success;
         }
 
         /// <summary>

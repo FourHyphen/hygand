@@ -17,13 +17,13 @@ namespace MyFileLauncher
             _history = history;
         }
 
-        internal override void Execute()
+        internal override Result Execute()
         {
             // 選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
             if (selectedFilePath == null)
             {
-                return;
+                return Result.NoProcess;
             }
 
             // コンテキストメニュー一覧ウィンドウを表示
@@ -34,6 +34,8 @@ namespace MyFileLauncher
             // コンテキストメニュー一覧ウィンドウが閉じるまでメイン画面を無効化
             _mainWindow.IsEnabled = false;    // FileContextMenuWindow に最初からキーボードフォーカスを当てるための無効化
             window.Closed += FileContextMenuWindowClosed;
+
+            return Result.Success;
         }
 
         /// <summary>
