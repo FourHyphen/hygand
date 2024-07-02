@@ -27,10 +27,8 @@
                 return Result.NoProcess;
             }
 
-            // 更新(TODO: アクセス権がなかった場合に Result.UnAuthorized を返す
-            UpdateOfDirectoryInfo(_mainWindow, selectedFilePath);
-
-            return Result.Success;
+            // 更新
+            return UpdateOfDirectoryInfo(_mainWindow, selectedFilePath);
         }
     }
 }

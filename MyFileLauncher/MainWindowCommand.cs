@@ -20,19 +20,29 @@ namespace MyFileLauncher
 
         /// <summary>
         /// ディレクトリの情報で画面を更新
-        /// アクセス権がない場合の System.UnauthorizedAccessException 例外は呼び出し元で制御すること
         /// </summary>
-        protected void UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
+        protected Result UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
         {
             // テキストボックスにディレクトリセット
+            string before = mainWindow.SearchText.Text;
             mainWindow.SearchText.Text = dirPath;
 
             // 検索結果には当該ディレクトリ内のファイルをセット
-            // アクセス権がなかった場合 System.UnauthorizedAccessException が送出される
-            mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
+            try
+            {
+                mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
+            }
+            catch (System.UnauthorizedAccessException e)
+            {
+                // アクセス権がなかった場合はロールバック
+                mainWindow.SearchText.Text = before;
+                return Result.FailedUnauthorizedAccess;
+            }
 
             // ファイルパスが長い時に真に見たいのはファイル / ディレクトリ名のため横スクロールを右端に設定
             mainWindow.DisplayFileListScrollViewer.ScrollToRightEnd();
+
+            return Result.Success;
         }
 
         /// <summary>

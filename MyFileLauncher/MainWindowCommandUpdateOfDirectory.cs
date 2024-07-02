@@ -13,8 +13,15 @@
 
         internal override Result Execute()
         {
-            // TODO: FileListDisplaying.UpdateOfDirectory() のアクセス権なし例外制御実装、Result.Unauthorized を返す
-            _mainWindow.FileListDisplaying.UpdateOfDirectory(_searchText);
+            try
+            {
+                _mainWindow.FileListDisplaying.UpdateOfDirectory(_searchText);
+            }
+            catch (System.UnauthorizedAccessException e)
+            {
+                // アクセス権がなかった場合
+                return Result.FailedUnauthorizedAccess;
+            }
 
             return Result.Success;
         }

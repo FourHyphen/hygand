@@ -199,6 +199,7 @@ namespace MyFileLauncher
         /// </summary>
         private string[] GetFilesAndDirectories(string dirPath)
         {
+            // TODO: このメソッドで System.Unauthorized 発行してる
             // ディレクトリの中にあるディレクトリの一覧取得
             string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
 
