@@ -15,7 +15,7 @@ namespace MyFileLauncher
         /// 前を選択状態にする
         /// 上げたときにファイルリストの画面表示からはみ出さないよう、スクロールを調整する
         /// </summary>
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             // 1 行の高さを取得(できないならここで終了)
             double rowHeight = GetListViewRowHeight(_mainWindow);

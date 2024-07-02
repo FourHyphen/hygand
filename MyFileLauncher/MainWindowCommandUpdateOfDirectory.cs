@@ -11,7 +11,7 @@
             _searchText = searchText;
         }
 
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             try
             {

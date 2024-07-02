@@ -15,7 +15,7 @@
             _fileIndex = fileIndex;
         }
 
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             _mainWindow.FileListDisplaying.UpdateOfIndex(_history, _fileIndex, _searchText);
             return Result.Success;

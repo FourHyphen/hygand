@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System;
+using System.Windows;
 
 namespace MyFileLauncher
 {
@@ -16,7 +17,17 @@ namespace MyFileLauncher
             FailedUnknow
         }
 
-        internal abstract Result Execute();
+        private protected abstract Result ExecuteCore();
+
+        internal void Execute()
+        {
+            Result result = ExecuteCore();
+            if (result == Result.FailedUnauthorizedAccess)
+            {
+                // TODO: 2 回表示されてしまう
+                MessageBox.Show("アクセス権がありませんでした");
+            }
+        }
 
         /// <summary>
         /// ディレクトリの情報で画面を更新

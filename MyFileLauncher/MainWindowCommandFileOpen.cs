@@ -16,7 +16,7 @@ namespace MyFileLauncher
             _history = history;
         }
 
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             // 現在選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();

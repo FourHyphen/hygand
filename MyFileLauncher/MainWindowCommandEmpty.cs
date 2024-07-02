@@ -5,7 +5,7 @@
     /// </summary>
     internal class MainWindowCommandEmpty : MainWindowCommand
     {
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             // nothing
             return Result.NoProcess;

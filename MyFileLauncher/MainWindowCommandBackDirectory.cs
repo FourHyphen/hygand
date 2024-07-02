@@ -12,7 +12,7 @@
             _mainWindow = mainWindow;
         }
 
-        internal override Result Execute()
+        private protected override Result ExecuteCore()
         {
             // 今選択されているファイルパスを取得
             string? selectedFilePath = _mainWindow.FileListDisplaying.GetSelectedFilePath();
