@@ -19,14 +19,49 @@ namespace MyFileLauncher
 
         private protected abstract Result ExecuteCore();
 
-        internal void Execute()
+        internal void Execute(MainWindow mainWindow)
         {
+            // ロールバック用に現在の情報確保
+            string beforeSearchText = mainWindow.SearchText.Text;
+            string beforeSelectFilePath = mainWindow.FileListDisplaying.GetSelectedFilePath();
+
+            // 処理が余計なイベントを発行しないよう一時的にイベントを無効化
+            mainWindow.DisableEventSearchText();
+
+            // 処理
             Result result = ExecuteCore();
+
+            // ロールバックの必要があればロールバック
+            if (DoNeedRollBack(result))
+            {
+                // 検索テキストをロールバックして、入力を続行できるようカーソル位置を末尾に設定
+                mainWindow.SearchText.Text = beforeSearchText;
+                mainWindow.SearchText.Select(mainWindow.SearchText.Text.Length, 0);
+
+                // ファイルリストのロールバック
+                // TODO: アクセス権がなかったディレクトリを選択状態にしたいができていない
+                UpdateOfDirectoryInfo(mainWindow, beforeSearchText, beforeSelectFilePath);
+            }
+
+            // 再現性のある失敗時はメッセージ表示
             if (result == Result.FailedUnauthorizedAccess)
             {
-                // TODO: 2 回表示されてしまう
                 MessageBox.Show("アクセス権がありませんでした");
             }
+
+            // イベントを再度有効化
+            mainWindow.EnableEventSearchText();
+        }
+
+        /// <summary>
+        /// ロールバックが必要かを返す
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private bool DoNeedRollBack(Result result)
+        {
+            // 処理失敗ならロールバックが必要とする
+            return !(result == Result.Success || result == Result.NoProcess);
         }
 
         /// <summary>

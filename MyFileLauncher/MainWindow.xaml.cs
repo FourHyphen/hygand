@@ -195,7 +195,7 @@ namespace MyFileLauncher
 
             // キー入力内容に見合った処理を実行
             MainWindowCommand command = MainWindowCommandFactory.Create(_appMode, keyEvent, this, _history);
-            command.Execute();
+            command.Execute(this);
 
             return;
         }
@@ -224,7 +224,22 @@ namespace MyFileLauncher
         {
             // キー入力内容に見合った処理を実行
             MainWindowCommand command = MainWindowCommandFactory.CreateCommandSearchTextChanged(_appMode, this, _history, _fileIndex, SearchText.Text);
-            command.Execute();
+            command.Execute(this);
+        }
+
+        /// <summary>
+        /// SearchText のイベントを無効化する
+        /// </summary>
+        internal void DisableEventSearchText()
+        {
+            SearchText.TextChanged -= EventSearchTextChanged;
+        }
+
+        /// SearchText のイベントを有効化する
+        /// </summary>
+        internal void EnableEventSearchText()
+        {
+            SearchText.TextChanged += EventSearchTextChanged;
         }
 
         /// <summary>
