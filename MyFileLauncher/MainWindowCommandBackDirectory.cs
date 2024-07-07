@@ -56,7 +56,8 @@
         private string GetNowDisplayingDirPath(string selectedFilePath)
         {
             // 今選択されているファイルパスの 1 階層上が、今表示しているディレクトリのパス
-            return System.IO.Path.GetDirectoryName(selectedFilePath);
+            // (戻り先を選択するためのディレクトリパス取得のため、必ず戻る先が存在する -> null にはならない)
+            return System.IO.Path.GetDirectoryName(selectedFilePath)!;
         }
     }
 }

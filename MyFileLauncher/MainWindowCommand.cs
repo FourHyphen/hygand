@@ -77,7 +77,7 @@ namespace MyFileLauncher
             {
                 mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
             }
-            catch (System.UnauthorizedAccessException e)
+            catch (System.UnauthorizedAccessException)
             {
                 // アクセス権がなかった場合はロールバック
                 mainWindow.SearchText.Text = before;

@@ -97,9 +97,8 @@ namespace MyFileLauncher
         /// <summary>
         /// 現在選択されている item のファイルパスを返す
         /// </summary>
-        internal string? GetSelectedFilePath()
+        internal string GetSelectedFilePath()
         {
-            // TODO: ? なしにする
             return _fileList[GetSelectedIndex()].FilePath;
         }
 
@@ -126,7 +125,7 @@ namespace MyFileLauncher
         /// </summary>
         private string[] Slice(string[] array, int end)
         {
-            if (array.Count() < end)
+            if (array.Length < end)
             {
                 return array;
             }
@@ -150,7 +149,7 @@ namespace MyFileLauncher
         /// </summary>
         private int GetInitSelectIndex(string[] files, string initSelectFilePath)
         {
-            for (int i = 0; i < files.Count(); i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 if (files[i] == initSelectFilePath)
                 {
@@ -167,7 +166,7 @@ namespace MyFileLauncher
         private ObservableCollection<FileDisplaying> ToFileDisplaying(string[] files, int selectedIndex)
         {
             ObservableCollection<FileDisplaying> fileDisplayings = new ObservableCollection<FileDisplaying>();
-            for (int i = 0; i < files.Count(); i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 if (i == selectedIndex)
                 {

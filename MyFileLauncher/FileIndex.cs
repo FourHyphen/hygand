@@ -69,7 +69,7 @@ namespace MyFileLauncher
         /// </summary>
         private HashSet<string> GetFilePathes(ScanInfo scanInfo)
         {
-            HashSet<string> pathes = new HashSet<string>();
+            HashSet<string> pathes = new();
             foreach (string searchDir in scanInfo.ScanDirectories)
             {
                 pathes.UnionWith(GetAllFilesIn(searchDir, scanInfo.NotScanDirectories));
@@ -96,8 +96,8 @@ namespace MyFileLauncher
 
         private HashSet<string> GetAllFilesInCore(string dirPath, IReadOnlyCollection<string> notScanDirectories)
         {
-            HashSet<string> files = new HashSet<string>();
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(dirPath);
+            HashSet<string> files = new();
+            System.IO.DirectoryInfo di = new(dirPath);
 
             // ディレクトリのサブディレクトリを全探索
             foreach (DirectoryInfo dir in di.EnumerateDirectories())
@@ -149,7 +149,7 @@ namespace MyFileLauncher
             {
                 // 権限を見る
                 // ダメなパス例: @"C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\Binn\Xtp"
-                System.IO.FileInfo fi = new System.IO.FileInfo(dirPath);
+                System.IO.FileInfo fi = new(dirPath);
                 var fileSecurity = System.IO.FileSystemAclExtensions.GetAccessControl(fi);
                 //AuthorizationRuleCollection rules = fileSecurity.GetAccessRules(true, true, typeof(NTAccount));
                 //foreach (var rule in rules)
@@ -162,7 +162,7 @@ namespace MyFileLauncher
                 //}
 
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -172,7 +172,7 @@ namespace MyFileLauncher
 
         private HashSet<string> GetRemovingFiles(HashSet<string> scanResults, IReadOnlyCollection<string> notScanDirectories)
         {
-            HashSet<string> removings = new HashSet<string>();
+            HashSet<string> removings = new();
             foreach (string file in scanResults)
             {
                 foreach (string notScan in notScanDirectories)

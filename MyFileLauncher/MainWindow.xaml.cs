@@ -15,7 +15,7 @@ namespace MyFileLauncher
         public FileListDisplaying FileListDisplaying { get; } = new FileListDisplaying();
 
         private AppHotKey _appHotKey;
-        private History _history;
+        private readonly History _history;
         private FileIndex _fileIndex;
         private AppMode _appMode = AppMode.Index;
         private KeyCodeWindow? _keyCodeWindow;
@@ -137,7 +137,7 @@ namespace MyFileLauncher
 
             // スクロールバー表示のための ScrollViewer 高さ設定
             // ファイルリストの高さ最大値は MainWindow 次第、Load 時など特定不可の場合は初期値設定
-            if (FileListArea.ActualHeight != double.NaN && FileListArea.ActualHeight > 0.0)
+            if (!double.IsNaN(FileListArea.ActualHeight) && FileListArea.ActualHeight > 0.0)
             {
                 DisplayFileListScrollViewer.MaxHeight = (double)FileListArea.ActualHeight;
             }
