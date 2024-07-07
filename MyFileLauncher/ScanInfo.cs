@@ -5,6 +5,7 @@ namespace MyFileLauncher
 {
     internal class ScanInfo
     {
+        // TODO: このファイルの有無を任意とする(なかったときの初期値ファイル作成を追加)
         private static readonly string ScanInfoFileName = "Scan.info";
 
         internal IReadOnlyCollection<string> ScanDirectories { get; }

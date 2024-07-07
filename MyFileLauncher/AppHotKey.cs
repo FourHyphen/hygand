@@ -4,6 +4,7 @@ namespace MyFileLauncher
 {
     internal class AppHotKey : IDisposable
     {
+        // TODO: このファイルの有無を任意とする(なかったときの初期値ファイル作成を追加)
         private const string HotKeyIniFileName = "HotKey.ini";
 
         private IniFile _iniFile;
