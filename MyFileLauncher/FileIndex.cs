@@ -14,13 +14,13 @@ namespace MyFileLauncher
 
         private HashSet<string> Indexes { get; set; } = new HashSet<string>();
 
-        public static FileIndex CreateInstance()
+        internal static FileIndex CreateInstance()
         {
             string indexFilePath = System.IO.Path.GetFullPath(IndexFileName);
             return CreateInstance(indexFilePath);
         }
 
-        public static FileIndex CreateInstance(string indexFilePath)
+        internal static FileIndex CreateInstance(string indexFilePath)
         {
             return new FileIndex(indexFilePath);
         }
@@ -37,7 +37,7 @@ namespace MyFileLauncher
         /// <summary>
         /// Index がすでに存在するかを返す
         /// </summary>
-        public bool Exists()
+        internal bool Exists()
         {
             return System.IO.File.Exists(IndexFilePath);
         }
@@ -55,7 +55,7 @@ namespace MyFileLauncher
         /// <summary>
         /// インデックスファイルを作成する
         /// </summary>
-        public void CreateIndexFile(ScanInfo scanInfo)
+        internal void CreateIndexFile(ScanInfo scanInfo)
         {
             HashSet<string> files = GetFilePathes(scanInfo);
             CreateIndexFile(files);

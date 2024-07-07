@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using System.Linq;
 
 namespace MyFileLauncher
@@ -9,17 +7,17 @@ namespace MyFileLauncher
     {
         private static readonly string ScanInfoFileName = "Scan.info";
 
-        public IReadOnlyCollection<string> ScanDirectories { get; }
+        internal IReadOnlyCollection<string> ScanDirectories { get; }
 
-        public IReadOnlyCollection<string> NotScanDirectories { get; }
+        internal IReadOnlyCollection<string> NotScanDirectories { get; }
 
-        public static ScanInfo CreateInstance()
+        internal static ScanInfo CreateInstance()
         {
             string scanInfoFilePath = System.IO.Path.GetFullPath(ScanInfoFileName);
             return CreateInstance(scanInfoFilePath);
         }
 
-        public static ScanInfo CreateInstance(string scanInfoFilePath)
+        internal static ScanInfo CreateInstance(string scanInfoFilePath)
         {
             return new ScanInfo(scanInfoFilePath);
         }

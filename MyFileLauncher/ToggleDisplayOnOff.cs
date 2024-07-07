@@ -15,17 +15,17 @@ namespace MyFileLauncher
         protected const int WM_SYSKEYUP = 0x0105;
 
         [StructLayout(LayoutKind.Sequential)]
-        public class KBDLLHOOKSTRUCT
+        private class KBDLLHOOKSTRUCT
         {
-            public uint vkCode;
-            public uint scanCode;
-            public KBDLLHOOKSTRUCTFlags flags;
-            public uint time;
-            public UIntPtr dwExtraInfo;
+            internal uint vkCode;
+            internal uint scanCode;
+            internal KBDLLHOOKSTRUCTFlags flags;
+            internal uint time;
+            internal UIntPtr dwExtraInfo;
         }
 
         [Flags]
-        public enum KBDLLHOOKSTRUCTFlags : uint
+        private enum KBDLLHOOKSTRUCTFlags : uint
         {
             KEYEVENTF_EXTENDEDKEY = 0x0001,
             KEYEVENTF_KEYUP = 0x0002,
@@ -49,18 +49,18 @@ namespace MyFileLauncher
         private delegate IntPtr KeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
         #endregion
 
-        public class OriginalKeyEventArg : EventArgs
+        internal class OriginalKeyEventArg : EventArgs
         {
-            public int KeyCode { get; }
+            internal int KeyCode { get; }
 
-            public OriginalKeyEventArg(int keyCode)
+            internal OriginalKeyEventArg(int keyCode)
             {
                 KeyCode = keyCode;
             }
         }
 
         // デリゲートをフィールドに配置することで GC に回収させない
-        public delegate void KeyEventHandler(object sender, OriginalKeyEventArg e);
+        internal delegate void KeyEventHandler(object sender, OriginalKeyEventArg e);
 
         private event KeyEventHandler _keyDownEvent;
         private short _keyDownEventKeyCode;

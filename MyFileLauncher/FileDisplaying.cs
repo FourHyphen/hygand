@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
-
-namespace MyFileLauncher
+﻿namespace MyFileLauncher
 {
+    // 画面への Notify のため internal 不可
     public class FileDisplaying
     {
         public string FilePath { get; } = string.Empty;

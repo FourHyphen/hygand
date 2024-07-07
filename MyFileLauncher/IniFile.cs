@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MyFileLauncher
@@ -10,11 +8,11 @@ namespace MyFileLauncher
         private readonly string _iniPath;
 
         [DllImport("KERNEL32.DLL", CharSet = CharSet.Unicode)]
-        public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
+        private static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
 
         internal IniFile(string iniPath)
         {
-            this._iniPath = System.IO.Path.GetFullPath(iniPath);
+            _iniPath = System.IO.Path.GetFullPath(iniPath);
         }
 
         internal string GetValue(string section, string key)

@@ -11,7 +11,7 @@ namespace MyFileLauncher
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern short GetKeyState(int nVirtKey);
 
-        public static SortedDictionary<short, string> VirtualKeys = new SortedDictionary<short, string>()
+        internal static SortedDictionary<short, string> VirtualKeys = new SortedDictionary<short, string>()
         {
             { 0x01, "VK_LBUTTON"             },
             { 0x02, "VK_RBUTTON"             },
@@ -271,7 +271,7 @@ namespace MyFileLauncher
         /// <summary>
         /// 現在押されている仮想キーコードの一覧を返す
         /// </summary>
-        public static SortedDictionary<short, string> GetInputKeys()
+        internal static SortedDictionary<short, string> GetInputKeys()
         {
             SortedDictionary<short, string> res = new SortedDictionary<short, string>();
             foreach (var pair in VirtualKeys)

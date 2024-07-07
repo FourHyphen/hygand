@@ -7,7 +7,7 @@
         private History _history;
         private FileIndex _fileIndex;
 
-        public MainWindowCommandUpdateOfIndex(MainWindow mainWindow, string searchText, History history, FileIndex fileIndex)
+        internal MainWindowCommandUpdateOfIndex(MainWindow mainWindow, string searchText, History history, FileIndex fileIndex)
         {
             _mainWindow = mainWindow;
             _searchText = searchText;

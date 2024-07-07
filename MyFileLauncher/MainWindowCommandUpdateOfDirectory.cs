@@ -5,7 +5,7 @@
         private MainWindow _mainWindow;
         private readonly string _searchText;
 
-        public MainWindowCommandUpdateOfDirectory(MainWindow mainWindow, string searchText)
+        internal MainWindowCommandUpdateOfDirectory(MainWindow mainWindow, string searchText)
         {
             _mainWindow = mainWindow;
             _searchText = searchText;

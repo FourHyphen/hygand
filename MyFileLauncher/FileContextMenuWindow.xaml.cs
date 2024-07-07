@@ -14,7 +14,7 @@ namespace MyFileLauncher
         /// <summary>
         /// コンテキストを実行したか(ウィンドウ閉じただけなら false)
         /// </summary>
-        public bool DidExecuteContext = false;
+        internal bool DidExecuteContext = false;
 
         public string FilePath { get; private set; } = String.Empty;
 
@@ -23,7 +23,7 @@ namespace MyFileLauncher
 
         private List<Shell32.FolderItemVerb> _fileContextMenu = new List<Shell32.FolderItemVerb>();
 
-        public FileContextMenuWindow(string filePath)
+        internal FileContextMenuWindow(string filePath)
         {
             InitializeComponent();
             DataContext = this;
