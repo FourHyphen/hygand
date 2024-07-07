@@ -1,4 +1,4 @@
-﻿namespace MyFileLauncher
+﻿namespace hygand
 {
     /// <summary>
     /// ディレクトリに入る

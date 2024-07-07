@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace MyFileLauncher
+namespace hygand
 {
     public partial class KeyCodeWindow : Window
     {

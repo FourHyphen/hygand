@@ -1,4 +1,4 @@
-﻿namespace MyFileLauncher
+﻿namespace hygand
 {
     internal enum AppMode
     {

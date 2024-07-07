@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal class IniFile
     {

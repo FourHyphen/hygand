@@ -1,4 +1,4 @@
-﻿namespace MyFileLauncher
+﻿namespace hygand
 {
     // 画面への Notify のため internal 不可
     public class FileDisplaying

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal static class AppKeys
     {

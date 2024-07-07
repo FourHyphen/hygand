@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal class AppHotKey : IDisposable
     {

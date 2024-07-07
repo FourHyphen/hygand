@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal class MainWindowCommandDownFileList : MainWindowCommand
     {

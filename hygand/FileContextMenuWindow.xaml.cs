@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace MyFileLauncher
+namespace hygand
 {
     public partial class FileContextMenuWindow : Window
     {

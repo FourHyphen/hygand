@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace MyFileLauncher
+namespace hygand
 {
     /// <summary>
     /// ファイルに紐づくプログラムの一覧を表示する

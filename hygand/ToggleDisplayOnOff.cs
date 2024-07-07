@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal class ToggleDisplayOnOff : IDisposable
     {

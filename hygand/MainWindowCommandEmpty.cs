@@ -1,4 +1,4 @@
-﻿namespace MyFileLauncher
+﻿namespace hygand
 {
     /// <summary>
     /// DisplayFileList への空コマンド定義クラス

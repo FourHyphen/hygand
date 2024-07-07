@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyFileLauncher
+namespace hygand
 {
     /// <summary>
     /// 既定のプログラムでファイルを開く

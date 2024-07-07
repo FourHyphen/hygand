@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal class ScanInfo
     {

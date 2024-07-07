@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace MyFileLauncher
+namespace hygand
 {
     internal abstract class MainWindowCommand
     {

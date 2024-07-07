@@ -1,4 +1,4 @@
-﻿namespace MyFileLauncher
+﻿namespace hygand
 {
     /// <summary>
     /// ディレクトリ階層を 1 つ戻る

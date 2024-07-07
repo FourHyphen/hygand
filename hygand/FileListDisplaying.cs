@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFileLauncher
+namespace hygand
 {
     public class FileListDisplaying : INotifyPropertyChanged
     {
@@ -191,7 +191,7 @@ namespace MyFileLauncher
         /// </summary>
         internal void UpdateOfIndex(History history, FileIndex fileIndex, string word)
         {
-            string[] result = MyFileLauncher.FileSearch.Search(history, fileIndex, word);
+            string[] result = hygand.FileSearch.Search(history, fileIndex, word);
             UpdatePart(result);
         }
 
