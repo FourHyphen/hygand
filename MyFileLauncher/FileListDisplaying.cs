@@ -117,7 +117,7 @@ namespace MyFileLauncher
         private void UpdatePart(string[] files)
         {
             string[] sliced = Slice(files, DisplayingNum);
-            FileList = ToFileDisplaying(sliced, 0);
+            UpdateFileList(sliced);
         }
 
         /// <summary>
@@ -132,6 +132,33 @@ namespace MyFileLauncher
             }
 
             return array[0..end].ToArray();
+        }
+
+        /// <summary>
+        /// FileList を更新する
+        /// </summary>
+        /// <param name="initSelectFilePath">初期状態で選択しておきたいファイルのパス</param>
+        private void UpdateFileList(string[] files, string initSelectFilePath = "")
+        {
+            int initSelectIndex = GetInitSelectIndex(files, initSelectFilePath);
+            FileList = ToFileDisplaying(files, initSelectIndex);
+        }
+
+        /// <summary>
+        /// 初期状態で選択しておきたいファイルパスのインデックスを返す
+        /// ファイルパスがファイル一覧に存在しなかった場合は 0 を返す
+        /// </summary>
+        private int GetInitSelectIndex(string[] files, string initSelectFilePath)
+        {
+            for (int i = 0; i < files.Count(); i++)
+            {
+                if (files[i] == initSelectFilePath)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -171,66 +198,54 @@ namespace MyFileLauncher
         /// <remarks>アクセス権がないなどの場合は呼び出し元で制御すること</remarks>
         internal void UpdateOfDirectory(string searchText, string initSelectFilePath = "")
         {
-            // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
-            if (System.IO.Directory.Exists(searchText))
-            {
-                FileList = ToFileDisplaying(GetFilesAndDirectories(searchText), 0);
-                return;
-            }
-
             // ユーザーがドライブのパス入力中などでディレクトリパス取得不可の場合は何もしない
             string? dirPath = System.IO.Path.GetDirectoryName(searchText);
             if (dirPath == null || dirPath == String.Empty || !System.IO.Directory.Exists(dirPath))
             {
-                return;
+                // 入力パスがちょうどディレクトリそのものの場合は処理する(ドライブ直下を想定)
+                if (!System.IO.Directory.Exists(searchText))
+                {
+                    return;
+                }
             }
 
-            // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
-            // 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
-            string start = System.IO.Path.GetFileName(searchText);
-            string[] files = GetFilesAndDirectoriesStartsWith(dirPath!, start);
+            string start = "";
+            if (System.IO.Directory.Exists(searchText))
+            {
+                // 入力パスがちょうどディレクトリそのものの場合、このディレクトリの中身を全て表示する
+                dirPath = searchText;
+            }
+            else
+            {
+                // 入力パスがディレクトリ＋ファイル・ディレクトリ名の一部の場合
+                //  -> 存在するディレクトリの中にある、"一部" に前方一致するファイル・ディレクトリを表示する
+                start = System.IO.Path.GetFileName(searchText);
+            }
 
-            int initSelectIndex = GetInitSelectIndex(files, initSelectFilePath);
-            FileList = ToFileDisplaying(GetFilesAndDirectoriesStartsWith(dirPath!, start), initSelectIndex);
+            // TODO: 例外時の打ち上げ方法の再検討
+            string[]? files = GetFilesAndDirectories(dirPath!, start);
+            UpdateFileList(files!, initSelectFilePath);
         }
 
         /// <summary>
-        /// 存在するディレクトリの中にある、全てのファイル・ディレクトリをフルパス形式で返す
+        /// 存在するディレクトリの中にある、ファイル・ディレクトリをフルパス形式で返す
         /// </summary>
-        private string[] GetFilesAndDirectories(string dirPath)
+        /// <param name="start">ディレクトリの中の前方一致するファイル・ディレクトリを返す場合はこれを指定してください</param>
+        private string[] GetFilesAndDirectories(string dirPath, string start = "")
         {
-            // TODO: このメソッドで System.Unauthorized 発行してる
+            // アクセス権なし例外(System.Unauthorized)制御の簡略化のため start = "" を使用して関数を 1 つに集約した
             // ディレクトリの中にあるディレクトリの一覧取得
             string[] dirs = System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly);
 
             // ディレクトリの中にあるファイルの一覧取得
-            return dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
-        }
+            string[] files = dirs.Concat(System.IO.Directory.GetFiles(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly)).ToArray();
 
-        /// <summary>
-        /// 存在するディレクトリの中にある、前方一致するファイル・ディレクトリをフルパス形式で返す
-        /// </summary>
-        private string[] GetFilesAndDirectoriesStartsWith(string dirPath, string start)
-        {
-            string[] files = GetFilesAndDirectories(dirPath);
-
-            return files.Where(path => System.IO.Path.GetFileName(path).StartsWith(start)).ToArray();
-        }
-
-        private int GetInitSelectIndex(string[] files, string initSelectFilePath)
-        {
-            if (initSelectFilePath != "")
+            if (start == "")
             {
-                for (int i = 0; i < files.Count(); i++)
-                {
-                    if (files[i] == initSelectFilePath)
-                    {
-                        return i;
-                    }
-                }
+                return files;
             }
 
-            return 0;
+            return files.Where(path => System.IO.Path.GetFileName(path).StartsWith(start)).ToArray();
         }
     }
 }

@@ -39,7 +39,6 @@ namespace MyFileLauncher
                 mainWindow.SearchText.Select(mainWindow.SearchText.Text.Length, 0);
 
                 // ファイルリストのロールバック
-                // TODO: アクセス権がなかったディレクトリを選択状態にしたいができていない
                 UpdateOfDirectoryInfo(mainWindow, beforeSearchText, beforeSelectFilePath);
             }
 
