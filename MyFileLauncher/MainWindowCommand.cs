@@ -60,15 +60,6 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// テキストボックスのカーソルを文字列終わりに移動する
-        /// </summary>
-        /// <param name="textBox"></param>
-        protected void MoveCursolToTextEnd(TextBox textBox)
-        {
-            textBox.Select(textBox.Text.Length, 0);
-        }
-
-        /// <summary>
         /// 画面表示を更新する
         /// </summary>
         protected Result UpdateDisplay(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
@@ -88,7 +79,7 @@ namespace MyFileLauncher
             mainWindow.SearchText.Text = dirPath;
 
             // 入力を続行できるようカーソル位置を末尾に設定
-            MoveCursolToTextEnd(mainWindow.SearchText);
+            mainWindow.SearchText.Select(mainWindow.SearchText.Text.Length, 0);
         }
 
         /// <summary>

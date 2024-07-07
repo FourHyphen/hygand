@@ -197,6 +197,12 @@ namespace MyFileLauncher
             MainWindowCommand command = MainWindowCommandFactory.Create(_appMode, keyEvent, this, _history);
             command.Execute(this);
 
+            // キー入力が既定の処理すると困る場合は破棄(TODO: typeof に頼らない方法での実装)
+            if (command.GetType() == typeof(MainWindowCommandBackDirectory))
+            {
+                e.Handled = true;
+            }
+
             return;
         }
 
@@ -223,6 +229,7 @@ namespace MyFileLauncher
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
             // キー入力内容に見合った処理を実行
+            // TODO: 検索しようとテキストボックス入力中に、前方一致結果があるはずなのに 0 件になってしまう
             MainWindowCommand command = MainWindowCommandFactory.CreateCommandSearchTextChanged(_appMode, this, _history, _fileIndex, SearchText.Text);
             command.Execute(this);
         }
