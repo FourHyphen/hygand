@@ -11,4 +11,4 @@ using System.Windows;
 )]
 
 // テストプロジェクトにのみ公開する
-[assembly: InternalsVisibleTo("TestMyFileLauncher")]
+[assembly: InternalsVisibleTo("Testhygand")]

@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyFileLauncher\MyFileLauncher.csproj" />
+    <ProjectReference Include="..\hygand\hygand.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFileLauncher", "MyFileLauncher\MyFileLauncher.csproj", "{64597184-75C5-4720-B0C6-A774B9E42C17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hygand", "hygand\hygand.csproj", "{64597184-75C5-4720-B0C6-A774B9E42C17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMyFileLauncher", "TestMyFileLauncher\TestMyFileLauncher.csproj", "{E932649E-71CF-450D-88B7-F250B051ACC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testhygand", "Testhygand\Testhygand.csproj", "{E932649E-71CF-450D-88B7-F250B051ACC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
