@@ -28,7 +28,7 @@
             }
 
             // 更新
-            return UpdateOfDirectoryInfo(_mainWindow, selectedFilePath);
+            return UpdateDisplay(_mainWindow, selectedFilePath);
         }
     }
 }

@@ -34,12 +34,8 @@ namespace MyFileLauncher
             // ロールバックの必要があればロールバック
             if (DoNeedRollBack(result))
             {
-                // 検索テキストをロールバックして、入力を続行できるようカーソル位置を末尾に設定
-                mainWindow.SearchText.Text = beforeSearchText;
-                mainWindow.SearchText.Select(mainWindow.SearchText.Text.Length, 0);
-
-                // ファイルリストのロールバック
-                UpdateOfDirectoryInfo(mainWindow, beforeSearchText, beforeSelectFilePath);
+                // 画面を処理前の状態に更新
+                UpdateDisplay(mainWindow, beforeSearchText, beforeSelectFilePath);
             }
 
             // 再現性のある失敗時はメッセージ表示
@@ -64,23 +60,49 @@ namespace MyFileLauncher
         }
 
         /// <summary>
-        /// ディレクトリの情報で画面を更新
+        /// テキストボックスのカーソルを文字列終わりに移動する
         /// </summary>
-        protected Result UpdateOfDirectoryInfo(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
+        /// <param name="textBox"></param>
+        protected void MoveCursolToTextEnd(TextBox textBox)
         {
-            // テキストボックスにディレクトリセット
-            string before = mainWindow.SearchText.Text;
+            textBox.Select(textBox.Text.Length, 0);
+        }
+
+        /// <summary>
+        /// 画面表示を更新する
+        /// </summary>
+        protected Result UpdateDisplay(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
+        {
+            // テキストボックス表示を更新
+            UpdateSearchText(mainWindow, dirPath);
+
+            // ファイルリスト表示を更新
+            return UpdateFileListDisplaying(mainWindow, dirPath, initSelectFilePath);
+        }
+
+        /// <summary>
+        /// SearchTextBox の表示を更新
+        /// </summary>
+        private void UpdateSearchText(MainWindow mainWindow, string dirPath)
+        {
             mainWindow.SearchText.Text = dirPath;
 
-            // 検索結果には当該ディレクトリ内のファイルをセット
+            // 入力を続行できるようカーソル位置を末尾に設定
+            MoveCursolToTextEnd(mainWindow.SearchText);
+        }
+
+        /// <summary>
+        /// ディレクトリの情報でファイルリストの表示を更新
+        /// </summary>
+        private Result UpdateFileListDisplaying(MainWindow mainWindow, string dirPath, string initSelectFilePath = "")
+        {
+            // 当該ディレクトリ内のファイルをセット
             try
             {
                 mainWindow.FileListDisplaying.UpdateOfDirectory(dirPath, initSelectFilePath);
             }
             catch (System.UnauthorizedAccessException)
             {
-                // アクセス権がなかった場合はロールバック
-                mainWindow.SearchText.Text = before;
                 return Result.FailedUnauthorizedAccess;
             }
 

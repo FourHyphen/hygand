@@ -32,7 +32,7 @@
             string willSelectDirPath = GetNowDisplayingDirPath(selectedFilePath);
 
             // 更新(移動元の選択状態を再現)
-            return UpdateOfDirectoryInfo(_mainWindow, dirPath, willSelectDirPath);
+            return UpdateDisplay(_mainWindow, dirPath, willSelectDirPath);
         }
 
         /// <summary>
