@@ -99,6 +99,11 @@ namespace MyFileLauncher
         /// </summary>
         internal string GetSelectedFilePath()
         {
+            if (_fileList.Count == 0)
+            {
+                return "";
+            }
+
             return _fileList[GetSelectedIndex()].FilePath;
         }
 

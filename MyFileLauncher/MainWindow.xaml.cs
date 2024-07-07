@@ -185,6 +185,12 @@ namespace MyFileLauncher
             // System キーとの同時押しの場合 → キー情報は e.SystemKey に入る
             AppKeys.KeyEvent keyEvent = AppKeys.ToKeyEvent(e.Key, e.SystemKey, e.KeyboardDevice.Modifiers);
 
+            // テキストボックス入力時などの場合はそちらで処理するためここでは処理しない(高速化のためここで終了)
+            if (keyEvent == AppKeys.KeyEvent.None)
+            {
+                return;
+            }
+
             // 動作モード切り替え
             // TODO: command 化
             if (keyEvent == AppKeys.KeyEvent.ChangeAppMode)
@@ -229,7 +235,6 @@ namespace MyFileLauncher
         private void EventSearchTextChanged(object sender, TextChangedEventArgs e)
         {
             // キー入力内容に見合った処理を実行
-            // TODO: 検索しようとテキストボックス入力中に、前方一致結果があるはずなのに 0 件になってしまう
             MainWindowCommand command = MainWindowCommandFactory.CreateCommandSearchTextChanged(_appMode, this, _history, _fileIndex, SearchText.Text);
             command.Execute(this);
         }
