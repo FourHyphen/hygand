@@ -1,11 +1,11 @@
-﻿using MyFileLauncher;
+﻿using hygand;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMyFileLauncher
+namespace Testhygand
 {
     [TestClass]
     public class UnitTestHistory
@@ -31,7 +31,7 @@ namespace TestMyFileLauncher
         [TestMethod]
         public void GetHistoryFromHistoryInfoFile()
         {
-            MyFileLauncher.History history = MyFileLauncher.History.CreateInstance(@"TestData\UnitTestHistory\GetHistoryFromHistoryInfoFile.info");
+            hygand.History history = hygand.History.CreateInstance(@"TestData\UnitTestHistory\GetHistoryFromHistoryInfoFile.info");
 
             Assert.IsTrue(history.Files.Contains(@"C:\with space"));
             Assert.IsTrue(history.Files.Contains(@"D:\日本語\"));
@@ -46,7 +46,7 @@ namespace TestMyFileLauncher
         public void AddHistory()
         {
             string historyPath = @"TestData\UnitTestHistory\AddHistory.info";
-            MyFileLauncher.History history = PrepareTestHistory(historyPath, 19);
+            hygand.History history = PrepareTestHistory(historyPath, 19);
 
             // 準備: 初期値の確認
             Assert.IsTrue(history.Files[0] == @"C:\0");
@@ -61,7 +61,7 @@ namespace TestMyFileLauncher
             Assert.AreEqual(expected: 20, actual: history.Files.Count());
 
             // 確認: 履歴ファイルに追加が反映されていること
-            MyFileLauncher.History newHistory = MyFileLauncher.History.CreateInstance(historyPath);
+            hygand.History newHistory = hygand.History.CreateInstance(historyPath);
             Assert.IsTrue(history.Files[0] == @"C:\19");
             Assert.AreEqual(expected: 20, actual: history.Files.Count());
 
@@ -76,7 +76,7 @@ namespace TestMyFileLauncher
         public void AddHistoryKeepingMaxNum()
         {
             string historyPath = @"TestData\UnitTestHistory\AddHistoryKeepingMaxNum.info";
-            MyFileLauncher.History history = PrepareTestHistory(historyPath, 20);
+            hygand.History history = PrepareTestHistory(historyPath, 20);
 
             // 準備: これから消えるものがあることと追加しようとしてるものがないことの確認
             Assert.IsTrue(history.Files[19] == @"C:\19");
@@ -92,7 +92,7 @@ namespace TestMyFileLauncher
             Assert.AreEqual(expected: 20, actual: history.Files.Count());
 
             // 確認: 履歴ファイルに追加が反映されていること
-            MyFileLauncher.History newHistory = MyFileLauncher.History.CreateInstance(historyPath);
+            hygand.History newHistory = hygand.History.CreateInstance(historyPath);
             Assert.IsTrue(history.Files[0] == @"C:\20");
             Assert.IsFalse(history.Files.Contains(@"C:\19"));
             Assert.AreEqual(expected: 20, actual: history.Files.Count());
@@ -108,7 +108,7 @@ namespace TestMyFileLauncher
         public void HistoryFileMoveFirstAndNotAppendIfFileAlreadyExists()
         {
             string historyPath = @"TestData\UnitTestHistory\HistoryFileMoveFirstAndNotAppendIfFileAlreadyExists.info";
-            MyFileLauncher.History history = PrepareTestHistory(historyPath, 10);
+            hygand.History history = PrepareTestHistory(historyPath, 10);
 
             // 準備: 事前条件の確認
             Assert.IsFalse(history.Files[0] == @"C:\5");
@@ -143,7 +143,7 @@ namespace TestMyFileLauncher
             System.IO.File.WriteAllText(historyPath, contents);
 
             // History インスタンスを返す
-            return MyFileLauncher.History.CreateInstance(historyPath);
+            return hygand.History.CreateInstance(historyPath);
         }
     }
 }

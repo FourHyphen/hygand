@@ -1,4 +1,4 @@
-﻿namespace TestMyFileLauncher
+﻿namespace Testhygand
 {
     [TestClass]
     public class UnitTestScanInfo
@@ -24,7 +24,7 @@
         [TestMethod]
         public void GetDirectoriesToScanFromScanInfoFile()
         {
-            MyFileLauncher.ScanInfo si = CreateScanInfo();
+            hygand.ScanInfo si = CreateScanInfo();
 
             // 先頭が "-" でないディレクトリは検索する
             Assert.IsTrue(si.ScanDirectories.Contains(@"C:\with space"));
@@ -39,7 +39,7 @@
         [TestMethod]
         public void GetDirectoriesNotScanFromScanInfoFile()
         {
-            MyFileLauncher.ScanInfo si = CreateScanInfo();
+            hygand.ScanInfo si = CreateScanInfo();
 
             // 先頭が "-" のディレクトリは検索しない(先頭の "-" が消されていることも確認)
             Assert.IsTrue(si.NotScanDirectories.Contains(@"C:\Program Files"));
@@ -54,7 +54,7 @@
         [TestMethod]
         public void DoNotGetCommentLineFromScanInfoFile()
         {
-            MyFileLauncher.ScanInfo si = CreateScanInfo();
+            hygand.ScanInfo si = CreateScanInfo();
 
             // 先頭が "/*" なら取得しない
             foreach (string str in si.ScanDirectories)
@@ -63,10 +63,10 @@
             }
         }
 
-        private MyFileLauncher.ScanInfo CreateScanInfo()
+        private hygand.ScanInfo CreateScanInfo()
         {
             // 設定ファイルフォーマットが変わった場合は他テストに影響出る前提、このテストでは共通の設定ファイルを使用する
-            return MyFileLauncher.ScanInfo.CreateInstance(@"TestData\UnitTestScanInfo\Scan.info");
+            return hygand.ScanInfo.CreateInstance(@"TestData\UnitTestScanInfo\Scan.info");
         }
     }
 }

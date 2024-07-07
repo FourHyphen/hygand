@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace TestMyFileLauncher
+namespace Testhygand
 {
     [TestClass]
     public class UnitTestAppKey
@@ -12,12 +12,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeFileOpenFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Enter,
+            hygand.AppKeys.KeyEvent ket = hygand.AppKeys.ToKeyEvent(key: Key.Enter,
                                                                                     systemKey: Key.None,
                                                                                     modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.FileOpen, actual: ket) ;
+            Assert.AreEqual(expected: hygand.AppKeys.KeyEvent.FileOpen, actual: ket) ;
         }
 
         /// <summary>
@@ -27,12 +27,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeBackDirectoryFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Left,
+            hygand.AppKeys.KeyEvent ket = hygand.AppKeys.ToKeyEvent(key: Key.Left,
                                                                                     systemKey: Key.None,
                                                                                     modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.BackDirectory, actual: ket);
+            Assert.AreEqual(expected: hygand.AppKeys.KeyEvent.BackDirectory, actual: ket);
         }
 
         /// <summary>
@@ -42,12 +42,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeIntoDirectoryFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.Right,
+            hygand.AppKeys.KeyEvent ket = hygand.AppKeys.ToKeyEvent(key: Key.Right,
                                                                                     systemKey: Key.None,
                                                                                     modifier: ModifierKeys.None);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.IntoDirectory, actual: ket);
+            Assert.AreEqual(expected: hygand.AppKeys.KeyEvent.IntoDirectory, actual: ket);
         }
 
         /// <summary>
@@ -57,12 +57,12 @@ namespace TestMyFileLauncher
         public void ToKeyEventTypeNoneFromInputKey()
         {
             // 変換
-            MyFileLauncher.AppKeys.KeyEvent ket = MyFileLauncher.AppKeys.ToKeyEvent(key: Key.LeftShift,
+            hygand.AppKeys.KeyEvent ket = hygand.AppKeys.ToKeyEvent(key: Key.LeftShift,
                                                                                     systemKey: Key.RightShift,
                                                                                     modifier: ModifierKeys.Control);
 
             // 確認
-            Assert.AreEqual(expected: MyFileLauncher.AppKeys.KeyEvent.None, actual: ket);
+            Assert.AreEqual(expected: hygand.AppKeys.KeyEvent.None, actual: ket);
         }
     }
 }

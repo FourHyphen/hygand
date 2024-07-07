@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MyFileLauncher;
+using hygand;
 using System;
 using System.Linq;
 
-namespace TestMyFileLauncher
+namespace Testhygand
 {
     [TestClass]
     public class IntegrationTestFileIndex
@@ -35,7 +35,7 @@ namespace TestMyFileLauncher
             DeleteFileIfExists(indexPath);
 
             // 存在しないことを検知
-            var fileIndex = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            var fileIndex = hygand.FileIndex.CreateInstance(indexPath);
             Assert.IsFalse(fileIndex.Exists());
 
             // 存在することを検知(中身は問わない)
@@ -80,8 +80,8 @@ namespace TestMyFileLauncher
             InitTestCreateIndexFile(scanInfoPath, notScanDirPath);
 
             // インデックスファイル作成
-            MyFileLauncher.ScanInfo si = MyFileLauncher.ScanInfo.CreateInstance(scanInfoPath);
-            MyFileLauncher.FileIndex fileIndex = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            hygand.ScanInfo si = hygand.ScanInfo.CreateInstance(scanInfoPath);
+            hygand.FileIndex fileIndex = hygand.FileIndex.CreateInstance(indexPath);
             fileIndex.CreateIndexFile(si);
 
             // 結果確認：今回作成した Scan.info があり、検索しないディレクトリを含んでいなければ OK
@@ -138,7 +138,7 @@ namespace TestMyFileLauncher
 
             // 準備：インデックス読み込み
             InitTestSearchIndex(indexPath);
-            MyFileLauncher.FileIndex fileIndex = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            hygand.FileIndex fileIndex = hygand.FileIndex.CreateInstance(indexPath);
 
             // 検索
             Assert.IsTrue(fileIndex.Search("should_find_2").Count == 2);

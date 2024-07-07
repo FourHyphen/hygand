@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMyFileLauncher
+namespace Testhygand
 {
     [TestClass]
     public class IntegrationTestFileSearch
@@ -34,14 +34,14 @@ namespace TestMyFileLauncher
 
             // 準備: 履歴取得(中身は空)
             string historyPath = $@"{testWorkDirPath}\History.info";
-            MyFileLauncher.History history = MyFileLauncher.History.CreateInstance(historyPath);
+            hygand.History history = hygand.History.CreateInstance(historyPath);
 
             // 準備: インデックス取得
             string indexPath = $@"{testWorkDirPath}\Index.info";
-            MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            hygand.FileIndex fi = hygand.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
+            string[] result = hygand.FileSearch.Search(history, fi, "1");
 
             // 確認
             Assert.IsTrue(result.Contains(@"C:\1"));
@@ -58,14 +58,14 @@ namespace TestMyFileLauncher
 
             // 準備: 履歴取得
             string historyPath = $@"{testWorkDirPath}\History.info";
-            MyFileLauncher.History history = MyFileLauncher.History.CreateInstance(historyPath);
+            hygand.History history = hygand.History.CreateInstance(historyPath);
 
             // 準備: インデックス取得(中身は空)
             string indexPath = $@"{testWorkDirPath}\Index.info";
-            MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            hygand.FileIndex fi = hygand.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
+            string[] result = hygand.FileSearch.Search(history, fi, "1");
 
             // 確認
             Assert.IsTrue(result.Contains(@"C:\1"));
@@ -82,14 +82,14 @@ namespace TestMyFileLauncher
 
             // 準備: 履歴取得
             string historyPath = $@"{testWorkDirPath}\History.info";
-            MyFileLauncher.History history = MyFileLauncher.History.CreateInstance(historyPath);
+            hygand.History history = hygand.History.CreateInstance(historyPath);
 
             // 準備: インデックス取得
             string indexPath = $@"{testWorkDirPath}\Index.info";
-            MyFileLauncher.FileIndex fi = MyFileLauncher.FileIndex.CreateInstance(indexPath);
+            hygand.FileIndex fi = hygand.FileIndex.CreateInstance(indexPath);
 
             // 検索
-            string[] result = MyFileLauncher.FileSearch.Search(history, fi, "1");
+            string[] result = hygand.FileSearch.Search(history, fi, "1");
 
             // 確認: 検索結果が履歴先頭のこと
             Assert.AreEqual(expected: @"C:\1", actual: result[0]);

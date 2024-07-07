@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestMyFileLauncher
+namespace Testhygand
 {
     class Common
     {
@@ -16,7 +16,7 @@ namespace TestMyFileLauncher
             if (!System.IO.Directory.Exists(master + "/TestData"))
             {
                 // テストスイートによる全テスト実行時
-                master = System.IO.Path.GetFullPath(Environment.CurrentDirectory + "/../../../../MyFileLauncher");
+                master = System.IO.Path.GetFullPath(Environment.CurrentDirectory + "/../../../../hygand");
             }
 
             return master;
