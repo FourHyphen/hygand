@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -12,3 +13,17 @@ using System.Windows;
 
 // テストプロジェクトにのみ公開する
 [assembly: InternalsVisibleTo("Testhygand")]
+
+// GitInfo パッケージによりバージョン情報に Git の情報を設定
+[assembly: AssemblyFileVersionAttribute(
+    ThisAssembly.Git.Tag
+)]
+
+[assembly: AssemblyInformationalVersionAttribute(
+    ThisAssembly.Git.Tag + "-" +
+    ThisAssembly.Git.Commit
+)]
+
+[assembly: AssemblyVersionAttribute(
+    ThisAssembly.Git.Tag
+)]
