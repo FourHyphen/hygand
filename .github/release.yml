@@ -22,6 +22,9 @@ changelog:
     - title: '機能追加・改修'
       labels:
         - 'feature'
+    - title: 'GitHub Actions'
+      label:
+        - 'github actions'
     - title: 'リファクタ'
       label:
         - 'refactor'
