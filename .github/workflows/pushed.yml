@@ -32,7 +32,7 @@ jobs:
 
       # 必要なパッケージをインストール
       - name: Install dependencies package
-        run: dotnet add package GitInfo --version 3.3.5
+        run: dotnet add hygand package GitInfo --version 3.3.5
 
       # 依存関係の復元
       - name: Install dependencies
