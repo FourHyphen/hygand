@@ -16,7 +16,9 @@ jobs:
         dotnet-version: [ '6.0.x' ]
 
     steps:
-      - uses: actions/checkout@v4
+      # リポジトリをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # .NET 設定
       - name: Setup dotnet ${{ matrix.dotnet-version }}
@@ -24,13 +26,13 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
-      # 必要なパッケージをインストール
-      - name: Install dependencies package
-        run: dotnet add package GitInfo --version 3.3.5
-
       # 環境確認
       - name: Display dotnet version
         run: dotnet --version
+
+      # 必要なパッケージをインストール
+      - name: Install dependencies package
+        run: dotnet add package GitInfo --version 3.3.5
 
       # 依存関係の復元
       - name: Install dependencies
