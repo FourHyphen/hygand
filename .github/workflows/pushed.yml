@@ -38,9 +38,14 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      # ビルドには MSBuild.exe を使うため PATH を通す
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
       # ビルド
-      - name: Build
-        run: dotnet build
+      - name: MSBuild
+        run: |
+          msbuild hygand.sln
 
       # テスト
       - name: Test with the dotnet CLI
