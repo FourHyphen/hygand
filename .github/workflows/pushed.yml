@@ -17,8 +17,13 @@ jobs:
 
     steps:
       # リポジトリをチェックアウト
+      # feth-depth:0 -> shallow clone でなく全て clone することで過去コミット情報取得
+      # blob:none    -> 過去のコミットは履歴情報のみ取得
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
 
       # .NET 設定
       - name: Setup dotnet ${{ matrix.dotnet-version }}

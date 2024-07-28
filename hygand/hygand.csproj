@@ -27,20 +27,10 @@
     </COMReference>
   </ItemGroup>
 
-  <!--アセンブリに Git 情報を含めるためのパッケージ-->
+  <!--自動生成 AssemblyInfo.cs に InternalVisibleTo を設定-->
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="3.3.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <InternalsVisibleTo Include="Testhygand" />
   </ItemGroup>
-
-  <!--AssemblyInfo.cs が自動生成される際、自前で設定したい属性が自動生成されないようにする設定-->
-  <PropertyGroup>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-  </PropertyGroup>
 
   <ItemGroup>
     <None Update="HotKey.ini">
