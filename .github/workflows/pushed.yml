@@ -43,15 +43,20 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      # MSTest 準備: VSTest.console.exe を見つけて PATH を通す
+      - name: Setup VSTest Path
+        uses: darenm/Setup-VSTest@v1
+
       # ビルドには MSBuild.exe を使うため PATH を通す
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
-      # ビルド
+      # ビルド: 後続処理をわかりやすくするため出力先を指定、各プロジェクトフォルダの下に out フォルダを作成
       - name: MSBuild
         run: |
-          msbuild hygand.sln
+          msbuild hygand.sln -p:OutDir="out/"
 
       # テスト
-      - name: Test with the dotnet CLI
-        run: dotnet test
+      - name: MSTest
+        working-directory: ./hygand/test/out
+        run: VSTest.Console.exe Testhygand.dll
