@@ -53,10 +53,18 @@ jobs:
 
       # ビルド: 後続処理をわかりやすくするため出力先を指定、各プロジェクトフォルダの下に out フォルダを作成
       - name: MSBuild
+        run: msbuild hygand.sln -p:OutDir="out"
+
+      # フォルダ構成確認
+      - name: Check Folder
         run: |
-          msbuild hygand.sln -p:OutDir="out/"
+          Get-ChildItem .
+          Get-ChildItem hygand
+          Get-ChildItem hygand\out
+          Get-ChildItem Testhygand
+          Get-ChildItem Testhygand\out
 
       # テスト
       - name: MSTest
-        working-directory: ./hygand/test/out
+        working-directory: Testhygand\out
         run: VSTest.Console.exe Testhygand.dll
