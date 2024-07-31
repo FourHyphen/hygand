@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies package
         run: dotnet add hygand package GitInfo --version 3.3.5
 
-      # 依存関係の復元
+      # 依存関係の復元: NETSDK1004 エラー回避のため
       - name: Install dependencies
         run: dotnet restore
 
