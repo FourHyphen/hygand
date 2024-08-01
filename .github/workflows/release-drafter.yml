@@ -1,0 +1,108 @@
+name: Release drafter workflow
+
+on:
+  # 検証用に push 時実行
+  push:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - '**.md'
+  # pull_request:
+  #   # PRが閉じたタイミングで実行
+  #   types:
+  #     - closed
+  #   # masterブランチのみを対象とする
+  #   branches:
+  #     - master
+
+jobs:
+  release-draft:
+    permissions:
+      # リリースノートを書くためwrite用のpermissionを付与
+      contents: write
+      pull-requests: read
+
+    # 環境
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      # リポジトリをチェックアウト
+      # feth-depth:0 -> shallow clone でなく全て clone することで過去コミット情報取得
+      # blob:none    -> 過去のコミットは履歴情報のみ取得
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      # 前回のリリースタグを取得する
+      - name: Get previous tag
+        id: pre_tag
+        run: |
+          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
+
+      # .NET 設定
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # 環境確認
+      - name: Display dotnet version
+        run: dotnet --version
+
+      # 必要なパッケージをインストール
+      - name: Install dependencies package
+        run: dotnet add hygand package GitInfo --version 3.3.5
+
+      # 依存関係の復元: NETSDK1004 エラー回避のため
+      - name: Install dependencies
+        run: dotnet restore
+
+      # ビルドには MSBuild.exe を使うため PATH を通す
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      # ビルド: 後続処理をわかりやすくするため hygand_vX.X.X フォルダに出力
+      - name: MSBuild
+        run: |
+          mkdir out
+          msbuild hygand.sln /p:Configuration=Release -p:OutDir="hygand_v$RESOLVED_VERSION"
+
+      # フォルダ構成確認
+      - name: Check Folder
+        run: |
+          Get-ChildItem .
+          Get-ChildItem hygand
+          Get-ChildItem hygand\out
+
+      # アップロード用の ZIP を作成
+      - name: Create Zip
+        run: Compress-Archive -Path hygand_v$RESOLVED_VERSION -DestinationPath hygand_v$RESOLVED_VERSION.zip
+
+      # リリースノートを作成
+      - name: create release draft
+        # アップロード処理でこのリリースノートを参照できるよう id 設定
+        id: create-draft
+        uses: release-drafter/release-drafter@v5.12.1
+        # with:
+        #   version: ${{ steps.package-version.outputs.current-version }}
+        #   name: ${{ steps.package-version.outputs.current-version }}
+        #   tag: ${{ steps.package-version.outputs.current-version }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 成果物をリリースノートにアップロード
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-draft.outputs.upload_url }} 
+          asset_path: ./hygand_v$RESOLVED_VERSION.zip
+          asset_name: hygand_v$RESOLVED_VERSION.zip
+          asset_content_type: application/zip
