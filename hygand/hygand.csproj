@@ -15,6 +15,11 @@
     <NoWarn>1701;1702;CA1822</NoWarn>
   </PropertyGroup>
 
+  <!--自己完結型で publish する-->
+  <PropertyGroup>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+
   <ItemGroup>
     <COMReference Include="Shell32">
       <WrapperTool>tlbimp</WrapperTool>
