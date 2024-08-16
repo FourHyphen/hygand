@@ -1,0 +1,142 @@
+name: Release drafter workflow
+
+on:
+  pull_request:
+    # PRが閉じたタイミングで実行
+    types:
+      - closed
+    # masterブランチのみを対象とする
+    branches:
+      - master
+
+jobs:
+  build:
+    # 環境
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      # リポジトリをチェックアウト
+      # feth-depth:0 -> shallow clone でなく全て clone することで過去コミット情報取得
+      # blob:none    -> 過去のコミットは履歴情報のみ取得
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      # .NET 設定
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # 環境確認
+      - name: Display dotnet version
+        run: dotnet --version
+
+      # 必要なパッケージをインストール
+      - name: Install dependencies package
+        run: dotnet add hygand package GitInfo --version 3.3.5
+
+      # 依存関係の復元: NETSDK1004 エラー回避のため
+      - name: Install dependencies
+        run: dotnet restore
+
+      # ビルドには MSBuild.exe を使うため PATH を通す
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      # ビルド: 後続処理をわかりやすくするため hygand_vX.X.X フォルダに発行
+      # 検証用時短のため自己完結型にはしない
+      # $RESOLVED_VERSION は空だった
+      - name: MSBuild
+        run: |
+          mkdir out
+          msbuild hygand.sln /p:Configuration=Release /p:PublishDir="hygand_v$RESOLVED_VERSION" /p:SelfContained=false /t:Publish
+
+      # フォルダ構成確認
+      - name: Check Folder
+        run: |
+          Get-ChildItem .
+          Get-ChildItem hygand
+          Get-ChildItem hygand\hygand_v$RESOLVED_VERSION
+
+      # アップロード用の ZIP を作成
+      - name: Create Zip
+        run: Compress-Archive -Path hygand\hygand_v$RESOLVED_VERSION -DestinationPath hygand_v$RESOLVED_VERSION.zip
+
+      # zip 作成結果確認
+      - name: Check Zip
+        run: |
+          Get-ChildItem .
+
+      # ジョブ間で受け渡すためにいったんアップロード
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact
+          path: .\hygand_v.zip
+          if-no-files-found: error
+
+  # release-drafter は Linux 限定のためジョブを分ける
+  release-draft:
+    permissions:
+      # リリースノートを書くためwrite用のpermissionを付与
+      # autolabeler には PR の write が必要
+      contents: write
+      pull-requests: write
+
+    # 環境
+    runs-on: ubuntu-latest
+
+    # 前ジョブの upload-artifact を DL するための設定
+    needs: build
+
+    steps:
+      # リポジトリをチェックアウト: .github/release-drafter.yml 参照するため
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ダウンロード
+      - name: Download build_artifact
+        uses: actions/download-artifact@v4
+        id: download
+        with:
+          name: build_artifact
+
+      # 環境確認
+      - name: Check Environment
+        run: |
+          echo ${{steps.download.outputs.download-path}}
+          ls -l
+          git branch
+
+      # リリースノートを作成
+      - name: Create Release Draft
+        # アップロード処理でこのリリースノートを参照できるよう id 設定
+        id: create-draft
+        uses: release-drafter/release-drafter@v6
+        # with:
+        #   version: ${{ steps.package-version.outputs.current-version }}
+        #   name: ${{ steps.package-version.outputs.current-version }}
+        #   tag: ${{ steps.package-version.outputs.current-version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 成果物をリリースノートにアップロード
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-draft.outputs.upload_url }} 
+          # asset_path: ./hygand_v$RESOLVED_VERSION.zip
+          asset_path: ${{steps.download.outputs.download-path}}
+          asset_name: hygand_v$RESOLVED_VERSION.zip
+          asset_content_type: application/zip

@@ -1,0 +1,70 @@
+name: on pushed
+
+on:
+  push:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - '**.md'
+
+jobs:
+  build:
+    # 環境
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      # リポジトリをチェックアウト
+      # feth-depth:0 -> shallow clone でなく全て clone することで過去コミット情報取得
+      # blob:none    -> 過去のコミットは履歴情報のみ取得
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      # .NET 設定
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # 環境確認
+      - name: Display dotnet version
+        run: dotnet --version
+
+      # 必要なパッケージをインストール
+      - name: Install dependencies package
+        run: dotnet add hygand package GitInfo --version 3.3.5
+
+      # 依存関係の復元: NETSDK1004 エラー回避のため
+      - name: Install dependencies
+        run: dotnet restore
+
+      # MSTest 準備: VSTest.console.exe を見つけて PATH を通す
+      - name: Setup VSTest Path
+        uses: darenm/Setup-VSTest@v1
+
+      # ビルドには MSBuild.exe を使うため PATH を通す
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      # ビルド: 後続処理をわかりやすくするため出力先を指定、各プロジェクトフォルダの下に out フォルダを作成
+      - name: MSBuild
+        run: msbuild hygand.sln -p:OutDir="out"
+
+      # フォルダ構成確認
+      - name: Check Folder
+        run: |
+          Get-ChildItem .
+          Get-ChildItem hygand
+          Get-ChildItem hygand\out
+          Get-ChildItem Testhygand
+          Get-ChildItem Testhygand\out
+
+      # テスト
+      - name: MSTest
+        working-directory: Testhygand\out
+        run: VSTest.Console.exe Testhygand.dll

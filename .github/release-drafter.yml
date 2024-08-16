@@ -1,33 +1,28 @@
-# Auto-generate release notes
-# トリガーは GitHub の Publish release ボタン押下
-
 # GitHub Release 名
-name-template: 'v$RESOLVED_VERSION'
+name-template: 'v$RESOLVED_VERSION 🌈'
 
 # GitHub Release に関連付けるタグ名
 tag-template: 'v$RESOLVED_VERSION'
 
+# GitHub PR のラベルを参照してリリースノート本文を記載
 # title: リリースノートの "## What Changed" の下の "### " の見出し
 # label: PR にこのラベルがついていればこの title にする、の指定
-changelog:
-  categories:
-    - title: 'バグ修正'
-      labels:
-        - 'bug'
-        - 'bugfix'
-        - 'fix'
-    - title: '文書'
-      label:
-        - 'documentation'
-    - title: '機能追加・改修'
-      labels:
-        - 'feature'
-    - title: 'リファクタ'
-      label:
-        - 'refactor'
-    - title: 'その他'
-      labels:
-        - 'other'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🧰 Maintenance'
+    label: 'chore'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
 # PR の中に major や minor というラベルがついたプルリクエストがあると、バージョン番号の対応したパートがインクリメント
 # このタグは Git 上のタグではないことに注意
@@ -43,6 +38,12 @@ version-resolver:
     labels:
       - 'patch'
   default: patch
+
+
+template: |
+  ## Changes
+
+  $CHANGES
 
 # PR の分類に使用するラベルのつけ忘れ対応機能
 # PR のタイトル、本文、ブランチ名、変更されたファイルのパスによって自動的に PR にラベル付与

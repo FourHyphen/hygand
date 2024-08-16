@@ -5,6 +5,9 @@
 
 memo/
 
+# .NET 6 ‚Ì‹““®‚Å‚ ‚é©“®¶¬‚ğ‘O’ñ‚Æ‚µAŠÇ—‚©‚çœŠO
+AssemblyInfo.cs
+
 # User-specific files
 *.rsuser
 *.suo
