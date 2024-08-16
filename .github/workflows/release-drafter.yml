@@ -16,12 +16,7 @@ on:
   #     - master
 
 jobs:
-  release-draft:
-    permissions:
-      # リリースノートを書くためwrite用のpermissionを付与
-      contents: write
-      pull-requests: read
-
+  build:
     # 環境
     runs-on: windows-latest
     strategy:
@@ -38,11 +33,11 @@ jobs:
           fetch-depth: 0
           filter: blob:none
 
-      # 前回のリリースタグを取得する
-      - name: Get previous tag
-        id: pre_tag
-        run: |
-          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
+      # # 前回のリリースタグを取得する
+      # - name: Get previous tag
+      #   id: pre_tag
+      #   run: |
+      #     echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
 
       # .NET 設定
       - name: Setup dotnet ${{ matrix.dotnet-version }}
@@ -66,43 +61,94 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
-      # ビルド: 後続処理をわかりやすくするため hygand_vX.X.X フォルダに出力
+      # ビルド: 後続処理をわかりやすくするため hygand_vX.X.X フォルダに発行
+      # 検証用時短のため自己完結型にはしない
+      # $RESOLVED_VERSION は空だった
       - name: MSBuild
         run: |
           mkdir out
-          msbuild hygand.sln /p:Configuration=Release -p:OutDir="hygand_v$RESOLVED_VERSION"
+          msbuild hygand.sln /p:Configuration=Release /p:PublishDir="hygand_v$RESOLVED_VERSION" /p:SelfContained=false /t:Publish
 
       # フォルダ構成確認
       - name: Check Folder
         run: |
           Get-ChildItem .
           Get-ChildItem hygand
-          Get-ChildItem hygand\out
+          Get-ChildItem hygand\hygand_v$RESOLVED_VERSION
 
       # アップロード用の ZIP を作成
       - name: Create Zip
-        run: Compress-Archive -Path hygand_v$RESOLVED_VERSION -DestinationPath hygand_v$RESOLVED_VERSION.zip
+        run: Compress-Archive -Path hygand\hygand_v$RESOLVED_VERSION -DestinationPath hygand_v$RESOLVED_VERSION.zip
+
+      # zip 作成結果確認
+      - name: Check Zip
+        run: |
+          Get-ChildItem .
+
+      # ジョブ間で受け渡すためにいったんアップロード
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact
+          path: .\hygand_v.zip
+          if-no-files-found: error
+
+  # release-drafter は Linux 限定のためジョブを分ける
+  release-draft:
+    permissions:
+      # リリースノートを書くためwrite用のpermissionを付与
+      # autolabeler には PR の write が必要
+      contents: write
+      pull-requests: write
+
+    # 環境
+    runs-on: ubuntu-latest
+
+    # 前ジョブの upload-artifact を DL するための設定
+    needs: build
+
+    steps:
+      # リポジトリをチェックアウト: .github/release-drafter.yml 参照するため
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ダウンロード
+      - name: Download build_artifact
+        uses: actions/download-artifact@v4
+        id: download
+        with:
+          name: build_artifact
+
+      # 環境確認
+      - name: Check Environment
+        run: |
+          echo ${{steps.download.outputs.download-path}}
+          ls -l
+          git branch
 
       # リリースノートを作成
-      - name: create release draft
+      - name: Create Release Draft
         # アップロード処理でこのリリースノートを参照できるよう id 設定
         id: create-draft
-        uses: release-drafter/release-drafter@v5.12.1
+        uses: release-drafter/release-drafter@v6
         # with:
         #   version: ${{ steps.package-version.outputs.current-version }}
         #   name: ${{ steps.package-version.outputs.current-version }}
         #   tag: ${{ steps.package-version.outputs.current-version }}
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 成果物をリリースノートにアップロード
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-draft.outputs.upload_url }} 
-          asset_path: ./hygand_v$RESOLVED_VERSION.zip
+          # asset_path: ./hygand_v$RESOLVED_VERSION.zip
+          asset_path: ${{steps.download.outputs.download-path}}
           asset_name: hygand_v$RESOLVED_VERSION.zip
           asset_content_type: application/zip
