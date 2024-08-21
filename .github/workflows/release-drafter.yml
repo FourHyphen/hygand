@@ -108,6 +108,7 @@ jobs:
         id: download
         with:
           name: build_artifact
+          path: ./
 
       # 環境確認
       - name: Check Environment
@@ -136,6 +137,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-draft.outputs.upload_url }} 
-          asset_path: ${{steps.download.outputs.download-path}}
+          asset_path: hygand_v.zip
           asset_name: hygand_v.zip
           asset_content_type: application/zip
